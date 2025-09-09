@@ -1,139 +1,166 @@
 // Modern JavaScript for Hettiarachchi Surgicals Website
 
-// Product and location image data
+// Product and location image data with optimized paths
 const productImages = [
   {
-    src: "images/products/IMG_2812 2.jpg",
+    src: "images/products/optimized/IMG_2812 2.jpg",
+    webp: "images/products/optimized/IMG_2812 2.webp",
     alt: "Surgical consumables and medical equipment",
     category: "surgical"
   },
   {
-    src: "images/products/IMG_2813 2.jpg",
+    src: "images/products/optimized/IMG_2813 2.jpg",
+    webp: "images/products/optimized/IMG_2813 2.webp",
     alt: "Medical supplies and surgical instruments",
     category: "surgical"
   },
   {
-    src: "images/products/IMG_2815 2.jpg",
+    src: "images/products/optimized/IMG_2815 2.jpg",
+    webp: "images/products/optimized/IMG_2815 2.webp",
     alt: "High-quality surgical consumables",
     category: "surgical"
   },
   {
-    src: "images/products/IMG_2816 2.jpg",
+    src: "images/products/optimized/IMG_2816 2.jpg",
+    webp: "images/products/optimized/IMG_2816 2.webp",
     alt: "Professional medical equipment",
     category: "equipment"
   },
   {
-    src: "images/products/IMG_2818 2.jpg",
+    src: "images/products/optimized/IMG_2818 2.jpg",
+    webp: "images/products/optimized/IMG_2818 2.webp",
     alt: "Surgical supplies for healthcare facilities",
     category: "surgical"
   },
   {
-    src: "images/products/IMG_2823 2.jpg",
+    src: "images/products/optimized/IMG_2823 2.jpg",
+    webp: "images/products/optimized/IMG_2823 2.webp",
     alt: "Medical devices and surgical instruments",
     category: "equipment"
   },
   {
-    src: "images/products/IMG_2829 2.jpg",
+    src: "images/products/optimized/IMG_2829 2.jpg",
+    webp: "images/products/optimized/IMG_2829 2.webp",
     alt: "Quality surgical consumables",
     category: "surgical"
   },
   {
-    src: "images/products/IMG_2830 2.jpg",
+    src: "images/products/optimized/IMG_2830 2.jpg",
+    webp: "images/products/optimized/IMG_2830 2.webp",
     alt: "Professional medical supplies",
     category: "supplies"
   },
   {
-    src: "images/products/IMG_2832 2.jpg",
+    src: "images/products/optimized/IMG_2832 2.jpg",
+    webp: "images/products/optimized/IMG_2832 2.webp",
     alt: "Surgical equipment and instruments",
     category: "equipment"
   },
   {
-    src: "images/products/IMG_2833 2.jpg",
+    src: "images/products/optimized/IMG_2833 2.jpg",
+    webp: "images/products/optimized/IMG_2833 2.webp",
     alt: "Medical consumables for hospitals",
     category: "surgical"
   },
   {
-    src: "images/products/IMG_2834 2.jpg",
+    src: "images/products/optimized/IMG_2834 2.jpg",
+    webp: "images/products/optimized/IMG_2834 2.webp",
     alt: "High-quality surgical supplies",
     category: "surgical"
   },
   {
-    src: "images/products/IMG_2836 2.jpg",
+    src: "images/products/optimized/IMG_2836 2.jpg",
+    webp: "images/products/optimized/IMG_2836 2.webp",
     alt: "Professional medical equipment",
     category: "equipment"
   },
   {
-    src: "images/products/IMG_2837 2.jpg",
+    src: "images/products/optimized/IMG_2837 2.jpg",
+    webp: "images/products/optimized/IMG_2837 2.webp",
     alt: "Surgical consumables and medical devices",
     category: "surgical"
   },
   {
-    src: "images/products/IMG_2838 2.jpg",
+    src: "images/products/optimized/IMG_2838 2.jpg",
+    webp: "images/products/optimized/IMG_2838 2.webp",
     alt: "Medical supplies for healthcare",
     category: "supplies"
   },
   {
-    src: "images/products/IMG_2839 2.jpg",
+    src: "images/products/optimized/IMG_2839 2.jpg",
+    webp: "images/products/optimized/IMG_2839 2.webp",
     alt: "Quality surgical instruments",
     category: "equipment"
   },
   {
-    src: "images/products/IMG_2841 2.jpg",
+    src: "images/products/optimized/IMG_2841 2.jpg",
+    webp: "images/products/optimized/IMG_2841 2.webp",
     alt: "Professional surgical consumables",
     category: "surgical"
   },
   {
-    src: "images/products/IMG_2842 2.jpg",
+    src: "images/products/optimized/IMG_2842 2.jpg",
+    webp: "images/products/optimized/IMG_2842 2.webp",
     alt: "Medical equipment and supplies",
     category: "equipment"
   },
   {
-    src: "images/products/IMG_2844 2.jpg",
+    src: "images/products/optimized/IMG_2844 2.jpg",
+    webp: "images/products/optimized/IMG_2844 2.webp",
     alt: "Surgical supplies for medical facilities",
     category: "surgical"
   },
   {
-    src: "images/products/IMG_2847 2.jpg",
+    src: "images/products/optimized/IMG_2847 2.jpg",
+    webp: "images/products/optimized/IMG_2847 2.webp",
     alt: "High-quality medical consumables",
     category: "surgical"
   },
   {
-    src: "images/products/IMG_2848 2.jpg",
+    src: "images/products/optimized/IMG_2848 2.jpg",
+    webp: "images/products/optimized/IMG_2848 2.webp",
     alt: "Professional surgical equipment",
     category: "equipment"
   },
   {
-    src: "images/products/IMG_2849 2.jpg",
+    src: "images/products/optimized/IMG_2849 2.jpg",
+    webp: "images/products/optimized/IMG_2849 2.webp",
     alt: "Medical supplies and surgical instruments",
     category: "supplies"
   },
   {
-    src: "images/products/IMG_2851 2.jpg",
+    src: "images/products/optimized/IMG_2851 2.jpg",
+    webp: "images/products/optimized/IMG_2851 2.webp",
     alt: "Quality surgical consumables",
     category: "surgical"
   },
   {
-    src: "images/products/IMG_2852 2.jpg",
+    src: "images/products/optimized/IMG_2852 2.jpg",
+    webp: "images/products/optimized/IMG_2852 2.webp",
     alt: "Professional medical equipment",
     category: "equipment"
   },
   {
-    src: "images/products/IMG_2854 2.jpg",
+    src: "images/products/optimized/IMG_2854 2.jpg",
+    webp: "images/products/optimized/IMG_2854 2.webp",
     alt: "Surgical supplies for healthcare",
     category: "surgical"
   },
   {
-    src: "images/products/IMG_2857 2.jpg",
+    src: "images/products/optimized/IMG_2857 2.jpg",
+    webp: "images/products/optimized/IMG_2857 2.webp",
     alt: "Medical consumables and instruments",
     category: "surgical"
   },
   {
-    src: "images/products/IMG_2859 2.jpg",
+    src: "images/products/optimized/IMG_2859 2.jpg",
+    webp: "images/products/optimized/IMG_2859 2.webp",
     alt: "High-quality surgical equipment",
     category: "equipment"
   },
   {
-    src: "images/products/IMG_2860 2.jpg",
+    src: "images/products/optimized/IMG_2860 2.jpg",
+    webp: "images/products/optimized/IMG_2860 2.webp",
     alt: "Professional medical supplies",
     category: "supplies"
   }
@@ -141,19 +168,23 @@ const productImages = [
 
 const locationImages = [
   {
-    src: "images/location/IMG_2799 2.jpg",
+    src: "images/location/optimized/IMG_2799 2.jpg",
+    webp: "images/location/optimized/IMG_2799 2.webp",
     alt: "Hettiarachchi Surgicals facility exterior in Galle"
   },
   {
-    src: "images/location/IMG_2801 2.jpg",
+    src: "images/location/optimized/IMG_2801 2.jpg",
+    webp: "images/location/optimized/IMG_2801 2.webp",
     alt: "Our medical supply facility entrance"
   },
   {
-    src: "images/location/IMG_2808 2.jpg",
+    src: "images/location/optimized/IMG_2808 2.jpg",
+    webp: "images/location/optimized/IMG_2808 2.webp",
     alt: "Hettiarachchi Surgicals location in Galle"
   },
   {
-    src: "images/location/IMG_2810 2.jpg",
+    src: "images/location/optimized/IMG_2810 2.jpg",
+    webp: "images/location/optimized/IMG_2810 2.webp",
     alt: "Our surgical supplies facility"
   }
 ];
@@ -286,15 +317,33 @@ class ProductSearch {
     this.filteredProducts.forEach(product => {
       const imgContainer = document.createElement('div');
       imgContainer.className = 'gallery-item';
+      
+      // Create picture element with WebP support and fallback
+      const picture = document.createElement('picture');
+      
+      // WebP source
+      if (product.webp) {
+        const webpSource = document.createElement('source');
+        webpSource.srcset = product.webp;
+        webpSource.type = 'image/webp';
+        picture.appendChild(webpSource);
+      }
+      
+      // Fallback JPEG
+      const img = document.createElement('img');
+      img.src = product.src;
+      img.alt = product.alt;
+      img.loading = 'lazy';
+      img.onerror = () => img.style.display = 'none';
+      picture.appendChild(img);
+      
       imgContainer.innerHTML = `
-        <img src="${product.src}" 
-             alt="${product.alt}" 
-             loading="lazy"
-             onerror="this.style.display='none'">
         <div class="image-overlay">
           <span class="category-tag">${product.category}</span>
         </div>
       `;
+      
+      imgContainer.insertBefore(picture, imgContainer.firstChild);
       this.searchResults.appendChild(imgContainer);
     });
   }
@@ -471,15 +520,28 @@ class ThemeToggle {
 
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-  // Load location images
+  // Load location images with WebP support
   const locationGallery = document.getElementById('location-gallery');
   locationImages.forEach(location => {
+    const picture = document.createElement('picture');
+    
+    // WebP source
+    if (location.webp) {
+      const webpSource = document.createElement('source');
+      webpSource.srcset = location.webp;
+      webpSource.type = 'image/webp';
+      picture.appendChild(webpSource);
+    }
+    
+    // Fallback JPEG
     const img = document.createElement('img');
     img.src = location.src;
     img.alt = location.alt;
     img.loading = 'lazy';
     img.onerror = () => img.style.display = 'none';
-    locationGallery.appendChild(img);
+    picture.appendChild(img);
+    
+    locationGallery.appendChild(picture);
   });
 
   // Initialize all features
