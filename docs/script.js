@@ -427,6 +427,48 @@ class PerformanceMonitor {
   }
 }
 
+// Dark Theme Toggle
+class ThemeToggle {
+  constructor() {
+    this.themeToggle = document.getElementById('theme-toggle');
+    this.currentTheme = localStorage.getItem('theme') || 'light';
+    this.init();
+  }
+
+  init() {
+    // Set initial theme
+    this.setTheme(this.currentTheme);
+    
+    // Add event listener
+    this.themeToggle.addEventListener('click', () => {
+      this.toggleTheme();
+    });
+
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      if (!localStorage.getItem('theme')) {
+        this.setTheme(e.matches ? 'dark' : 'light');
+      }
+    });
+  }
+
+  toggleTheme() {
+    const newTheme = this.currentTheme === 'light' ? 'dark' : 'light';
+    this.setTheme(newTheme);
+  }
+
+  setTheme(theme) {
+    this.currentTheme = theme;
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    
+    // Update button aria-label
+    this.themeToggle.setAttribute('aria-label', 
+      theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'
+    );
+  }
+}
+
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   // Load location images
@@ -445,6 +487,7 @@ document.addEventListener('DOMContentLoaded', () => {
   new ImageLoader();
   new SmoothScroll();
   new PerformanceMonitor();
+  new ThemeToggle();
 
   // Add loading states
   document.body.classList.add('loaded');
