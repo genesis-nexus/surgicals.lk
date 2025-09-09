@@ -11,3 +11,4 @@ Crawl-delay: 1
 Disallow: *.heic
 Disallow: *.DS_Store
 Disallow: /images/*.heic
+
