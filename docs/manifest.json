@@ -1,0 +1,20 @@
+{
+  "name": "Hettiarachchi Surgicals",
+  "short_name": "Hettiarachchi Surgicals",
+  "description": "Leading provider of high-quality surgical consumables and medical equipment in Galle, Sri Lanka",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "16x16 32x32 48x48",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["medical", "healthcare", "business"],
+  "lang": "en",
+  "dir": "ltr"
+}
