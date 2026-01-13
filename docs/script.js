@@ -1,6 +1,6 @@
 // Modern JavaScript for Hettiarachchi Surgicals Website
 
-// Product and location image data with optimized paths
+// Product and location image data
 const productImages = [
   {
     src: "images/products/optimized/IMG_2812 2.jpg",
@@ -201,14 +201,20 @@ class ProductSearch {
 
   init() {
     this.createSearchInterface();
-    this.bindEvents();
-    this.loadInitialGallery();
+    // Elements are bound after creation
+    this.searchInput = document.getElementById('product-search');
+    this.searchResults = document.getElementById('products-gallery');
+
+    if (this.searchInput && this.searchResults) {
+      this.bindEvents();
+      this.loadInitialGallery();
+    }
   }
 
   createSearchInterface() {
-    const productsSection = document.getElementById('products');
-    const productsHeading = document.getElementById('products-heading');
-    
+    const placeholder = document.getElementById('search-interface-placeholder');
+    if (!placeholder) return;
+
     // Create search container
     const searchContainer = document.createElement('div');
     searchContainer.className = 'search-container';
@@ -229,12 +235,8 @@ class ProductSearch {
         <button class="filter-btn" data-category="supplies">Supplies</button>
       </div>
     `;
-    
-    // Insert search container after the heading
-    productsHeading.insertAdjacentElement('afterend', searchContainer);
-    
-    this.searchInput = document.getElementById('product-search');
-    this.searchResults = document.getElementById('products-gallery');
+
+    placeholder.appendChild(searchContainer);
   }
 
   bindEvents() {
@@ -266,16 +268,16 @@ class ProductSearch {
 
   handleSearch(query) {
     const searchTerm = query.toLowerCase().trim();
-    
+
     if (searchTerm === '') {
       this.filteredProducts = [...this.allProducts];
     } else {
-      this.filteredProducts = this.allProducts.filter(product => 
+      this.filteredProducts = this.allProducts.filter(product =>
         product.alt.toLowerCase().includes(searchTerm) ||
         product.category.toLowerCase().includes(searchTerm)
       );
     }
-    
+
     this.renderGallery();
   }
 
@@ -283,11 +285,11 @@ class ProductSearch {
     if (category === 'all') {
       this.filteredProducts = [...this.allProducts];
     } else {
-      this.filteredProducts = this.allProducts.filter(product => 
+      this.filteredProducts = this.allProducts.filter(product =>
         product.category === category
       );
     }
-    
+
     this.renderGallery();
   }
 
@@ -304,10 +306,10 @@ class ProductSearch {
 
   renderGallery() {
     this.searchResults.innerHTML = '';
-    
+
     if (this.filteredProducts.length === 0) {
       this.searchResults.innerHTML = `
-        <div class="no-results">
+        <div class="no-results" style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
           <p>No products found matching your search criteria.</p>
         </div>
       `;
@@ -317,32 +319,29 @@ class ProductSearch {
     this.filteredProducts.forEach(product => {
       const imgContainer = document.createElement('div');
       imgContainer.className = 'gallery-item';
-      
-      // Create picture element with WebP support and fallback
+
       const picture = document.createElement('picture');
-      
-      // WebP source
+
       if (product.webp) {
         const webpSource = document.createElement('source');
         webpSource.srcset = product.webp;
         webpSource.type = 'image/webp';
         picture.appendChild(webpSource);
       }
-      
-      // Fallback JPEG
+
       const img = document.createElement('img');
       img.src = product.src;
       img.alt = product.alt;
       img.loading = 'lazy';
       img.onerror = () => img.style.display = 'none';
       picture.appendChild(img);
-      
+
       imgContainer.innerHTML = `
         <div class="image-overlay">
           <span class="category-tag">${product.category}</span>
         </div>
       `;
-      
+
       imgContainer.insertBefore(picture, imgContainer.firstChild);
       this.searchResults.appendChild(imgContainer);
     });
@@ -380,7 +379,6 @@ class ImageLoader {
   }
 
   setupImageModal() {
-    // Create modal for image viewing
     const modal = document.createElement('div');
     modal.className = 'image-modal';
     modal.innerHTML = `
@@ -392,14 +390,13 @@ class ImageLoader {
     `;
     document.body.appendChild(modal);
 
-    // Add click events to gallery images
     document.addEventListener('click', (e) => {
-      if (e.target.tagName === 'IMG' && e.target.closest('.gallery')) {
+      // Handle clicks on images within gallery items
+      if (e.target.tagName === 'IMG' && e.target.closest('.gallery-item')) {
         this.openModal(e.target);
       }
     });
 
-    // Close modal events
     modal.querySelector('.close-modal').addEventListener('click', () => {
       this.closeModal();
     });
@@ -410,9 +407,8 @@ class ImageLoader {
       }
     });
 
-    // Escape key to close modal
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && modal.style.display === 'block') {
+      if (e.key === 'Escape' && modal.style.display === 'flex') {
         this.closeModal();
       }
     });
@@ -422,11 +418,11 @@ class ImageLoader {
     const modal = document.querySelector('.image-modal');
     const modalImg = modal.querySelector('.modal-image');
     const caption = modal.querySelector('.modal-caption');
-    
+
     modalImg.src = img.src;
     modalImg.alt = img.alt;
     caption.textContent = img.alt;
-    modal.style.display = 'block';
+    modal.style.display = 'flex'; // Changed to flex for centering
     document.body.style.overflow = 'hidden';
   }
 
@@ -437,46 +433,34 @@ class ImageLoader {
   }
 }
 
-// Smooth scrolling for navigation links
-class SmoothScroll {
+// Mobile Menu Toggle
+class MobileMenu {
   constructor() {
+    this.toggle = document.querySelector('.mobile-menu-toggle');
+    this.nav = document.querySelector('.main-nav');
     this.init();
   }
 
   init() {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', (e) => {
-        e.preventDefault();
-        const target = document.querySelector(anchor.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }
+    if (!this.toggle || !this.nav) return;
+
+    this.toggle.addEventListener('click', () => {
+      this.nav.classList.toggle('active');
+      const isExpanded = this.nav.classList.contains('active');
+      this.toggle.setAttribute('aria-expanded', isExpanded);
+    });
+
+    // Close menu when clicking a link
+    this.nav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        this.nav.classList.remove('active');
+        this.toggle.setAttribute('aria-expanded', 'false');
       });
     });
   }
 }
 
-// Performance monitoring
-class PerformanceMonitor {
-  constructor() {
-    this.init();
-  }
-
-  init() {
-    // Monitor page load performance
-    window.addEventListener('load', () => {
-      if ('performance' in window) {
-        const perfData = performance.getEntriesByType('navigation')[0];
-        console.log('Page load time:', perfData.loadEventEnd - perfData.loadEventStart, 'ms');
-      }
-    });
-  }
-}
-
-// Dark Theme Toggle
+// Theme Toggle
 class ThemeToggle {
   constructor() {
     this.themeToggle = document.getElementById('theme-toggle');
@@ -485,15 +469,14 @@ class ThemeToggle {
   }
 
   init() {
-    // Set initial theme
     this.setTheme(this.currentTheme);
-    
-    // Add event listener
-    this.themeToggle.addEventListener('click', () => {
-      this.toggleTheme();
-    });
 
-    // Listen for system theme changes
+    if (this.themeToggle) {
+      this.themeToggle.addEventListener('click', () => {
+        this.toggleTheme();
+      });
+    }
+
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
       if (!localStorage.getItem('theme')) {
         this.setTheme(e.matches ? 'dark' : 'light');
@@ -510,232 +493,61 @@ class ThemeToggle {
     this.currentTheme = theme;
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
-    
-    // Update button aria-label
-    this.themeToggle.setAttribute('aria-label', 
-      theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'
-    );
+
+    if (this.themeToggle) {
+      this.themeToggle.setAttribute('aria-label',
+        theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'
+      );
+    }
   }
 }
 
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-  // Load location images with WebP support
+  // Load location images
   const locationGallery = document.getElementById('location-gallery');
-  locationImages.forEach(location => {
-    const picture = document.createElement('picture');
-    
-    // WebP source
-    if (location.webp) {
-      const webpSource = document.createElement('source');
-      webpSource.srcset = location.webp;
-      webpSource.type = 'image/webp';
-      picture.appendChild(webpSource);
-    }
-    
-    // Fallback JPEG
-    const img = document.createElement('img');
-    img.src = location.src;
-    img.alt = location.alt;
-    img.loading = 'lazy';
-    img.onerror = () => img.style.display = 'none';
-    picture.appendChild(img);
-    
-    locationGallery.appendChild(picture);
-  });
+  if (locationGallery) {
+    locationImages.forEach(location => {
+      const picture = document.createElement('picture');
 
-  // Initialize all features
+      if (location.webp) {
+        const webpSource = document.createElement('source');
+        webpSource.srcset = location.webp;
+        webpSource.type = 'image/webp';
+        picture.appendChild(webpSource);
+      }
+
+      const img = document.createElement('img');
+      img.src = location.src;
+      img.alt = location.alt;
+      img.loading = 'lazy';
+      img.onerror = () => img.style.display = 'none';
+      picture.appendChild(img);
+
+      const item = document.createElement('div');
+      item.className = 'gallery-item';
+      item.appendChild(picture);
+
+      locationGallery.appendChild(item);
+    });
+  }
+
+  // Initialize features
   new ProductSearch();
   new ImageLoader();
-  new SmoothScroll();
-  new PerformanceMonitor();
   new ThemeToggle();
+  new MobileMenu();
 
-  // Add loading states
+  // Add loaded class
   document.body.classList.add('loaded');
+
+  // Log performance
+  if ('performance' in window) {
+    window.addEventListener('load', () => {
+      const perfData = performance.getEntriesByType('navigation')[0];
+      if (perfData) {
+        console.log('Page load time:', perfData.loadEventEnd - perfData.loadEventStart, 'ms');
+      }
+    });
+  }
 });
-
-// Add CSS for search functionality and modal
-const additionalStyles = `
-  .search-container {
-    margin: 2rem 0;
-    text-align: center;
-  }
-
-  .search-box {
-    display: flex;
-    max-width: 500px;
-    margin: 0 auto 1.5rem;
-    position: relative;
-  }
-
-  .search-box input {
-    flex: 1;
-    padding: 0.75rem 1rem;
-    border: 2px solid #e5e7eb;
-    border-radius: 50px 0 0 50px;
-    font-size: 1rem;
-    outline: none;
-    transition: border-color 0.3s ease;
-  }
-
-  .search-box input:focus {
-    border-color: #2563eb;
-  }
-
-  .search-box button {
-    padding: 0.75rem 1.5rem;
-    background: #2563eb;
-    color: white;
-    border: none;
-    border-radius: 0 50px 50px 0;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-
-  .search-box button:hover {
-    background: #1d4ed8;
-  }
-
-  .filter-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
-
-  .filter-btn {
-    padding: 0.5rem 1rem;
-    border: 2px solid #e5e7eb;
-    background: white;
-    color: #374151;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 500;
-  }
-
-  .filter-btn:hover,
-  .filter-btn.active {
-    background: #2563eb;
-    color: white;
-    border-color: #2563eb;
-  }
-
-  .gallery-item {
-    position: relative;
-    overflow: hidden;
-    border-radius: 12px;
-  }
-
-  .image-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(transparent, rgba(0,0,0,0.7));
-    padding: 1rem;
-    transform: translateY(100%);
-    transition: transform 0.3s ease;
-  }
-
-  .gallery-item:hover .image-overlay {
-    transform: translateY(0);
-  }
-
-  .category-tag {
-    background: #2563eb;
-    color: white;
-    padding: 0.25rem 0.75rem;
-    border-radius: 15px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    text-transform: capitalize;
-  }
-
-  .no-results {
-    text-align: center;
-    padding: 3rem;
-    color: #6b7280;
-  }
-
-  .image-modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.9);
-    backdrop-filter: blur(5px);
-  }
-
-  .modal-content {
-    position: relative;
-    margin: auto;
-    padding: 2rem;
-    width: 90%;
-    max-width: 800px;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-
-  .modal-image {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-  }
-
-  .modal-caption {
-    color: white;
-    text-align: center;
-    margin-top: 1rem;
-    font-size: 1.1rem;
-  }
-
-  .close-modal {
-    position: absolute;
-    top: 1rem;
-    right: 1.5rem;
-    color: white;
-    font-size: 2rem;
-    font-weight: bold;
-    cursor: pointer;
-    z-index: 1001;
-  }
-
-  .close-modal:hover {
-    color: #ccc;
-  }
-
-  @media (max-width: 768px) {
-    .search-box {
-      flex-direction: column;
-    }
-
-    .search-box input {
-      border-radius: 50px;
-      margin-bottom: 0.5rem;
-    }
-
-    .search-box button {
-      border-radius: 50px;
-    }
-
-    .filter-buttons {
-      gap: 0.25rem;
-    }
-
-    .filter-btn {
-      padding: 0.4rem 0.8rem;
-      font-size: 0.9rem;
-    }
-  }
-`;
-
-// Inject additional styles
-const styleSheet = document.createElement('style');
-styleSheet.textContent = additionalStyles;
-document.head.appendChild(styleSheet);
