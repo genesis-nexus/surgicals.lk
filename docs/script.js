@@ -301,7 +301,10 @@ class ProductSearch {
   }
 
   loadInitialGallery() {
-    this.renderGallery();
+    // If the gallery already has children (static HTML), do not render
+    if (this.searchResults.children.length === 0) {
+      this.renderGallery();
+    }
   }
 
   renderGallery() {
