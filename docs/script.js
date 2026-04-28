@@ -77,9 +77,13 @@ const products = [
   { sku: "HC03", title: "Beta Diabetic Footwear", category: "home-care", folder: "products", bases: ["IMG_2852 2"] },
   { sku: "HC04", title: "TexStretch Rehabilitation Bands & Accessories", category: "home-care", folder: "products", bases: ["IMG_2854 2"] }
 ].map(p => {
-  const dir = p.folder === "products" ? "images/products/optimized" : "images/new-cat/optimized";
+  // new-cat: PNG (transparent) fallback + WebP-with-alpha primary.
+  // products: JPG (opaque) fallback + WebP primary.
+  const isNewCat = p.folder === "new-cat";
+  const dir = isNewCat ? "images/new-cat/optimized" : "images/products/optimized";
+  const ext = isNewCat ? "png" : "jpg";
   const images = p.bases.map((base, i) => ({
-    src: `${dir}/${base}.jpg`,
+    src: `${dir}/${base}.${ext}`,
     webp: `${dir}/${base}.webp`,
     alt: `${p.title}${p.bases.length > 1 ? ` — view ${i + 1}` : ""}`
   }));
@@ -205,7 +209,7 @@ function renderCardInner(p) {
   const multi = imgs.length > 1;
   const pictures = imgs.map((img, i) => `
     <picture class="product-card__img${i > 0 ? " product-card__img--alt" : ""}">
-      <source srcset="${img.webp}" type="image/webp">
+      ${img.webp ? `<source srcset="${img.webp}" type="image/webp">` : ""}
       <img src="${img.src}" alt="${img.alt}" loading="lazy">
     </picture>`).join("");
   return `
