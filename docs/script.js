@@ -6,6 +6,7 @@ const WHATSAPP_COLOMBO = "94719249267"; // Colombo (WhatsApp only)
 
 const PRODUCT_CATEGORIES = {
   "mobility-aids": "Mobility Aids",
+  furniture: "Hospital Furniture",
   diagnostics: "Diagnostics",
   supports: "Supports & Braces",
   beds: "Beds & Mattresses",
@@ -15,6 +16,106 @@ const PRODUCT_CATEGORIES = {
 
 // Products surfaced first on the page — the most-requested items.
 const FEATURED_SKUS = ["WC03", "CO03", "CN01", "DM01", "DM07", "DI02", "BD02", "DM02"];
+
+// Search synonym tables. Tokens added to each product's haystack so visitors can find products
+// by category, alternate names, brand names, or related terms — not just the literal title.
+const CATEGORY_KEYWORDS = {
+  "mobility-aids": ["mobility", "rehab", "rehabilitation"],
+  furniture: ["hospital furniture", "ward furniture", "medical furniture"],
+  diagnostics: ["diagnostic", "monitoring", "vitals"],
+  supports: ["orthopaedic", "orthopedic", "brace", "splint", "support belt"],
+  beds: ["mattress", "bedding"],
+  surgical: ["surgical instrument", "ot instrument", "operation theatre"],
+  "home-care": ["home care", "elder care", "personal care"]
+};
+const SKU_PREFIX_KEYWORDS = {
+  WC: ["wheelchair", "wheel chair", "wc"],
+  CO: ["commode", "toilet chair"],
+  CN: ["cane", "stick", "walking stick", "walking aid"],
+  CR: ["crutch", "crutches", "walking aid"],
+  WF: ["walker", "rollator", "zimmer", "zimmer frame", "walking frame"],
+  MG10: ["hospital bed", "patient bed", "icu bed", "ward bed", "manual bed"],
+  MG20: ["examination table", "exam table", "examination couch", "exam couch", "treatment table"],
+  MG40: ["trolley", "stretcher", "gurney", "transport trolley", "patient trolley"],
+  DM: ["diagnostic", "monitor"],
+  SU: ["orthopaedic support", "brace", "splint", "support"],
+  BD: ["mattress", "ripple mattress", "anti-bedsore", "anti bedsore", "pressure relief", "decubitus"],
+  DI: ["adult diaper", "diapers", "incontinence", "adult pants", "adult brief", "underwear"],
+  SG: ["surgical", "ot instrument", "operation theatre"],
+  HC: ["home care"]
+};
+// Specific extras for individual products
+const SKU_KEYWORDS = {
+  MG2010: ["gynaecological", "gynecological", "obgyn", "ob-gyn", "ob gyn", "labour bed", "labor bed", "delivery bed"],
+  MG2011: ["tilt table", "trendelenburg"],
+  MG2012: ["examination bed", "treatment couch"],
+  MG2013A: ["examination bed with cabinet", "exam bed cabinet"],
+  MG2014: ["gynaecological", "gynecological", "obgyn", "delivery bed"],
+  MG2015: ["examination bed"],
+  MG4010: ["transport trolley", "patient stretcher"],
+  MG4011: ["transport trolley"],
+  MG4012: ["transfer trolley", "removable top"],
+  MG4013: ["stretcher trolley", "removable top"],
+  MG4017: ["recovery trolley", "post-op trolley"],
+  MG4019: ["recovery trolley", "post-op trolley"],
+  MG1016: ["three function bed", "icu bed manual"],
+  MG1017: ["five function bed", "hydraulic bed", "icu bed hydraulic"],
+  MG1022: ["electric bed", "motorised bed", "motorized bed", "powered bed"],
+  DM01: ["bp", "bp monitor", "blood pressure", "sphygmomanometer", "norditalia"],
+  DM02: ["thermometer", "infrared", "non-contact", "non contact", "fever", "berrcom"],
+  DM03: ["stethoscope", "littmann", "3m", "classic iii"],
+  DM04: ["glucose meter", "glucometer", "diabetes", "blood sugar", "freestyle", "optium", "accu-chek", "accu chek", "vivachek", "ino", "ketone"],
+  DM07: ["oximeter", "spo2", "oxygen saturation", "fingertip pulse oximeter", "x1805"],
+  SU01: ["clavicle brace", "shoulder support", "shoulder brace", "dyna"],
+  SU02: ["arm sling", "shoulder sling", "dyna"],
+  SU03: ["cervical collar", "neck brace", "neck collar", "soft collar", "dyna"],
+  SU04: ["lumbar support", "back brace", "back support", "lumbar belt", "i-m"],
+  BD01: ["bubble mattress", "anti-decubitus", "ripple mattress"],
+  BD02: ["air mattress", "air pressure mattress", "medtech", "ab-03"],
+  HC01: ["suction unit", "phlegm suction", "respiratory", "9e-a"],
+  HC02: ["facial steamer", "benice", "bns-016"],
+  HC03: ["diabetic shoes", "diabetic footwear", "beta", "diabetic sandals"],
+  HC04: ["resistance bands", "rehabilitation bands", "texstretch", "physio bands", "exercise bands"],
+  SG01: ["orthopaedic implant", "bone plates", "bone screws", "k wire", "cerclage"],
+  SG02: ["hemorrhoidal stapler", "hemorrhoid stapler", "haemorrhoidal", "panther"],
+  SG03: ["linear cutter stapler", "surgical stapler", "panther"],
+  SG04: ["stapler reload", "linear cutter reload", "panther"]
+};
+
+// Furniture spec sheets — derived from the MG product line photos.
+const FURNITURE_SPECS = {
+  MG1010: { material: "Epoxy Powder Coated Steel", dimensions: "L 2100 × W 970 × H 540 mm", features: ["Two-section back & knee adjustment", "Collapsible side rails", "Optional baggage rack"] },
+  MG1011: { material: "Epoxy Powder Coated Steel", dimensions: "L 2100 × W 970 × H 540 mm", features: ["Head section adjustment", "Collapsible side rails"] },
+  MG1012: { material: "Epoxy Powder Coated Steel", dimensions: "L 2100 × W 970 × H 540 mm", features: ["Head section adjustment", "Collapsible side rails", "Designed for home use"] },
+  MG1013: { material: "Epoxy Powder Coated Steel", dimensions: "L 2100 × W 970 × H 540 mm", features: ["Two-section back & knee adjustment", "Collapsible side rails", "Designed for home use"] },
+  MG1014: { material: "Stainless Steel", dimensions: "L 1850 × W 810 × H 630 mm", features: ["Stainless steel frame", "Head section adjustment"] },
+  MG1015: { material: "Epoxy Powder Coated Steel", dimensions: "L 1850 × W 810 × H 630 mm", features: ["Flat patient surface", "Steel frame with head/foot panels"] },
+  MG1016: { material: "Epoxy Powder Coated Steel", dimensions: "L 2130 × W 910 × H 430–700 mm", features: ["Three-section adjustment", "Manual crank operation", "Height adjustable", "Collapsible side rails"] },
+  MG1017: { material: "Epoxy Powder Coated Steel", dimensions: "L 2010 × W 910 × H 430–700 mm", features: ["Five-function adjustment (Trendelenburg + back/knee/feet)", "Hydraulic lift", "Collapsible side rails", "IV pole included"] },
+  MG1018: { material: "Epoxy Powder Coated Steel", dimensions: "L 1950 × W 970 × H 460 mm", features: ["Two-section back & knee adjustment", "Wood-style head/foot panels", "Collapsible stainless steel side rails"] },
+  MG1019: { material: "Epoxy Powder Coated Steel", dimensions: "L 1950 × W 970 × H 460 mm", features: ["Head section adjustment", "Wood-style head/foot panels", "Collapsible stainless steel side rails"] },
+  MG1020: { material: "Epoxy Powder Coated Steel", dimensions: "L 2010 × W 910 × H 430–700 mm", features: ["Three-section adjustment", "Wood-style head/foot panels", "Collapsible stainless steel side rails", "Height adjustable"] },
+  MG1021: { material: "Epoxy Powder Coated Steel", dimensions: "L 2010 × W 910 × H 430–700 mm", features: ["Five-function adjustment", "Wood-style panels", "Collapsible stainless steel side rails", "IV pole included"] },
+  MG1022: { material: "Epoxy Powder Coated Steel", dimensions: "L 2010 × W 910 × H 430–700 mm", features: ["Three-function electric adjustment", "Powered backrest & knee", "Mattress included", "Side rails"] },
+
+  MG2010:   { material: "Epoxy Powder Coated Steel", dimensions: "L 1900 × W 620 × H 790 mm", features: ["Reclining backrest", "Adjustable leg supports", "Examination stirrups"] },
+  MG2011:   { material: "Epoxy Powder Coated Steel", dimensions: "L 1950 × W 610 × H 950 mm", features: ["Tilt operation (Trendelenburg)", "Single-column base", "Padded surface"] },
+  MG2012:   { material: "Epoxy Powder Coated Steel", dimensions: "L 1850 × W 560 × H 780 mm", features: ["Reclining backrest", "Padded examination surface", "Open frame"] },
+  MG2013A:  { material: "Epoxy Powder Coated Steel", dimensions: "L 1890 × W 560 × H 840 mm", features: ["Reclining backrest", "Built-in storage cabinets", "Step stool included"] },
+  MG2014:   { material: "Stainless Steel", dimensions: "L 1900 × W 620 × H 790 mm", features: ["Stainless steel frame", "Reclining backrest", "Adjustable leg supports", "Examination stirrups"] },
+  MG2015:   { material: "Stainless Steel", dimensions: "L 1850 × W 560 × H 780 mm", features: ["Stainless steel frame", "Reclining backrest", "Padded surface"] },
+
+  MG4010: { material: "Stainless Steel", dimensions: "L 1900 × W 660 × H 500–800 mm", features: ["Stainless steel frame", "Adjustable backrest", "Side rails", "Heavy-duty castors", "Height adjustable"] },
+  MG4011: { material: "Epoxy Powder Coated Steel", dimensions: "L 1900 × W 660 × H 500–800 mm", features: ["Adjustable backrest", "Side rails", "Heavy-duty castors", "Height adjustable", "IV pole"] },
+  MG4012: { material: "Stainless Steel", dimensions: "L 1980 × W 560 × H 790 mm", features: ["Stainless steel frame", "Padded surface", "Removable top for easy patient transfer", "IV pole"] },
+  MG4013: { material: "Stainless Steel", dimensions: "L 1980 × W 560 × H 790 mm", features: ["Stainless steel frame", "Removable top for easy transfer", "Heavy-duty castors", "IV pole"] },
+  MG4014: { material: "Stainless Steel", dimensions: "L 1980 × W 560 × H 790 mm", features: ["Stainless steel frame", "Stainless top surface", "Side rails", "Heavy-duty castors"] },
+  MG4015: { material: "Stainless Steel", dimensions: "L 1980 × W 560 × H 790 mm", features: ["Stainless steel frame", "Open lower shelf", "Heavy-duty castors"] },
+  MG4016: { material: "Epoxy Powder Coated Steel", dimensions: "L 1980 × W 560 × H 790 mm", features: ["Removable aluminium top for easy transfer", "Side rails", "Heavy-duty castors"] },
+  MG4017: { material: "Epoxy Powder Coated Steel", dimensions: "L 1870 × W 600 × H 550–780 mm", features: ["Height adjustable", "Adjustable backrest", "Heavy-duty castors", "IV pole"] },
+  MG4019: { material: "Stainless Steel", dimensions: "L 1870 × W 600 × H 550–780 mm", features: ["Stainless steel frame", "Hydraulic height adjustment", "Adjustable backrest", "Side rails"] },
+  MG4021: { material: "Stainless Steel", dimensions: "L 1980 × W 560 × H 790 mm", features: ["Stainless steel frame", "Open frame design", "Removable top", "Heavy-duty castors"] }
+};
 
 // Catalog is quote-only; no prices.
 // `folder` selects the image directory; `bases` is one stem for single-image products, or
@@ -75,18 +176,65 @@ const products = [
   { sku: "HC01", title: "Portable Phlegm Suction Unit (9E-A)", category: "home-care", folder: "products", bases: ["IMG_2832 2", "IMG_2833 2"] },
   { sku: "HC02", title: "Benice Facial Steamer (BNS-016)", category: "home-care", folder: "products", bases: ["IMG_2841 2", "IMG_2842 2"] },
   { sku: "HC03", title: "Beta Diabetic Footwear", category: "home-care", folder: "products", bases: ["IMG_2852 2"] },
-  { sku: "HC04", title: "TexStretch Rehabilitation Bands & Accessories", category: "home-care", folder: "products", bases: ["IMG_2854 2"] }
+  { sku: "HC04", title: "TexStretch Rehabilitation Bands & Accessories", category: "home-care", folder: "products", bases: ["IMG_2854 2"] },
+
+  // ---- Hospital Furniture (MG range — beds, exam tables, trolleys) ----
+  { sku: "MG1010", title: "Two Function Bed", category: "furniture", folder: "furniture", bases: ["mg-1010"] },
+  { sku: "MG1011", title: "Head Adjustable Bed", category: "furniture", folder: "furniture", bases: ["mg-1011"] },
+  { sku: "MG1012", title: "Head Adjustable Bed — Home Use", category: "furniture", folder: "furniture", bases: ["mg-1012"] },
+  { sku: "MG1013", title: "Two Function Bed — Home Use", category: "furniture", folder: "furniture", bases: ["mg-1013"] },
+  { sku: "MG1014", title: "Head Adjustable Bed (Stainless Steel)", category: "furniture", folder: "furniture", bases: ["mg-1014"] },
+  { sku: "MG1015", title: "Patient Bed — Basic", category: "furniture", folder: "furniture", bases: ["mg-1015"] },
+  { sku: "MG1016", title: "Three Function Bed — Manual", category: "furniture", folder: "furniture", bases: ["mg-1016"] },
+  { sku: "MG1017", title: "Five Function Bed — Hydraulic", category: "furniture", folder: "furniture", bases: ["mg-1017"] },
+  { sku: "MG1018", title: "Two Function Bed — Classic", category: "furniture", folder: "furniture", bases: ["mg-1018"] },
+  { sku: "MG1019", title: "Head Adjustable Bed — Classic", category: "furniture", folder: "furniture", bases: ["mg-1019"] },
+  { sku: "MG1020", title: "Three Function Bed — Classic", category: "furniture", folder: "furniture", bases: ["mg-1020"] },
+  { sku: "MG1021", title: "Five Function Bed — Classic", category: "furniture", folder: "furniture", bases: ["mg-1021"] },
+  { sku: "MG1022", title: "Three Function Bed — Electric", category: "furniture", folder: "furniture", bases: ["mg-1022"] },
+
+  { sku: "MG2010", title: "Gynecological Bed", category: "furniture", folder: "furniture", bases: ["mg-2010"] },
+  { sku: "MG2011", title: "Tilt Bed", category: "furniture", folder: "furniture", bases: ["mg-2011"] },
+  { sku: "MG2012", title: "Examination Bed", category: "furniture", folder: "furniture", bases: ["mg-2012"] },
+  { sku: "MG2013A", title: "Examination Bed with Cabinet", category: "furniture", folder: "furniture", bases: ["mg-2013-a"] },
+  { sku: "MG2014", title: "Gynecological Bed (Stainless Steel)", category: "furniture", folder: "furniture", bases: ["mg-2014"] },
+  { sku: "MG2015", title: "Examination Bed (Stainless Steel)", category: "furniture", folder: "furniture", bases: ["mg-2015"] },
+
+  { sku: "MG4010", title: "Patient Transport Trolley (Stainless Steel)", category: "furniture", folder: "furniture", bases: ["mg-4010"] },
+  { sku: "MG4011", title: "Patient Transport Trolley (Epoxy Steel)", category: "furniture", folder: "furniture", bases: ["mg-4011"] },
+  { sku: "MG4012", title: "Patient Transfer Trolley (Stainless Steel)", category: "furniture", folder: "furniture", bases: ["mg-4012"] },
+  { sku: "MG4013", title: "Stretcher Trolley", category: "furniture", folder: "furniture", bases: ["mg-4013"] },
+  { sku: "MG4014", title: "Patient Trolley (Stainless Steel)", category: "furniture", folder: "furniture", bases: ["mg-4014"] },
+  { sku: "MG4015", title: "Patient Trolley — Open Frame", category: "furniture", folder: "furniture", bases: ["mg-4015"] },
+  { sku: "MG4016", title: "Patient Trolley (Epoxy Steel)", category: "furniture", folder: "furniture", bases: ["mg-4016"] },
+  { sku: "MG4017", title: "Recovery Trolley (Epoxy Steel)", category: "furniture", folder: "furniture", bases: ["mg-4017"] },
+  { sku: "MG4019", title: "Recovery Trolley (Stainless Steel)", category: "furniture", folder: "furniture", bases: ["mg-4019"] },
+  { sku: "MG4021", title: "Patient Transfer Trolley — Open Frame", category: "furniture", folder: "furniture", bases: ["mg-4021"] }
 ].map(p => {
-  // new-cat: PNG (transparent) fallback + WebP-with-alpha primary.
-  // products: JPG (opaque) fallback + WebP primary.
-  const isNewCat = p.folder === "new-cat";
-  const dir = isNewCat ? "images/new-cat/optimized" : "images/products/optimized";
-  const ext = isNewCat ? "png" : "jpg";
+  // Folder routing: each folder has its own optimized/ subdir + fallback extension.
+  const FOLDER_CONFIG = {
+    "new-cat":   { dir: "images/new-cat/optimized",   ext: "png" }, // transparent product cutouts
+    products:    { dir: "images/products/optimized",  ext: "jpg" }, // opaque product photos
+    furniture:   { dir: "images/furniture/optimized", ext: "png" }  // spec-sheet style w/ transparent border
+  };
+  const cfg = FOLDER_CONFIG[p.folder] || FOLDER_CONFIG.products;
   const images = p.bases.map((base, i) => ({
-    src: `${dir}/${base}.${ext}`,
-    webp: `${dir}/${base}.webp`,
+    src: `${cfg.dir}/${base}.${cfg.ext}`,
+    webp: `${cfg.dir}/${base}.webp`,
     alt: `${p.title}${p.bases.length > 1 ? ` — view ${i + 1}` : ""}`
   }));
+  const specs = FURNITURE_SPECS[p.sku] || {};
+  const prefixKws = Object.entries(SKU_PREFIX_KEYWORDS)
+    .filter(([prefix]) => p.sku.startsWith(prefix))
+    .flatMap(([, kws]) => kws);
+  const haystack = [
+    p.title, p.sku, p.category, PRODUCT_CATEGORIES[p.category],
+    specs.material, specs.dimensions,
+    ...(specs.features || []),
+    ...(CATEGORY_KEYWORDS[p.category] || []),
+    ...prefixKws,
+    ...(SKU_KEYWORDS[p.sku] || [])
+  ].filter(Boolean).join(" ").toLowerCase();
   return {
     id: p.sku,
     sku: p.sku,
@@ -94,7 +242,11 @@ const products = [
     category: p.category,
     summary: PRODUCT_CATEGORIES[p.category] || p.category,
     images,
-    image: images[0]
+    image: images[0],
+    material: specs.material || null,
+    dimensions: specs.dimensions || null,
+    features: specs.features || null,
+    _haystack: haystack
   };
 });
 
@@ -221,6 +373,9 @@ function renderCardInner(p) {
     <div class="product-card__body">
       <h3 class="product-card__title">${p.title}</h3>
       <span class="product-card__sku">Code ${p.sku}</span>
+      ${p.material ? `<span class="product-card__material">${p.material}</span>` : ""}
+      ${p.dimensions ? `<span class="product-card__dim">${p.dimensions}</span>` : ""}
+      ${p.features?.length ? `<ul class="product-card__features">${p.features.slice(0, 3).map(f => `<li>${f}</li>`).join("")}</ul>` : ""}
       <span class="product-card__status"><span class="dot"></span>Available to quote</span>
     </div>
     <div class="product-card__actions">
@@ -387,8 +542,11 @@ function openWhatsAppWithQuote(extraMessage) {
 }
 
 function buildAskWhatsAppMessage(product, qty = 1) {
-  const msg = `Hi, I'd like info on ${product.title} (Code ${product.sku}). Qty: ${qty}.\n${productDeepLink(product.sku)}`;
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  const lines = [`Hi, I'd like info on ${product.title} (Code ${product.sku}). Qty: ${qty}.`];
+  if (product.dimensions) lines.push(`Dimensions: ${product.dimensions}`);
+  if (product.material) lines.push(`Material: ${product.material}`);
+  lines.push(productDeepLink(product.sku));
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`;
 }
 
 // ---------- Toast ----------
@@ -500,24 +658,31 @@ function initHeader() {
   });
 
   searchInput?.addEventListener("input", (e) => {
-    const q = e.target.value.toLowerCase().trim();
-    const list = !q ? products : products.filter(p =>
-      p.title.toLowerCase().includes(q) ||
-      p.sku.toLowerCase().includes(q) ||
-      p.summary.toLowerCase().includes(q) ||
-      p.category.toLowerCase().includes(q)
-    );
+    const raw = e.target.value;
+    const q = raw.toLowerCase().trim();
+
+    // Empty query: restore whatever chip filter the user had active
+    if (!q) {
+      const activeChip = document.querySelector(".toolbar__chips .chip--active");
+      renderProductGrid(activeChip?.dataset.category || "all");
+      return;
+    }
+
+    // Tokenize: every whitespace-separated word must appear in the product haystack.
+    const tokens = q.split(/\s+/).filter(Boolean);
+    const list = products.filter(p => tokens.every(t => p._haystack.includes(t)));
+
     const grid = document.getElementById("products-gallery");
     const count = document.getElementById("results-count");
     if (!grid) return;
     grid.innerHTML = "";
     if (list.length === 0) {
-      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:48px 16px;color:var(--ink-500);"><p>No products match "${e.target.value}". <a href="https://wa.me/${WHATSAPP_NUMBER}" target="_blank" rel="noopener">Ask us on WhatsApp →</a></p></div>`;
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:48px 16px;color:var(--ink-500);"><p>No products match "${raw}". <a href="https://wa.me/${WHATSAPP_NUMBER}" target="_blank" rel="noopener">Ask us on WhatsApp →</a></p></div>`;
       if (count) count.textContent = "0 products";
       return;
     }
     list.forEach(p => grid.insertAdjacentHTML("beforeend", renderCardHtml(p)));
-    if (count) count.textContent = `${list.length} products`;
+    if (count) count.textContent = `${list.length} matching`;
   });
 }
 
