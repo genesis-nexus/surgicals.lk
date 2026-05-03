@@ -1,11 +1,11 @@
 {
   "name": "Hettiarachchi Surgicals",
-  "short_name": "Hettiarachchi Surgicals",
-  "description": "Leading provider of high-quality surgical consumables and medical equipment in Galle, Sri Lanka",
+  "short_name": "Surgicals.lk",
+  "description": "Wheelchairs, hospital beds, BP monitors, glucometers, crutches & surgical consumables. Sri Lanka's trusted medical supply catalog — Galle showroom or order via WhatsApp.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#2563eb",
+  "theme_color": "#0E7C7B",
   "orientation": "portrait-primary",
   "icons": [
     {
@@ -14,8 +14,7 @@
       "type": "image/x-icon"
     }
   ],
-  "categories": ["medical", "healthcare", "business"],
+  "categories": ["medical", "healthcare", "shopping", "business"],
   "lang": "en",
   "dir": "ltr"
 }
-

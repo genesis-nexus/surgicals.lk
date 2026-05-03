@@ -1,8 +1,7 @@
 // surgicals.lk — static redesign interactivity
 // Implements the quote-cart spine and WhatsApp-first CTAs from the design spec.
 
-const WHATSAPP_NUMBER = "94718208654";   // Galle
-const WHATSAPP_COLOMBO = "94719249267"; // Colombo (WhatsApp only)
+const WHATSAPP_NUMBER = "94718208654"; // Galle (primary). Colombo 94719249267 is referenced in HTML.
 
 const PRODUCT_CATEGORIES = {
   "mobility-aids": "Mobility Aids",
@@ -218,10 +217,11 @@ const products = [
     furniture:   { dir: "images/furniture/optimized", ext: "png" }  // spec-sheet style w/ transparent border
   };
   const cfg = FOLDER_CONFIG[p.folder] || FOLDER_CONFIG.products;
+  const categoryLabel = PRODUCT_CATEGORIES[p.category] || p.category;
   const images = p.bases.map((base, i) => ({
     src: `${cfg.dir}/${base}.${cfg.ext}`,
     webp: `${cfg.dir}/${base}.webp`,
-    alt: `${p.title}${p.bases.length > 1 ? ` — view ${i + 1}` : ""}`
+    alt: `${p.title}${p.bases.length > 1 ? ` (view ${i + 1})` : ""} — ${categoryLabel} from Hettiarachchi Surgicals, Sri Lanka`
   }));
   const specs = FURNITURE_SPECS[p.sku] || {};
   const prefixKws = Object.entries(SKU_PREFIX_KEYWORDS)
@@ -815,4 +815,72 @@ document.addEventListener("DOMContentLoaded", () => {
   QuoteStore.subscribe(renderQuoteDrawer);
 
   focusProductFromUrl();
+  applySearchFromUrl();
+  injectProductStructuredData();
 });
+
+// ---------- SEO: structured data + URL-driven search ----------
+
+function injectProductStructuredData() {
+  const origin = window.location.origin && window.location.origin.startsWith("http")
+    ? window.location.origin
+    : "https://surgicals.lk";
+
+  const itemList = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Hettiarachchi Surgicals — Product Catalog",
+    "numberOfItems": products.length,
+    "itemListElement": products.map((p, i) => ({
+      "@type": "ListItem",
+      "position": i + 1,
+      "url": `${origin}/?product=${p.sku}`,
+      "name": p.title
+    }))
+  };
+
+  const productSchemas = products.map(p => {
+    const description = [p.material, p.dimensions, ...(p.features || [])].filter(Boolean).join(" · ") || `${p.title} — available from Hettiarachchi Surgicals.`;
+    return {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": p.title,
+      "sku": p.sku,
+      "image": `${origin}/${p.image.src}`,
+      "description": description,
+      "brand": { "@type": "Brand", "name": "Hettiarachchi Surgicals" },
+      "category": p.summary,
+      "url": `${origin}/?product=${p.sku}`,
+      "offers": {
+        "@type": "Offer",
+        "url": `${origin}/?product=${p.sku}`,
+        "availability": "https://schema.org/InStock",
+        "priceCurrency": "LKR",
+        "seller": { "@id": `${origin}/#business` }
+      }
+    };
+  });
+
+  const inject = obj => {
+    const s = document.createElement("script");
+    s.type = "application/ld+json";
+    s.textContent = JSON.stringify(obj);
+    document.head.appendChild(s);
+  };
+
+  inject(itemList);
+  productSchemas.forEach(inject);
+}
+
+// If a visitor lands on /?q=foo (e.g. from Google's SearchAction), pre-fill the search box.
+function applySearchFromUrl() {
+  const q = new URLSearchParams(window.location.search).get("q");
+  if (!q) return;
+  const input = document.getElementById("product-search");
+  if (!input) return;
+  input.value = q;
+  input.dispatchEvent(new Event("input", { bubbles: true }));
+  // Also open the search panel and scroll to results
+  document.getElementById("search-panel")?.removeAttribute("hidden");
+  document.getElementById("products")?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
