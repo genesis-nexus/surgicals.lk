@@ -36,7 +36,7 @@
   --radius-pill: 999px;
 
   --container: 1200px;
-  --header-height: 72px;
+  --header-height: 75px;
   --utility-height: 40px;
 
   --ease: cubic-bezier(0.2, 0, 0, 1);
@@ -321,6 +321,7 @@ p { color: var(--ink-700); }
   background: var(--white);
   border-bottom: 1px solid var(--ink-100);
   z-index: 100;
+  overflow: visible;
   transition: box-shadow var(--dur-base) var(--ease);
 }
 .site-header.is-scrolled { box-shadow: var(--shadow-sm); }
@@ -329,9 +330,24 @@ p { color: var(--ink-700); }
   align-items: center;
   justify-content: space-between;
   height: var(--header-height);
+  overflow: visible;
   gap: 24px;
 }
 
+/* Site logo image (header) */
+.site-logo {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+.site-logo img {
+  height: 90px;
+  width: auto;
+  display: block;
+}
+
+/* Text wordmark — footer only */
 .wordmark {
   display: inline-flex;
   align-items: center;
