@@ -1,7 +1,8 @@
 // surgicals.lk — static redesign interactivity
 // Implements the quote-cart spine and WhatsApp-first CTAs from the design spec.
 
-const WHATSAPP_NUMBER = "94718208654"; // Galle (primary). Colombo 94719249267 is referenced in HTML.
+const WHATSAPP_NUMBER = "94718208654";  // Galle WhatsApp
+const WHATSAPP_COLOMBO = "94789669666"; // Colombo WhatsApp
 
 const PRODUCT_CATEGORIES = {
   "mobility-aids": "Mobility Aids",
@@ -535,9 +536,9 @@ function buildWhatsAppQuoteMessage() {
   return `Hi Hettiarachchi Surgicals, I'd like a quote for:\n${body}\n\nSent from ${window.location.origin}`;
 }
 
-function openWhatsAppWithQuote(extraMessage) {
+function openWhatsAppWithQuote(extraMessage, number = WHATSAPP_NUMBER) {
   const msg = extraMessage ? `${buildWhatsAppQuoteMessage()}\n\n${extraMessage}` : buildWhatsAppQuoteMessage();
-  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  const url = `https://wa.me/${number}?text=${encodeURIComponent(msg)}`;
   window.open(url, "_blank", "noopener");
 }
 
@@ -766,8 +767,7 @@ function initQuoteForm() {
   const form = document.getElementById("quote-form");
   if (!form) return;
 
-  const waBtn = document.getElementById("quote-whatsapp");
-  waBtn?.addEventListener("click", () => {
+  const buildLeadMsg = () => {
     const data = Object.fromEntries(new FormData(form));
     const lead = [
       data.name && `Name: ${data.name}`,
@@ -775,7 +775,14 @@ function initQuoteForm() {
       data.persona && `Buyer: ${data.persona}`
     ].filter(Boolean).join("\n");
     const notes = (data.notes || "").trim();
-    openWhatsAppWithQuote([lead, notes].filter(Boolean).join("\n\n"));
+    return [lead, notes].filter(Boolean).join("\n\n");
+  };
+
+  document.getElementById("quote-whatsapp-galle")?.addEventListener("click", () => {
+    openWhatsAppWithQuote(buildLeadMsg(), WHATSAPP_NUMBER);
+  });
+  document.getElementById("quote-whatsapp-colombo")?.addEventListener("click", () => {
+    openWhatsAppWithQuote(buildLeadMsg(), WHATSAPP_COLOMBO);
   });
 
   form.addEventListener("submit", (e) => {

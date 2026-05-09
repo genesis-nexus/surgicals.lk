@@ -1536,26 +1536,45 @@ p { color: var(--ink-700); }
 .quote-backdrop.is-visible { opacity: 1; }
 
 /* WhatsApp FAB */
-.whatsapp-fab {
+/* Dual location-based WhatsApp FABs */
+.whatsapp-fabs {
   position: fixed;
   bottom: 24px;
   right: 24px;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+  z-index: 90;
+}
+.whatsapp-fab {
+  height: 48px;
+  padding: 0 16px 0 12px;
+  border-radius: var(--radius-pill);
   background: var(--whatsapp);
   color: var(--white);
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: 8px;
   box-shadow: var(--shadow-lg);
-  z-index: 90;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: none;
   transition: transform var(--dur-base) var(--ease), box-shadow var(--dur-base) var(--ease);
 }
 .whatsapp-fab:hover {
-  transform: scale(1.06);
+  transform: translateY(-2px);
   box-shadow: 0 16px 40px rgba(37, 211, 102, 0.45);
   color: var(--white);
+}
+.whatsapp-fab__label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+@media (max-width: 480px) {
+  .whatsapp-fab { height: 44px; padding: 0 12px 0 10px; font-size: 0.75rem; }
+  .whatsapp-fabs { bottom: 16px; right: 16px; }
 }
 
 /* Toast */

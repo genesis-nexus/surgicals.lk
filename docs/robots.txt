@@ -4,11 +4,6 @@ Allow: /
 # Sitemap
 Sitemap: https://surgicals.lk/sitemap.xml
 
-# Crawl-delay for respectful crawling
-Crawl-delay: 1
-
-# Disallow certain file types
-Disallow: *.heic
-Disallow: *.DS_Store
+# Disallow cruft files
+Disallow: /*.DS_Store
 Disallow: /images/*.heic
-
