@@ -7,3 +7,6 @@ Sitemap: https://surgicals.lk/sitemap.xml
 # Disallow cruft files
 Disallow: /*.DS_Store
 Disallow: /images/*.heic
+
+# Admin — hidden from search engines
+Disallow: /qhansbxtbekro/

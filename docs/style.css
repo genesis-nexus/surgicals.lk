@@ -231,7 +231,9 @@ p { color: var(--ink-700); }
 }
 .announcement-bar__close {
   color: rgba(255, 255, 255, 0.85);
-  padding: 6px;
+  padding: 8px;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: var(--radius-sm);
   display: inline-flex;
   align-items: center;
@@ -312,6 +314,29 @@ p { color: var(--ink-700); }
   .utility-bar__left { display: none; }
   .utility-bar__lang { display: none; }
   .utility-bar__inner { justify-content: flex-end; }
+  /* Hide the Galle label and divider — keep only the two links per location */
+  .utility-bar__sep--divider { display: none; }
+  .utility-bar__sep:not(.utility-bar__sep--divider) { display: none; }
+  .utility-bar__label { display: none; }
+  /* Stack Galle + Colombo contacts vertically */
+  .utility-bar__right {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0;
+    padding: 4px 0;
+  }
+  .utility-bar__contacts {
+    gap: 6px;
+  }
+  .utility-bar { height: auto; min-height: var(--utility-height); }
+  .utility-bar__link { font-size: 0.75rem; gap: 4px; }
+}
+@media (max-width: 480px) {
+  /* Single row per location: show phone icon + number only, keep WA icon + number */
+  .utility-bar__right { flex-direction: row; flex-wrap: wrap; justify-content: flex-end; gap: 4px 10px; padding: 5px 0; }
+  .utility-bar__contacts { gap: 6px; }
+  .utility-bar__link { font-size: 0.7rem; }
+  .utility-bar { height: auto; }
 }
 
 /* Header */
@@ -342,9 +367,12 @@ p { color: var(--ink-700); }
   text-decoration: none;
 }
 .site-logo img {
-  height: 90px;
+  height: 72px;
   width: auto;
   display: block;
+}
+@media (max-width: 480px) {
+  .site-logo img { height: 56px; }
 }
 
 /* Text wordmark — footer only */
@@ -404,8 +432,8 @@ p { color: var(--ink-700); }
   gap: 4px;
 }
 .icon-btn {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: var(--radius-md);
   display: inline-flex;
   align-items: center;
@@ -442,13 +470,13 @@ p { color: var(--ink-700); }
 
 .mobile-menu-toggle {
   display: none;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: var(--radius-md);
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
 }
 .mobile-menu-toggle .bar {
   width: 20px;
@@ -486,12 +514,15 @@ p { color: var(--ink-700); }
   padding: 8px 0;
 }
 .search-panel__close {
-  padding: 4px 10px;
+  padding: 8px 12px;
+  min-height: 44px;
   border: 1px solid var(--ink-300);
   border-radius: var(--radius-sm);
   font-size: 0.75rem;
   color: var(--ink-500);
   font-family: var(--font-mono);
+  display: inline-flex;
+  align-items: center;
 }
 
 .mobile-nav {
@@ -500,11 +531,14 @@ p { color: var(--ink-700); }
 }
 .mobile-nav ul { padding: 8px 24px 16px; }
 .mobile-nav a {
-  display: block;
+  display: flex;
+  align-items: center;
+  min-height: 48px;
   padding: 12px 0;
   border-bottom: 1px solid var(--ink-100);
   color: var(--ink-900);
   font-weight: 500;
+  font-size: 1rem;
 }
 
 @media (max-width: 1024px) {
@@ -566,6 +600,7 @@ p { color: var(--ink-700); }
   padding: 8px 14px;
   font-size: 0.8125rem;
 }
+.btn-label--short { display: none; }
 
 /* Hero */
 .hero {
@@ -862,7 +897,7 @@ p { color: var(--ink-700); }
   .product-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 480px) {
-  .product-grid { grid-template-columns: 1fr; }
+  .product-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
 }
 
 .product-card {
@@ -1027,7 +1062,9 @@ p { color: var(--ink-700); }
   background: var(--ink-100);
   color: var(--ink-700);
   border-radius: var(--radius-md);
-  width: 36px;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1502,19 +1539,19 @@ p { color: var(--ink-700); }
   overflow: hidden;
 }
 .qty-stepper button {
-  width: 24px;
-  height: 24px;
+  width: 36px;
+  height: 36px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: var(--ink-700);
 }
 .qty-stepper button:hover { background: var(--ink-100); }
 .qty-stepper span {
-  min-width: 28px;
+  min-width: 32px;
   text-align: center;
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   font-weight: 500;
   font-family: var(--font-mono);
 }
@@ -1606,4 +1643,110 @@ p { color: var(--ink-700); }
     transition-duration: 0.01ms !important;
   }
   html { scroll-behavior: auto; }
+}
+
+/* ═══════════════════════════════════════════
+   Mobile fixes — 480px and below
+═══════════════════════════════════════════ */
+@media (max-width: 480px) {
+
+  /* Container: tighter side padding */
+  .container { padding: 0 16px; }
+
+  /* Sections: less vertical whitespace */
+  .section { padding: 60px 0; }
+  .section--products { padding-top: 40px; }
+  .section-header { margin-bottom: 32px; }
+
+  /* Announcement bar */
+  .announcement-bar { font-size: 0.875rem; }
+  .announcement-bar__badge { font-size: 0.625rem; padding: 3px 6px; }
+  .announcement-bar__cta { font-size: 0.8125rem; padding: 8px 12px; min-height: 44px; }
+
+  /* Utility bar: tighter */
+  .utility-bar { font-size: 0.75rem; }
+  .utility-bar__contacts { gap: 8px; }
+  .utility-bar__link { gap: 4px; }
+
+  /* Header: reduce height slightly on smallest screens */
+  .site-header__inner { height: 64px; gap: 8px; }
+
+  /* Hero: better aspect ratio for portrait phones */
+  .hero { padding: 40px 0 48px; }
+  .hero__visual { aspect-ratio: 4 / 3; }
+  .hero__inner { gap: 28px; }
+
+  /* Persona doors: single column */
+  .persona-doors__grid { grid-template-columns: 1fr; gap: 12px; }
+  .persona-card { padding: 20px; }
+
+  /* Category grid: 2-col instead of full-width single */
+  .category-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 40px; }
+  .category-card { padding: 20px 16px; }
+  .category-card__icon { width: 44px; height: 44px; }
+
+  /* Toolbar chips: larger tap targets */
+  .chip { padding: 10px 14px; font-size: 0.8125rem; min-height: 40px; }
+  .toolbar { gap: 12px; margin-bottom: 16px; }
+  .toolbar__chips { gap: 6px; }
+
+  /* Product card: tighter on 2-col layout */
+  .product-card__body { padding: 10px 10px 6px; }
+  .product-card__actions { padding: 0 8px 10px; gap: 5px; }
+  .product-card__title { font-size: 0.8125rem; }
+  /* Compress buttons to fit ~155px card width */
+  .product-card__actions .btn--sm { padding: 8px 8px; font-size: 0.75rem; gap: 4px; }
+  /* Show short "Add" label, hide full "Add to quote" */
+  .product-card__actions .btn-label { display: none; }
+  .product-card__actions .btn-label--short { display: inline; }
+  /* Hide "Ask" text label — keep only the WhatsApp icon */
+  .product-card__actions [data-ask-sku] .btn-label { display: none; }
+  /* Shrink share button to match row height */
+  .product-card__share { width: 36px; height: 36px; }
+
+  /* Trust bar: single column */
+  .trust-bar__inner { grid-template-columns: 1fr; gap: 20px; }
+  .trust-bar { padding: 40px 0; }
+
+  /* About stats: already 1-col at 640px, but ensure padding fits */
+  .stat { padding: 14px 16px; }
+  .stat strong { font-size: 1.375rem; }
+
+  /* Quote drawer: full width with tighter padding */
+  .quote-drawer { max-width: 100%; }
+  .quote-drawer__header { padding: 16px 20px; }
+  .quote-drawer__body { padding: 12px 16px; }
+  .quote-drawer__footer {
+    padding: 12px 16px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .quote-drawer__footer .btn { width: 100%; justify-content: center; }
+
+  /* Quote line items: better tap area for remove */
+  .quote-line { gap: 10px; padding: 14px 0; }
+  .quote-line__thumb { width: 52px; height: 52px; }
+  .quote-line__remove {
+    font-size: 0.8125rem;
+    padding: 4px 8px;
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* Search panel: full-width input row */
+  .search-panel__inner { padding: 12px 16px; }
+
+  /* Mobile nav: larger links */
+  .mobile-nav ul { padding: 4px 20px 12px; }
+
+  /* Footer: stack bottom links */
+  .footer-bottom { flex-direction: column; align-items: flex-start; gap: 8px; }
+
+  /* Solutions rail: ensure side-scroll padding matches container */
+  .solutions-rail { margin: 0 -16px; padding-left: 16px; padding-right: 16px; }
+
+  /* WhatsApp FABs: already handled, ensure label doesn't wrap */
+  .whatsapp-fab__label { white-space: nowrap; }
 }

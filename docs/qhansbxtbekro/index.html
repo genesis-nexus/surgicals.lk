@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hettiarachchi Surgicals — Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<!-- jsPDF + autotable for PDF export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<!-- docx.js for Word export -->
+<script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
+<!-- Signature pad for digital signatures -->
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
+<style>
+  :root {
+    --teal-50: #E6F4F4;
+    --teal-100: #BFE1E0;
+    --teal-500: #0E7C7B;
+    --teal-600: #0B6260;
+    --teal-700: #084A48;
+    --ink-100: #F1F5F9;
+    --ink-200: #E2E8F0;
+    --ink-300: #CBD5E1;
+    --ink-500: #64748B;
+    --ink-700: #334155;
+    --ink-900: #0F172A;
+    --white: #FFFFFF;
+    --danger: #B91C1C;
+    --danger-bg: #FEF2F2;
+    --success: #15803D;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --shadow-sm: 0 1px 2px rgba(15,23,42,0.06);
+    --shadow-md: 0 4px 12px rgba(15,23,42,0.08);
+    --shadow-lg: 0 12px 32px rgba(15,23,42,0.12);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; }
+  body {
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(135deg, #F1F5F9 0%, #E6F4F4 100%);
+    color: var(--ink-900);
+    min-height: 100vh;
+  }
+
+  /* ── Lock screen ──────────────────────────────── */
+  #lock-screen {
+    position: fixed; inset: 0;
+    background: linear-gradient(135deg, var(--teal-700) 0%, var(--teal-600) 100%);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+  }
+  .lock-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem 2rem;
+    width: min(420px, 92vw);
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+  }
+  .lock-card .logo-img { height: 56px; margin-bottom: 1.5rem; }
+  .lock-card .logo-img img { height: 100%; width: auto; }
+  .lock-card .sub { font-size: 0.85rem; color: var(--ink-500); margin-bottom: 1.75rem; }
+  .lock-card label { display: block; text-align: left; font-size: 0.8rem; font-weight: 600; color: var(--ink-700); margin-bottom: 0.4rem; }
+  .lock-card input[type="password"] {
+    width: 100%; padding: 0.65rem 0.9rem;
+    border: 1.5px solid var(--ink-300); border-radius: var(--radius-sm);
+    font-size: 1rem; color: var(--ink-900);
+    outline: none; transition: border-color 0.15s;
+    letter-spacing: 0.1em;
+  }
+  .lock-card input[type="password"]:focus { border-color: var(--teal-500); box-shadow: 0 0 0 3px rgba(14,124,123,0.2); }
+  .lock-card .error { color: var(--danger); font-size: 0.78rem; margin-top: 0.5rem; display: none; }
+  .lock-card button.unlock-btn {
+    width: 100%; margin-top: 1.1rem;
+    background: linear-gradient(135deg, var(--teal-500) 0%, var(--teal-600) 100%);
+    color: var(--white);
+    border: none; border-radius: var(--radius-sm);
+    padding: 0.7rem; font-size: 0.95rem; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+    box-shadow: var(--shadow-md);
+  }
+  .lock-card button.unlock-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+
+  /* ── App shell ────────────────────────────────── */
+  #app { display: none; min-height: 100vh; flex-direction: column; }
+  #app.visible { display: flex; }
+
+  header {
+    background: #ffffff;
+    border-bottom: 3px solid var(--teal-500);
+    color: var(--ink-900);
+    padding: 0.6rem 1.5rem;
+    height: 68px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: var(--shadow-md);
+  }
+  header .brand { display: flex; align-items: center; gap: 0.85rem; }
+  header .brand img { height: 48px; width: auto; }
+  header .brand-text { display: flex; flex-direction: column; }
+  header .brand-text .name { font-weight: 700; font-size: 0.95rem; letter-spacing: -0.01em; color: var(--teal-700); }
+  header .brand-text .sub { font-size: 0.7rem; color: var(--ink-500); }
+  .header-actions { display: flex; gap: 0.5rem; align-items: center; }
+  .btn { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.45rem 0.9rem; border-radius: var(--radius-sm); font-size: 0.82rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-ghost { background: var(--teal-50); color: var(--teal-700); border: 1px solid var(--teal-100); }
+  .btn-ghost:hover:not(:disabled) { background: var(--teal-100); }
+  .btn-teal { background: var(--teal-500); color: var(--white); }
+  .btn-teal:hover:not(:disabled) { background: var(--teal-600); }
+  .btn-outline { background: var(--white); color: var(--teal-600); border: 1.5px solid var(--teal-300, #7EC8C7); }
+  .btn-outline:hover:not(:disabled) { background: var(--teal-50); }
+  .btn-danger { background: var(--danger-bg); color: var(--danger); }
+  .btn-danger:hover:not(:disabled) { background: #fee2e2; }
+  .btn-sm { padding: 0.3rem 0.65rem; font-size: 0.76rem; }
+
+  /* ── Layout ───────────────────────────────────── */
+  .workspace {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    flex: 1;
+    max-width: 1380px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  @media (max-width: 900px) {
+    .workspace { grid-template-columns: 1fr; }
+  }
+
+  /* ── Panel cards ──────────────────────────────── */
+  .panel {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    border: 1px solid var(--ink-100);
+    transition: box-shadow 0.2s;
+  }
+  .panel:hover { box-shadow: var(--shadow-md); }
+  .panel-header {
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid var(--ink-100);
+    font-weight: 700; font-size: 0.88rem;
+    color: var(--ink-700);
+    display: flex; align-items: center; justify-content: space-between;
+    background: linear-gradient(to right, var(--teal-50), transparent);
+  }
+  .panel-body { padding: 1.1rem 1.2rem; }
+
+  /* ── Product picker ───────────────────────────── */
+  .search-row { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
+  .search-row input {
+    flex: 1; padding: 0.6rem 0.8rem;
+    border: 1.5px solid var(--ink-300); border-radius: var(--radius-sm);
+    font-size: 0.85rem; outline: none; background: var(--white);
+  }
+  .search-row input:focus { border-color: var(--teal-500); box-shadow: 0 0 0 2px rgba(14,124,123,0.15); }
+  .cat-filter {
+    display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.75rem;
+  }
+  .cat-chip {
+    padding: 0.25rem 0.6rem; border-radius: 999px;
+    font-size: 0.72rem; font-weight: 600;
+    border: 1.5px solid var(--ink-300); background: var(--white);
+    color: var(--ink-500); cursor: pointer; transition: all 0.12s;
+  }
+  .cat-chip.active { background: linear-gradient(135deg, var(--teal-500), var(--teal-600)); border-color: var(--teal-500); color: var(--white); }
+  .product-list { max-height: 380px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.4rem; }
+  .product-item {
+    display: flex; align-items: center; gap: 0.65rem;
+    padding: 0.55rem 0.6rem; border-radius: var(--radius-sm);
+    border: 1.5px solid transparent; cursor: pointer; transition: all 0.12s;
+  }
+  .product-item:hover { background: var(--teal-50); border-color: var(--teal-100); }
+  .product-item .sku { font-size: 0.7rem; color: var(--ink-500); font-family: monospace; min-width: 52px; font-weight: 600; }
+  .product-item .name { font-size: 0.82rem; color: var(--ink-900); line-height: 1.3; }
+  .product-item .add-btn {
+    margin-left: auto; flex-shrink: 0;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--teal-50); border: 1.5px solid var(--teal-100);
+    color: var(--teal-600); font-size: 1rem; line-height: 1;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.12s;
+  }
+  .product-item .add-btn:hover { background: var(--teal-500); border-color: var(--teal-500); color: var(--white); transform: scale(1.1); }
+  .empty-state { color: var(--ink-500); font-size: 0.82rem; text-align: center; padding: 1.5rem 0; }
+
+  /* ── Right column ─────────────────────────────── */
+  .right-col { display: flex; flex-direction: column; gap: 1.5rem; }
+
+  /* ── Doc meta form ────────────────────────────── */
+  .doc-meta-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem;
+  }
+  .doc-meta-grid .full { grid-column: 1 / -1; }
+  .form-group label { display: block; font-size: 0.76rem; font-weight: 600; color: var(--ink-700); margin-bottom: 0.35rem; }
+  .form-group input, .form-group textarea, .form-group select {
+    width: 100%; padding: 0.55rem 0.8rem;
+    border: 1.5px solid var(--ink-300); border-radius: var(--radius-sm);
+    font-size: 0.85rem; color: var(--ink-900);
+    font-family: inherit; outline: none; transition: all 0.15s;
+    background: var(--white);
+  }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+    border-color: var(--teal-500); box-shadow: 0 0 0 2px rgba(14,124,123,0.15);
+  }
+  .form-group textarea { resize: vertical; min-height: 65px; }
+
+  /* ── Doc type tabs ────────────────────────────── */
+  .doc-type-tabs { display: flex; gap: 0; border-radius: var(--radius-sm); overflow: hidden; border: 1.5px solid var(--ink-300); }
+  .doc-type-tab {
+    flex: 1; padding: 0.5rem; text-align: center;
+    font-size: 0.82rem; font-weight: 600; cursor: pointer;
+    border: none; background: var(--white); color: var(--ink-500);
+    transition: all 0.12s;
+  }
+  .doc-type-tab.active { background: linear-gradient(135deg, var(--teal-500), var(--teal-600)); color: var(--white); }
+
+  /* ── Line items table ─────────────────────────── */
+  .items-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+  .items-table th {
+    text-align: left; padding: 0.6rem 0.7rem;
+    background: linear-gradient(to right, var(--teal-50), rgba(14,124,123,0.02));
+    color: var(--ink-700);
+    font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+    border-bottom: 1.5px solid var(--teal-100);
+  }
+  .items-table td { padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--ink-100); vertical-align: middle; }
+  .items-table tr:last-child td { border-bottom: none; }
+  .items-table input[type="number"], .items-table input[type="text"] {
+    border: 1.5px solid var(--ink-300); border-radius: var(--radius-sm);
+    padding: 0.35rem 0.45rem; font-size: 0.82rem; color: var(--ink-900);
+    outline: none; background: var(--white); font-family: inherit;
+    transition: all 0.12s;
+  }
+  .items-table input:focus { border-color: var(--teal-500); box-shadow: 0 0 0 2px rgba(14,124,123,0.1); }
+  .items-table input[type="number"] { width: 72px; text-align: right; }
+  .items-table .qty-input { width: 56px; }
+  .items-table .line-total { font-weight: 600; color: var(--teal-700); text-align: right; white-space: nowrap; }
+  .items-table .remove-btn {
+    background: none; border: none; color: var(--ink-300);
+    cursor: pointer; font-size: 1rem; padding: 0.1rem 0.3rem;
+    border-radius: var(--radius-sm); transition: all 0.12s;
+  }
+  .items-table .remove-btn:hover { color: var(--danger); background: var(--danger-bg); }
+
+  /* ── Totals ───────────────────────────────────── */
+  .totals-block {
+    margin-top: 0.5rem; display: flex; flex-direction: column; align-items: flex-end; gap: 0.4rem;
+  }
+  .total-row { display: flex; gap: 2rem; font-size: 0.85rem; color: var(--ink-700); }
+  .total-row.grand { font-size: 1.05rem; font-weight: 700; color: var(--white); background: linear-gradient(135deg, var(--teal-500), var(--teal-600)); padding: 0.65rem 1rem; border-radius: var(--radius-sm); margin-top: 0.35rem; }
+  .total-row span:first-child { min-width: 80px; text-align: right; }
+  .total-row span:last-child { min-width: 100px; text-align: right; font-family: monospace; }
+
+  /* ── Signature pad ────────────────────────────── */
+  .signature-container {
+    display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: flex-start;
+  }
+  .sig-pad-wrapper {
+    flex: 1; min-width: 160px;
+    border: 1.5px solid var(--ink-300); border-radius: var(--radius-sm);
+    padding: 0.5rem; background: var(--white);
+  }
+  .sig-pad-wrapper label { display: block; font-size: 0.74rem; font-weight: 600; color: var(--ink-700); margin-bottom: 0.4rem; }
+  .sig-pad-wrapper canvas {
+    display: block; border: 1px solid var(--ink-200);
+    border-radius: 4px; cursor: crosshair;
+    background: var(--white);
+    width: 100%; height: 80px;
+  }
+  .sig-btn-group { display: flex; gap: 0.4rem; margin-top: 0.4rem; }
+  .sig-btn-group button {
+    flex: 1; padding: 0.3rem 0.5rem; font-size: 0.7rem;
+    border: 1px solid var(--ink-300); border-radius: var(--radius-sm);
+    background: var(--white); color: var(--ink-700);
+    cursor: pointer; transition: all 0.12s;
+  }
+  .sig-btn-group button:hover { background: var(--teal-50); border-color: var(--teal-300); }
+
+  /* ── Payment details ──────────────────────────── */
+  .payment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+  .payment-grid .full { grid-column: 1 / -1; }
+
+  /* ── Export bar ───────────────────────────────── */
+  .export-bar {
+    background: linear-gradient(135deg, var(--white), var(--teal-50));
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 1rem 1.2rem;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.85rem;
+    border: 1px solid var(--teal-100);
+  }
+  .export-bar .doc-ref { font-size: 0.82rem; color: var(--ink-500); }
+  .export-bar .doc-ref strong { color: var(--teal-700); }
+  .export-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+
+  /* ── Scrollbar ────────────────────────────────── */
+  .product-list::-webkit-scrollbar { width: 5px; }
+  .product-list::-webkit-scrollbar-track { background: var(--ink-100); border-radius: 999px; }
+  .product-list::-webkit-scrollbar-thumb { background: var(--teal-300); border-radius: 999px; }
+  .product-list::-webkit-scrollbar-thumb:hover { background: var(--teal-400); }
+
+  /* ── Toast ────────────────────────────────────── */
+  #toast {
+    position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: var(--ink-900); color: var(--white);
+    padding: 0.7rem 1.3rem; border-radius: var(--radius-pill, 999px);
+    font-size: 0.83rem; font-weight: 500;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+    opacity: 0; pointer-events: none; z-index: 9999; white-space: nowrap;
+    box-shadow: var(--shadow-lg);
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     LOCK SCREEN
+══════════════════════════════════════════════ -->
+<div id="lock-screen">
+  <div class="lock-card">
+    <div class="logo-img">
+      <img src="../images/brand/logo-header-nobg.png" alt="Hettiarachchi Surgicals">
+    </div>
+    <div class="sub">Admin — Bills &amp; Quotations</div>
+    <label for="pw-input">Password</label>
+    <input type="password" id="pw-input" placeholder="Enter password" autocomplete="current-password">
+    <div class="error" id="pw-error">Incorrect password. Try again.</div>
+    <button class="unlock-btn" id="unlock-btn" type="button">Unlock</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     APP
+══════════════════════════════════════════════ -->
+<div id="app">
+  <header>
+    <div class="brand">
+      <img src="../images/brand/logo-header-nobg.png" alt="Hettiarachchi Surgicals">
+      <div class="brand-text">
+        <div class="name">Hettiarachchi Surgicals</div>
+        <div class="sub">Admin</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-ghost btn-sm" id="new-doc-btn" type="button">+ New</button>
+      <button class="btn btn-ghost btn-sm" id="lock-btn" type="button">Lock</button>
+    </div>
+  </header>
+
+  <div class="workspace">
+    <!-- Left: product picker -->
+    <div>
+      <div class="panel">
+        <div class="panel-header">Products</div>
+        <div class="panel-body">
+          <div class="search-row">
+            <input type="text" id="product-search" placeholder="Search by name or SKU…">
+          </div>
+          <div class="cat-filter" id="cat-filter"></div>
+          <div class="product-list" id="product-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right column -->
+    <div class="right-col">
+
+      <!-- Document type & reference -->
+      <div class="panel">
+        <div class="panel-header">
+          Document
+          <div class="doc-type-tabs" id="doc-type-tabs">
+            <button class="doc-type-tab active" data-type="quotation" type="button">Quotation</button>
+            <button class="doc-type-tab" data-type="bill" type="button">Bill / Invoice</button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="doc-meta-grid">
+            <div class="form-group">
+              <label>Reference No.</label>
+              <input type="text" id="doc-ref" placeholder="e.g. QT-2024-001">
+            </div>
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" id="doc-date">
+            </div>
+            <div class="form-group">
+              <label>Valid Until <span style="opacity:0.5;font-weight:400" id="valid-label">(Quotation only)</span></label>
+              <input type="date" id="doc-valid">
+            </div>
+            <div class="form-group">
+              <label>Prepared By</label>
+              <input type="text" id="doc-by" placeholder="Staff name">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Buyer details -->
+      <div class="panel">
+        <div class="panel-header">Buyer / Client Details</div>
+        <div class="panel-body">
+          <div class="doc-meta-grid">
+            <div class="form-group full">
+              <label>Name / Organisation</label>
+              <input type="text" id="buyer-name" placeholder="e.g. Dr. Perera / City Hospital">
+            </div>
+            <div class="form-group full">
+              <label>Address</label>
+              <textarea id="buyer-address" rows="2" placeholder="Street, City, District"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Phone</label>
+              <input type="text" id="buyer-phone" placeholder="+94 …">
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="text" id="buyer-email" placeholder="name@example.com">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Line items -->
+      <div class="panel">
+        <div class="panel-header">
+          Line Items
+          <span id="item-count" style="font-size:0.78rem;font-weight:400;color:var(--ink-500)">0 items</span>
+        </div>
+        <div class="panel-body" style="padding:0">
+          <div style="overflow-x:auto">
+            <table class="items-table" id="items-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th style="min-width:200px">Description</th>
+                  <th>SKU</th>
+                  <th style="text-align:right">Qty</th>
+                  <th style="text-align:right">Unit Price (LKR)</th>
+                  <th style="text-align:right">Total</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="items-tbody"></tbody>
+            </table>
+          </div>
+          <div style="padding:0.85rem 1.2rem">
+            <button class="btn btn-outline btn-sm" id="add-blank-btn" type="button">+ Add blank line</button>
+          </div>
+        </div>
+        <div style="padding:0.85rem 1.3rem 1.1rem; border-top: 1px solid var(--ink-100); background: var(--teal-50);">
+          <div class="totals-block" id="totals-block"></div>
+        </div>
+      </div>
+
+      <!-- Payment details -->
+      <div class="panel">
+        <div class="panel-header">Payment Details</div>
+        <div class="panel-body">
+          <div class="payment-grid">
+            <div class="form-group">
+              <label>Payment Method</label>
+              <select id="payment-method">
+                <option value="">Select payment method</option>
+                <option value="cash">Cash</option>
+                <option value="bank-transfer">Bank Transfer</option>
+                <option value="cheque">Cheque</option>
+                <option value="card">Credit/Debit Card</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Payment Due Date</label>
+              <input type="date" id="payment-due">
+            </div>
+            <div class="form-group full">
+              <label>Bank Details (if applicable)</label>
+              <textarea id="bank-details" rows="2" placeholder="Bank name, account number, SWIFT code, etc."></textarea>
+            </div>
+            <div class="form-group full">
+              <label>Additional Notes</label>
+              <textarea id="payment-notes" rows="2" placeholder="Special payment instructions or terms"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Digital signatures -->
+      <div class="panel">
+        <div class="panel-header">Digital Signatures</div>
+        <div class="panel-body">
+          <div class="signature-container">
+            <div class="sig-pad-wrapper">
+              <label>Authorized By</label>
+              <canvas id="sig-authorized"></canvas>
+              <div class="sig-btn-group">
+                <button type="button" onclick="clearSig('sig-authorized')">Clear</button>
+                <button type="button" onclick="saveSigImage('sig-authorized')">Save</button>
+              </div>
+            </div>
+            <div class="sig-pad-wrapper">
+              <label>Received By</label>
+              <canvas id="sig-received"></canvas>
+              <div class="sig-btn-group">
+                <button type="button" onclick="clearSig('sig-received')">Clear</button>
+                <button type="button" onclick="saveSigImage('sig-received')">Save</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes & Terms -->
+      <div class="panel">
+        <div class="panel-header">Notes &amp; Terms</div>
+        <div class="panel-body">
+          <div class="doc-meta-grid">
+            <div class="form-group">
+              <label>Notes (internal / to buyer)</label>
+              <textarea id="doc-notes" rows="3" placeholder="Payment terms, delivery schedule, special conditions…"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Terms &amp; Conditions</label>
+              <textarea id="doc-terms" rows="3" placeholder="Warranty, returns, validity…"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Export bar -->
+      <div class="export-bar">
+        <div class="doc-ref" id="export-label">Ready to export</div>
+        <div class="export-actions">
+          <button class="btn btn-outline" id="export-pdf-btn" type="button">
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v12h12V8l-4-4H4z"/><path d="M12 4v4h4"/></svg>
+            Export PDF
+          </button>
+          <button class="btn btn-teal" id="export-docx-btn" type="button">
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v12h12V8l-4-4H4z"/><path d="M12 4v4h4"/><path d="M7 12h6M7 9h3"/></svg>
+            Export DOCX
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /right-col -->
+  </div><!-- /workspace -->
+</div><!-- /app -->
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// PASSWORD — SHA-256 of "xk9pLmQ4wN2vRt7"
+// ═══════════════════════════════════════════════════════════════
+const PASSWORD_HASH = "3580f23c6d812683242254a4bc0e276c12dadb6a1fe5a269be271d66fe75404e";
+const SESSION_KEY   = "hs_admin_auth";
+
+async function sha256hex(str) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+}
+
+async function tryUnlock() {
+  const val = document.getElementById("pw-input").value;
+  const hash = await sha256hex(val);
+  if (hash === PASSWORD_HASH) {
+    sessionStorage.setItem(SESSION_KEY, "1");
+    document.getElementById("lock-screen").style.display = "none";
+    document.getElementById("app").classList.add("visible");
+    initApp();
+  } else {
+    document.getElementById("pw-error").style.display = "block";
+    document.getElementById("pw-input").value = "";
+    document.getElementById("pw-input").focus();
+  }
+}
+
+document.getElementById("unlock-btn").addEventListener("click", tryUnlock);
+document.getElementById("pw-input").addEventListener("keydown", e => { if (e.key === "Enter") tryUnlock(); });
+
+if (sessionStorage.getItem(SESSION_KEY) === "1") {
+  document.getElementById("lock-screen").style.display = "none";
+  document.getElementById("app").classList.add("visible");
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SIGNATURE PADS
+// ═══════════════════════════════════════════════════════════════
+let sigPads = {};
+
+function initSignaturePads() {
+  ["sig-authorized", "sig-received"].forEach(id => {
+    const canvas = document.getElementById(id);
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    sigPads[id] = new SignaturePad(canvas, {
+      penColor: "rgb(8, 74, 72)",
+      minWidth: 0.5,
+      maxWidth: 2.5,
+      throttle: 16
+    });
+  });
+}
+
+function clearSig(id) {
+  if (sigPads[id]) sigPads[id].clear();
+}
+
+function saveSigImage(id) {
+  if (!sigPads[id] || sigPads[id].isEmpty()) {
+    showToast("No signature to save.");
+    return;
+  }
+  // Store as data URL internally
+  window[`${id}_data`] = sigPads[id].toDataURL();
+  showToast(`${id === "sig-authorized" ? "Authorized" : "Received"} signature saved.`);
+}
+
+function getSigData(id) {
+  return window[`${id}_data`] || null;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PRODUCT DATA
+// ═══════════════════════════════════════════════════════════════
+const CATEGORY_LABELS = {
+  "mobility-aids": "Mobility Aids",
+  "furniture":     "Hospital Furniture",
+  "diagnostics":   "Diagnostics",
+  "supports":      "Supports & Braces",
+  "beds":          "Beds & Mattresses",
+  "surgical":      "Surgical",
+  "home-care":     "Home Care"
+};
+
+const PRODUCTS = [
+  { sku:"WC01", title:"Adult Wheelchair", category:"mobility-aids" },
+  { sku:"WC02", title:"Functional Wheelchair", category:"mobility-aids" },
+  { sku:"WC03", title:"Fully Functional Wheelchair", category:"mobility-aids" },
+  { sku:"WC04", title:"Commode Wheelchair", category:"mobility-aids" },
+  { sku:"CO01", title:"Commode Chair", category:"mobility-aids" },
+  { sku:"CO02", title:"High Commode Chair", category:"mobility-aids" },
+  { sku:"CO03", title:"Commode Chair with Wheels", category:"mobility-aids" },
+  { sku:"CO04", title:"Padded Commode Chair with Wheels", category:"mobility-aids" },
+  { sku:"CO05", title:"Toilet Chair", category:"mobility-aids" },
+  { sku:"CN01", title:"Walking Cane", category:"mobility-aids" },
+  { sku:"CN02", title:"Walking Cane (Curved Handle)", category:"mobility-aids" },
+  { sku:"CN03", title:"Walking Cane (Shaped Handle)", category:"mobility-aids" },
+  { sku:"CN04", title:"Quad Cane", category:"mobility-aids" },
+  { sku:"CN05", title:"Tripod Cane", category:"mobility-aids" },
+  { sku:"CR01", title:"Elbow Crutches", category:"mobility-aids" },
+  { sku:"CR02", title:"Under-arm Crutches", category:"mobility-aids" },
+  { sku:"WF01", title:"Walking Frame", category:"mobility-aids" },
+  { sku:"DM01", title:"Norditalia BP-1000 Blood Pressure Monitor", category:"diagnostics" },
+  { sku:"DM02", title:"Berrcom Non-contact Infrared Thermometer", category:"diagnostics" },
+  { sku:"DM03", title:"3M Littmann Classic III Stethoscope", category:"diagnostics" },
+  { sku:"DM04", title:"Blood Glucose Meters (FreeStyle Optium, Accu-Chek Active, VivaChek Ino)", category:"diagnostics" },
+  { sku:"DM07", title:"Fingertip Pulse Oximeter (X1805)", category:"diagnostics" },
+  { sku:"SU01", title:"DYNA Clavicle Brace", category:"supports" },
+  { sku:"SU02", title:"DYNA Arm Sling", category:"supports" },
+  { sku:"SU03", title:"DYNA Soft Cervical Collar", category:"supports" },
+  { sku:"SU04", title:"I-M Breathable Lumbar Support (4 Stays)", category:"supports" },
+  { sku:"BD01", title:"Anti-Decubitus Bubble Mattress", category:"beds" },
+  { sku:"BD02", title:"Medtech AB-03 Air Pressure Mattress", category:"beds" },
+  { sku:"DI01", title:"Marvel Guard Adult Diapers (Medium, 10pcs)", category:"home-care" },
+  { sku:"DI02", title:"Easy Friends Adult Diapers (Medium, 10pcs)", category:"home-care" },
+  { sku:"DI03", title:"Safe Guard Premium Adult Diapers (M/L, 10pcs)", category:"home-care" },
+  { sku:"SG01", title:"Orthopaedic Implant Kit (Plates, Screws & Wires)", category:"surgical" },
+  { sku:"SG02", title:"Panther Hemorrhoidal Surgical Stapler (FCSSME33)", category:"surgical" },
+  { sku:"SG03", title:"Panther Linear Cutter Stapler (SSAB-80)", category:"surgical" },
+  { sku:"SG04", title:"Reloading Unit for Linear Cutter Stapler (SADB-80D)", category:"surgical" },
+  { sku:"HC01", title:"Portable Phlegm Suction Unit (9E-A)", category:"home-care" },
+  { sku:"HC02", title:"Benice Facial Steamer (BNS-016)", category:"home-care" },
+  { sku:"HC03", title:"Beta Diabetic Footwear", category:"home-care" },
+  { sku:"HC04", title:"TexStretch Rehabilitation Bands & Accessories", category:"home-care" },
+  { sku:"MG1010", title:"Two Function Bed", category:"furniture" },
+  { sku:"MG1011", title:"Head Adjustable Bed", category:"furniture" },
+  { sku:"MG1012", title:"Head Adjustable Bed — Home Use", category:"furniture" },
+  { sku:"MG1013", title:"Two Function Bed — Home Use", category:"furniture" },
+  { sku:"MG1014", title:"Head Adjustable Bed (Stainless Steel)", category:"furniture" },
+  { sku:"MG1015", title:"Patient Bed — Basic", category:"furniture" },
+  { sku:"MG1016", title:"Three Function Bed — Manual", category:"furniture" },
+  { sku:"MG1017", title:"Five Function Bed — Hydraulic", category:"furniture" },
+  { sku:"MG1018", title:"Two Function Bed — Classic", category:"furniture" },
+  { sku:"MG1019", title:"Head Adjustable Bed — Classic", category:"furniture" },
+  { sku:"MG1020", title:"Three Function Bed — Classic", category:"furniture" },
+  { sku:"MG1021", title:"Five Function Bed — Classic", category:"furniture" },
+  { sku:"MG1022", title:"Three Function Bed — Electric", category:"furniture" },
+  { sku:"MG2010", title:"Gynecological Bed", category:"furniture" },
+  { sku:"MG2011", title:"Tilt Bed", category:"furniture" },
+  { sku:"MG2012", title:"Examination Bed", category:"furniture" },
+  { sku:"MG2013A", title:"Examination Bed with Cabinet", category:"furniture" },
+  { sku:"MG2014", title:"Gynecological Bed (Stainless Steel)", category:"furniture" },
+  { sku:"MG2015", title:"Examination Bed (Stainless Steel)", category:"furniture" },
+  { sku:"MG4010", title:"Patient Transport Trolley (Stainless Steel)", category:"furniture" },
+  { sku:"MG4011", title:"Patient Transport Trolley (Epoxy Steel)", category:"furniture" },
+  { sku:"MG4012", title:"Patient Transfer Trolley (Stainless Steel)", category:"furniture" },
+  { sku:"MG4013", title:"Stretcher Trolley", category:"furniture" },
+  { sku:"MG4014", title:"Patient Trolley (Stainless Steel)", category:"furniture" },
+  { sku:"MG4015", title:"Patient Trolley — Open Frame", category:"furniture" },
+  { sku:"MG4016", title:"Patient Trolley (Epoxy Steel)", category:"furniture" },
+  { sku:"MG4017", title:"Recovery Trolley (Epoxy Steel)", category:"furniture" },
+  { sku:"MG4019", title:"Recovery Trolley (Stainless Steel)", category:"furniture" },
+  { sku:"MG4021", title:"Patient Transfer Trolley — Open Frame", category:"furniture" },
+];
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+let lineItems = [];
+let docType   = "quotation";
+let itemIdSeq = 0;
+
+function newItemId() { return ++itemIdSeq; }
+
+// ═══════════════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════════════
+function fmt(n) {
+  return Number(n || 0).toLocaleString("en-LK", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function lineTotal(item) {
+  return (parseFloat(item.qty) || 0) * (parseFloat(item.unitPrice) || 0);
+}
+
+function subtotal() { return lineItems.reduce((s, i) => s + lineTotal(i), 0); }
+
+function getDocMeta() {
+  return {
+    ref:          document.getElementById("doc-ref").value.trim(),
+    date:         document.getElementById("doc-date").value,
+    valid:        document.getElementById("doc-valid").value,
+    by:           document.getElementById("doc-by").value.trim(),
+    buyer:        document.getElementById("buyer-name").value.trim(),
+    address:      document.getElementById("buyer-address").value.trim(),
+    phone:        document.getElementById("buyer-phone").value.trim(),
+    email:        document.getElementById("buyer-email").value.trim(),
+    paymentMethod: document.getElementById("payment-method").value,
+    paymentDue:   document.getElementById("payment-due").value,
+    bankDetails:  document.getElementById("bank-details").value.trim(),
+    paymentNotes: document.getElementById("payment-notes").value.trim(),
+    notes:        document.getElementById("doc-notes").value.trim(),
+    terms:        document.getElementById("doc-terms").value.trim(),
+  };
+}
+
+function formatDate(iso) {
+  if (!iso) return "";
+  const [y, m, d] = iso.split("-");
+  return `${d}/${m}/${y}`;
+}
+
+function showToast(msg, dur = 2500) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), dur);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PRODUCT PICKER
+// ═══════════════════════════════════════════════════════════════
+function renderProductPicker(filter = "", catFilter = "all") {
+  const list = document.getElementById("product-list");
+  const q = filter.toLowerCase();
+  const filtered = PRODUCTS.filter(p => {
+    const matchCat = catFilter === "all" || p.category === catFilter;
+    const matchQ   = !q || p.title.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+  if (!filtered.length) {
+    list.innerHTML = `<div class="empty-state">No products match.</div>`;
+    return;
+  }
+  list.innerHTML = filtered.map(p => `
+    <div class="product-item" data-sku="${p.sku}">
+      <span class="sku">${p.sku}</span>
+      <span class="name">${p.title}</span>
+      <button class="add-btn" data-sku="${p.sku}" title="Add to document" type="button">+</button>
+    </div>
+  `).join("");
+  list.querySelectorAll(".add-btn").forEach(btn => {
+    btn.addEventListener("click", e => {
+      e.stopPropagation();
+      addProduct(btn.dataset.sku);
+    });
+  });
+  list.querySelectorAll(".product-item").forEach(row => {
+    row.addEventListener("click", () => addProduct(row.dataset.sku));
+  });
+}
+
+function buildCatFilter() {
+  const wrap = document.getElementById("cat-filter");
+  const cats = ["all", ...Object.keys(CATEGORY_LABELS)];
+  let active = "all";
+  wrap.innerHTML = cats.map(c =>
+    `<button class="cat-chip${c === "all" ? " active" : ""}" data-cat="${c}" type="button">${c === "all" ? "All" : CATEGORY_LABELS[c]}</button>`
+  ).join("");
+  let q = "";
+  wrap.querySelectorAll(".cat-chip").forEach(chip => {
+    chip.addEventListener("click", () => {
+      active = chip.dataset.cat;
+      wrap.querySelectorAll(".cat-chip").forEach(c => c.classList.toggle("active", c.dataset.cat === active));
+      renderProductPicker(q, active);
+    });
+  });
+  document.getElementById("product-search").addEventListener("input", e => {
+    q = e.target.value;
+    renderProductPicker(q, active);
+  });
+  renderProductPicker("", "all");
+}
+
+function addProduct(sku) {
+  const p = PRODUCTS.find(x => x.sku === sku);
+  if (!p) return;
+  lineItems.push({ id: newItemId(), sku: p.sku, description: p.title, qty: 1, unitPrice: "" });
+  renderItems();
+  showToast(`"${p.title}" added`);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LINE ITEMS
+// ═══════════════════════════════════════════════════════════════
+function renderItems() {
+  const tbody = document.getElementById("items-tbody");
+  document.getElementById("item-count").textContent = `${lineItems.length} item${lineItems.length !== 1 ? "s" : ""}`;
+
+  if (!lineItems.length) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:1.5rem;color:var(--ink-500);font-size:0.82rem">No items yet — add from the product list or click "+ Add blank line".</td></tr>`;
+    renderTotals();
+    return;
+  }
+
+  tbody.innerHTML = lineItems.map((item, idx) => `
+    <tr data-id="${item.id}">
+      <td style="color:var(--ink-500);font-size:0.78rem;font-weight:600">${idx + 1}</td>
+      <td>
+        <input type="text" class="desc-input" value="${escHtml(item.description)}" placeholder="Description" style="width:100%;min-width:180px" data-field="description">
+      </td>
+      <td>
+        <input type="text" class="sku-input" value="${escHtml(item.sku)}" placeholder="SKU" style="width:72px" data-field="sku">
+      </td>
+      <td style="text-align:right">
+        <input type="number" class="qty-input" value="${item.qty}" min="0" step="1" data-field="qty">
+      </td>
+      <td style="text-align:right">
+        <input type="number" class="price-input" value="${item.unitPrice}" min="0" step="0.01" placeholder="0.00" data-field="unitPrice">
+      </td>
+      <td class="line-total">${item.unitPrice ? fmt(lineTotal(item)) : "—"}</td>
+      <td>
+        <button class="remove-btn" data-id="${item.id}" title="Remove" type="button">✕</button>
+      </td>
+    </tr>
+  `).join("");
+
+  tbody.querySelectorAll("input").forEach(inp => {
+    inp.addEventListener("input", e => {
+      const row  = inp.closest("tr");
+      const id   = parseInt(row.dataset.id);
+      const item = lineItems.find(x => x.id === id);
+      if (!item) return;
+      item[inp.dataset.field] = inp.value;
+      row.querySelector(".line-total").textContent = item.unitPrice ? fmt(lineTotal(item)) : "—";
+      renderTotals();
+      updateExportLabel();
+    });
+  });
+
+  tbody.querySelectorAll(".remove-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      lineItems = lineItems.filter(x => x.id !== parseInt(btn.dataset.id));
+      renderItems();
+    });
+  });
+
+  renderTotals();
+  updateExportLabel();
+}
+
+function renderTotals() {
+  const block = document.getElementById("totals-block");
+  const sub   = subtotal();
+  block.innerHTML = `
+    <div class="total-row grand">
+      <span>${docType === "bill" ? "Total Due" : "Total"}</span>
+      <span>LKR ${fmt(sub)}</span>
+    </div>
+  `;
+}
+
+function escHtml(str) {
+  return String(str || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DOC TYPE TABS
+// ═══════════════════════════════════════════════════════════════
+function bindDocTypeTabs() {
+  document.getElementById("doc-type-tabs").querySelectorAll(".doc-type-tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      docType = tab.dataset.type;
+      document.getElementById("doc-type-tabs").querySelectorAll(".doc-type-tab")
+        .forEach(t => t.classList.toggle("active", t.dataset.type === docType));
+      document.getElementById("valid-label").style.display = docType === "bill" ? "none" : "";
+      renderTotals();
+      updateExportLabel();
+    });
+  });
+}
+
+function updateExportLabel() {
+  const m = getDocMeta();
+  const label = document.getElementById("export-label");
+  const typeLabel = docType === "bill" ? "Bill / Invoice" : "Quotation";
+  const ref = m.ref || "—";
+  const buyer = m.buyer || "—";
+  label.innerHTML = `<strong>${typeLabel}</strong> · Ref: ${ref} · ${buyer} · ${lineItems.length} item(s) · LKR ${fmt(subtotal())}`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PDF EXPORT (Enhanced design)
+// ═══════════════════════════════════════════════════════════════
+function loadLogoDataURL() {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width  = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      canvas.getContext("2d").drawImage(img, 0, 0);
+      resolve(canvas.toDataURL("image/png"));
+    };
+    img.onerror = () => resolve(null);
+    img.src = "../images/brand/logo-header-nobg.png";
+  });
+}
+
+async function exportPDF() {
+  const m         = getDocMeta();
+  const typeLabel = docType === "bill" ? "BILL / INVOICE" : "QUOTATION";
+  const { jsPDF } = window.jspdf;
+  const doc       = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+  const W         = 210;
+  const margin    = 18;
+  const pageH     = 297;
+  // Logo true aspect: 800 × 276 px  →  ratio = 2.899
+  const LOGO_RATIO = 800 / 276;
+
+  const logoData = await loadLogoDataURL();
+
+  // ── Header band: white with teal left accent bar ──
+  doc.setFillColor(255, 255, 255);
+  doc.rect(0, 0, W, 42, "F");
+  doc.setFillColor(11, 98, 96);   // teal-600
+  doc.rect(0, 0, 4, 42, "F");
+
+  // Logo — left-aligned, height 16 mm, width calculated from true aspect ratio
+  if (logoData) {
+    const logoH = 16;
+    const logoW = logoH * LOGO_RATIO;   // 800/276 ≈ 2.899  →  ~46.4 mm
+    doc.addImage(logoData, "PNG", 8, (42 - logoH) / 2, logoW, logoH);
+  } else {
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    doc.setTextColor(11, 98, 96);
+    doc.text("Hettiarachchi Surgicals", 8, 18);
+  }
+
+  // Doc type — right side of header, vertically centred
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(11);
+  doc.setTextColor(11, 98, 96);
+  doc.text(typeLabel, W - margin, 18, { align: "right" });
+  // Doc-type underline accent
+  doc.setDrawColor(11, 98, 96);
+  doc.setLineWidth(0.4);
+  const tlW = doc.getTextWidth(typeLabel);
+  doc.line(W - margin - tlW, 19.5, W - margin, 19.5);
+
+  // Ref / date right below doc type
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8);
+  doc.setTextColor(100, 116, 139);
+  if (m.ref)  { doc.text(`Ref: ${m.ref}`,              W - margin, 25, { align: "right" }); }
+  if (m.date) { doc.text(`Date: ${formatDate(m.date)}`, W - margin, 30, { align: "right" }); }
+  if (docType === "quotation" && m.valid) {
+    doc.text(`Valid until: ${formatDate(m.valid)}`, W - margin, 35, { align: "right" });
+  }
+
+  // Full-width teal rule under header
+  doc.setDrawColor(11, 98, 96);
+  doc.setLineWidth(0.5);
+  doc.line(0, 42, W, 42);
+
+  let y = 52;
+
+  // ── Buyer address block ──
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9);
+  doc.setTextColor(15, 23, 42);
+  if (m.date && !m.ref) {             // show date here only if not shown in header
+    doc.text(formatDate(m.date), margin, y); y += 6;
+  }
+  if (m.buyer) {
+    doc.text(m.buyer, margin, y); y += 5.5;
+  }
+  if (m.address) {
+    m.address.split("\n").forEach(line => { doc.text(line.trim(), margin, y); y += 5; });
+  }
+  if (m.phone || m.email) {
+    doc.setTextColor(100, 116, 139);
+    if (m.phone) { doc.text(m.phone, margin, y); y += 4.5; }
+    if (m.email) { doc.text(m.email, margin, y); y += 4.5; }
+    doc.setTextColor(15, 23, 42);
+  }
+  y += 5;
+
+  // ── Salutation ──
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9);
+  doc.setTextColor(15, 23, 42);
+  doc.text("Dear Sir/Madam,", margin, y);
+  y += 8;
+
+  // ── Subject line (bold + underline) ──
+  const subjectLabel = docType === "bill" ? "Invoice for Supplies" : "Quotation for Surgical Supplies";
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(10);
+  doc.setTextColor(15, 23, 42);
+  doc.text(subjectLabel, margin, y);
+  doc.setDrawColor(15, 23, 42);
+  doc.setLineWidth(0.25);
+  doc.line(margin, y + 0.9, margin + doc.getTextWidth(subjectLabel), y + 0.9);
+  y += 10;
+
+  // ── Prepared by ──
+  if (m.by) {
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(100, 116, 139);
+    doc.text(`Prepared by: ${m.by}`, margin, y);
+    y += 6;
+  }
+
+  // ── Line items table ──
+  doc.autoTable({
+    startY: y,
+    margin: { left: margin, right: margin },
+    head: [["Name of the Item", "Qty", "Unit Price (Rs.)", "Total (Rs.)"]],
+    body: lineItems.map(item => [
+      item.description || "",
+      item.qty,
+      item.unitPrice ? fmt(item.unitPrice) : "—",
+      item.unitPrice ? fmt(lineTotal(item)) : "—"
+    ]),
+    headStyles: {
+      fillColor: [230, 244, 244],
+      textColor: [8, 74, 72],
+      fontSize: 8.5,
+      fontStyle: "bold",
+      halign: "center",
+      lineColor: [14, 124, 123],
+      lineWidth: { top: 0.5, bottom: 0.5, left: 0, right: 0 }
+    },
+    bodyStyles: {
+      fontSize: 9,
+      textColor: [15, 23, 42],
+      lineColor: [226, 232, 240],
+      lineWidth: 0.1,
+      cellPadding: { top: 3, bottom: 3, left: 3, right: 3 }
+    },
+    columnStyles: {
+      0: { cellWidth: "auto", halign: "left" },
+      1: { cellWidth: 18, halign: "center" },
+      2: { cellWidth: 36, halign: "right" },
+      3: { cellWidth: 36, halign: "right", fontStyle: "bold" }
+    },
+    alternateRowStyles: { fillColor: [248, 250, 252] },
+    tableLineColor: [226, 232, 240],
+    tableLineWidth: 0.1,
+  });
+
+  y = doc.lastAutoTable.finalY;
+
+  // ── Total bar ──
+  doc.setFillColor(11, 98, 96);
+  doc.rect(margin, y, W - margin * 2, 11, "F");
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9.5);
+  doc.setTextColor(255, 255, 255);
+  const totalLabel = docType === "bill" ? "Total Due" : "Total";
+  doc.text(totalLabel, W - margin - 38, y + 7.2, { align: "right" });
+  doc.text(`Rs. ${fmt(subtotal())}`, W - margin - 1, y + 7.2, { align: "right" });
+  y += 17;
+
+  // ── Payment details ──
+  if (m.bankDetails || m.paymentMethod || m.paymentDue) {
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(15, 23, 42);
+    if (m.bankDetails) {
+      doc.text("Account details as below,", margin, y); y += 5.5;
+      m.bankDetails.split("\n").forEach(line => { doc.text(line.trim(), margin, y); y += 5; });
+    }
+    if (m.paymentMethod) { doc.text(`Payment Method: ${m.paymentMethod}`, margin, y); y += 5; }
+    if (m.paymentDue)    { doc.text(`Payment Due: ${formatDate(m.paymentDue)}`, margin, y); y += 5; }
+    if (m.paymentNotes) {
+      const ls = doc.splitTextToSize(m.paymentNotes, W - margin * 2);
+      doc.text(ls, margin, y); y += ls.length * 5;
+    }
+    y += 3;
+  }
+
+  // ── Notes & Terms ──
+  for (const [val, label] of [[m.notes, "Notes"], [m.terms, "Terms & Conditions"]].filter(([v]) => v)) {
+    if (y > 246) break;
+    doc.setFont("helvetica", "bold"); doc.setFontSize(8.5); doc.setTextColor(11, 98, 96);
+    doc.text(label, margin, y); y += 5;
+    doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(51, 65, 85);
+    const ls = doc.splitTextToSize(val, W - margin * 2);
+    doc.text(ls, margin, y); y += ls.length * 4.5 + 4;
+  }
+
+  // ── Sign-off ──
+  if (y < 248) {
+    doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(15, 23, 42);
+    doc.text("Thanking you,", margin, y); y += 5.5;
+    doc.text(m.by || "Hettiarachchi Surgicals", margin, y); y += 5;
+  }
+
+  // ── Signatures ──
+  const sigAuth = window["sig-authorized_data"];
+  const sigRecv = window["sig-received_data"];
+  if ((sigAuth || sigRecv) && y < 244) {
+    y += 5;
+    const sigBoxW = 55;
+    const positions = [[margin, sigAuth, "Authorized By"], [W / 2, sigRecv, "Received By"]];
+    for (const [x, data, lbl] of positions) {
+      if (!data) continue;
+      doc.addImage(data, "PNG", x, y, sigBoxW, sigBoxW * (1 / 3.5));
+      doc.setDrawColor(203, 213, 225); doc.setLineWidth(0.3);
+      doc.line(x, y + 16, x + sigBoxW, y + 16);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(7.5); doc.setTextColor(100, 116, 139);
+      doc.text(lbl, x, y + 20);
+    }
+    y += 24;
+  }
+
+  // ── Footer ──
+  doc.setFillColor(11, 98, 96);
+  doc.rect(0, pageH - 18, W, 18, "F");
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7.5);
+  doc.setTextColor(191, 225, 224);
+  doc.text("No.130, 1/1 Maitipe 1st Lane, Galle, Sri Lanka", W / 2, pageH - 13, { align: "center" });
+  doc.text("Tel: 077 706 8063 | 077 924 9267  |  WhatsApp: 071 820 8654  |  Colombo: 078 966 9666", W / 2, pageH - 8.5, { align: "center" });
+  doc.text("www.surgicals.lk  |  BR: 9816", W / 2, pageH - 4, { align: "center" });
+
+  const typeSlug = docType === "bill" ? "Invoice" : "Quotation";
+  const refSlug  = m.ref ? `-${m.ref}` : "";
+  doc.save(`${typeSlug}${refSlug}.pdf`);
+  showToast("PDF exported successfully.");
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DOCX EXPORT (Enhanced design)
+// ═══════════════════════════════════════════════════════════════
+async function fetchLogoArrayBuffer() {
+  try {
+    const resp = await fetch("../images/brand/logo-header-nobg.png");
+    if (!resp.ok) return null;
+    return await resp.arrayBuffer();
+  } catch { return null; }
+}
+
+async function exportDOCX() {
+  const m = getDocMeta();
+  const { Document, Packer, Paragraph, Table, TableRow, TableCell,
+          TextRun, ImageRun, WidthType, AlignmentType, BorderStyle,
+          ShadingType, UnderlineType } = docx;
+
+  const typeLabel = docType === "bill" ? "BILL / INVOICE" : "QUOTATION";
+  const tealColor = "0B6260";
+  const tealLight = "E6F4F4";
+
+  const bold = (text, color = "0F172A", size = 20) =>
+    new TextRun({ text: String(text), bold: true, color, size, font: "Calibri" });
+  const reg = (text, color = "334155", size = 19) =>
+    new TextRun({ text: String(text), color, size, font: "Calibri" });
+  const spacer = (before = 120, after = 0) =>
+    new Paragraph({ spacing: { before, after } });
+
+  const noBorder = { top: { style: BorderStyle.NONE, size: 0 }, bottom: { style: BorderStyle.NONE, size: 0 }, left: { style: BorderStyle.NONE, size: 0 }, right: { style: BorderStyle.NONE, size: 0 } };
+  const thinBorder = {
+    top:    { style: BorderStyle.SINGLE, size: 4, color: "CBD5E1" },
+    bottom: { style: BorderStyle.SINGLE, size: 4, color: "CBD5E1" },
+    left:   { style: BorderStyle.SINGLE, size: 4, color: "CBD5E1" },
+    right:  { style: BorderStyle.SINGLE, size: 4, color: "CBD5E1" },
+  };
+
+  // ── Logo — true size: 800×276 px, ratio 2.899:1
+  // Target height 50pt → width = 50 × 2.899 ≈ 145pt
+  const logoBuf = await fetchLogoArrayBuffer();
+  const logoChildren = logoBuf
+    ? [new Paragraph({
+        alignment: AlignmentType.CENTER,
+        spacing: { after: 100 },
+        children: [new ImageRun({ data: logoBuf, transformation: { width: 145, height: 50 }, type: "png" })]
+      })]
+    : [new Paragraph({
+        alignment: AlignmentType.CENTER,
+        spacing: { after: 100 },
+        children: [bold("Hettiarachchi Surgicals", tealColor, 26)]
+      })];
+
+  // ── Line items table ──
+  const headBorder = {
+    top:    { style: BorderStyle.SINGLE, size: 6, color: tealColor },
+    bottom: { style: BorderStyle.SINGLE, size: 6, color: tealColor },
+    left:   { style: BorderStyle.NONE,   size: 0 },
+    right:  { style: BorderStyle.NONE,   size: 0 },
+  };
+  const thCell = (text, align = AlignmentType.LEFT) =>
+    new TableCell({
+      borders: headBorder,
+      shading: { type: ShadingType.SOLID, color: "E6F4F4" },
+      children: [new Paragraph({ alignment: align, children: [bold(text, "084A48", 18)] })]
+    });
+
+  const headerRow = new TableRow({
+    tableHeader: true,
+    children: [
+      thCell("Name of the Item"),
+      thCell("Qty", AlignmentType.CENTER),
+      thCell("Unit Price (Rs.)", AlignmentType.RIGHT),
+      thCell("Total (Rs.)", AlignmentType.RIGHT),
+    ]
+  });
+
+  const dataRows = lineItems.map((item, idx) =>
+    new TableRow({
+      children: [
+        item.description || "",
+        String(item.qty),
+        item.unitPrice ? fmt(item.unitPrice) : "—",
+        item.unitPrice ? fmt(lineTotal(item)) : "—"
+      ].map((val, i) =>
+        new TableCell({
+          borders: thinBorder,
+          shading: { type: ShadingType.SOLID, color: idx % 2 === 0 ? "FFFFFF" : "F8FAFB" },
+          children: [new Paragraph({
+            alignment: i === 0 ? AlignmentType.LEFT : i === 1 ? AlignmentType.CENTER : AlignmentType.RIGHT,
+            children: [reg(val, i === 3 ? tealColor : "0F172A", 19)]
+          })]
+        })
+      )
+    })
+  );
+
+  // Total row — teal background matching PDF
+  const totalRow = new TableRow({
+    children: [
+      new TableCell({
+        borders: noBorder,
+        columnSpan: 2,
+        shading: { type: ShadingType.SOLID, color: tealColor },
+        children: [new Paragraph({ children: [] })]
+      }),
+      new TableCell({
+        borders: noBorder,
+        shading: { type: ShadingType.SOLID, color: tealColor },
+        children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [bold(docType === "bill" ? "Total Due" : "Total", "FFFFFF", 19)] })]
+      }),
+      new TableCell({
+        borders: noBorder,
+        shading: { type: ShadingType.SOLID, color: tealColor },
+        children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [bold(`Rs. ${fmt(subtotal())}`, "FFFFFF", 19)] })]
+      }),
+    ]
+  });
+
+  // ── Signature rows ──
+  const sigAuth = window["sig-authorized_data"];
+  const sigRecv = window["sig-received_data"];
+  let sigBlock = [];
+  if (sigAuth || sigRecv) {
+    const sigFetch = async (dataUrl) => {
+      if (!dataUrl) return null;
+      const res = await fetch(dataUrl);
+      return await res.arrayBuffer();
+    };
+    const [authBuf, recvBuf] = await Promise.all([sigFetch(sigAuth), sigFetch(sigRecv)]);
+    const sigCells = [
+      new TableCell({
+        borders: noBorder,
+        children: [
+          ...(authBuf ? [new Paragraph({ children: [new ImageRun({ data: authBuf, transformation: { width: 120, height: 34 }, type: "png" })] })] : [new Paragraph({ spacing: { before: 800 } })]),
+          new Paragraph({ children: [new TextRun({ text: "________________________", color: "94A3B8", size: 18, font: "Calibri" })] }),
+          new Paragraph({ children: [reg("Authorized By", "64748B", 17)] })
+        ]
+      }),
+      new TableCell({
+        borders: noBorder,
+        children: [
+          ...(recvBuf ? [new Paragraph({ children: [new ImageRun({ data: recvBuf, transformation: { width: 120, height: 34 }, type: "png" })] })] : [new Paragraph({ spacing: { before: 800 } })]),
+          new Paragraph({ children: [new TextRun({ text: "________________________", color: "94A3B8", size: 18, font: "Calibri" })] }),
+          new Paragraph({ children: [reg("Received By", "64748B", 17)] })
+        ]
+      }),
+    ];
+    sigBlock = [
+      spacer(300),
+      new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [new TableRow({ children: sigCells })] })
+    ];
+  }
+
+  const subjectLabel = docType === "bill" ? "Invoice for Supplies" : "Quotation for Surgical Supplies";
+
+  // ── Header table: logo left | doc info right ──
+  const metaLines = [
+    ...(m.ref  ? [`Ref: ${m.ref}`]                           : []),
+    ...(m.date ? [`Date: ${formatDate(m.date)}`]             : []),
+    ...(docType === "quotation" && m.valid ? [`Valid until: ${formatDate(m.valid)}`] : []),
+  ];
+  const headerTable = new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    borders: { top: { style: BorderStyle.NONE }, bottom: { style: BorderStyle.SINGLE, size: 8, color: tealColor }, left: { style: BorderStyle.NONE }, right: { style: BorderStyle.NONE }, insideH: { style: BorderStyle.NONE }, insideV: { style: BorderStyle.NONE } },
+    rows: [new TableRow({
+      children: [
+        // Left cell: logo
+        new TableCell({
+          borders: noBorder,
+          width: { size: 55, type: WidthType.PERCENTAGE },
+          children: logoBuf
+            ? [new Paragraph({ children: [new ImageRun({ data: logoBuf, transformation: { width: 145, height: 50 }, type: "png" })] })]
+            : [new Paragraph({ children: [bold("Hettiarachchi Surgicals", tealColor, 24)] })]
+        }),
+        // Right cell: doc type + meta
+        new TableCell({
+          borders: noBorder,
+          width: { size: 45, type: WidthType.PERCENTAGE },
+          children: [
+            new Paragraph({ alignment: AlignmentType.RIGHT, spacing: { after: 40 }, children: [bold(typeLabel, tealColor, 22)] }),
+            ...metaLines.map(l => new Paragraph({ alignment: AlignmentType.RIGHT, spacing: { after: 20 }, children: [reg(l, "64748B", 17)] })),
+          ]
+        }),
+      ]
+    })]
+  });
+
+  const children = [
+    // Header table with logo + doc type
+    headerTable,
+    spacer(160),
+
+    // Buyer address
+    ...(m.buyer  ? [new Paragraph({ spacing: { after: 40 }, children: [reg(m.buyer, "0F172A", 19)] })] : []),
+    ...(m.address ? m.address.split("\n").map(l => new Paragraph({ spacing: { after: 20 }, children: [reg(l.trim(), "0F172A", 19)] })) : []),
+    ...(m.phone  ? [new Paragraph({ spacing: { after: 20 }, children: [reg(m.phone, "64748B", 18)] })] : []),
+    ...(m.email  ? [new Paragraph({ spacing: { after: 80 }, children: [reg(m.email, "64748B", 18)] })] : []),
+    spacer(100),
+
+    // Salutation
+    new Paragraph({ spacing: { after: 80 }, children: [reg("Dear Sir/Madam,", "0F172A", 19)] }),
+
+    // Subject bold+underline
+    new Paragraph({
+      spacing: { after: 120 },
+      children: [new TextRun({ text: subjectLabel, bold: true, underline: { type: UnderlineType.SINGLE }, color: "0F172A", size: 20, font: "Calibri" })]
+    }),
+
+    // Prepared by
+    ...(m.by ? [new Paragraph({ spacing: { after: 120 }, children: [reg(`Prepared by: ${m.by}`, "64748B", 17)] })] : []),
+
+    // Line items table
+    new Table({
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      rows: [headerRow, ...dataRows, totalRow]
+    }),
+
+    // Payment details
+    ...(m.bankDetails || m.paymentMethod || m.paymentDue ? [
+      spacer(200),
+      new Paragraph({ spacing: { after: 60 }, children: [reg("Account details as below,", "0F172A", 19)] }),
+      ...(m.bankDetails ? m.bankDetails.split("\n").map(l => new Paragraph({ spacing: { after: 30 }, children: [reg(l.trim(), "0F172A", 19)] })) : []),
+      ...(m.paymentMethod ? [new Paragraph({ spacing: { after: 30 }, children: [reg(`Payment Method: ${m.paymentMethod}`, "0F172A", 19)] })] : []),
+      ...(m.paymentDue    ? [new Paragraph({ spacing: { after: 30 }, children: [reg(`Payment Due: ${formatDate(m.paymentDue)}`, "0F172A", 19)] })] : []),
+      ...(m.paymentNotes  ? [new Paragraph({ spacing: { after: 30 }, children: [reg(m.paymentNotes, "64748B", 18)] })] : []),
+    ] : []),
+
+    // Notes
+    ...(m.notes ? [
+      spacer(120),
+      new Paragraph({ spacing: { after: 40 }, children: [bold("Notes", "64748B", 17)] }),
+      new Paragraph({ children: [reg(m.notes)] })
+    ] : []),
+
+    // Terms
+    ...(m.terms ? [
+      spacer(120),
+      new Paragraph({ spacing: { after: 40 }, children: [bold("Terms & Conditions", "64748B", 17)] }),
+      new Paragraph({ children: [reg(m.terms)] })
+    ] : []),
+
+    // Signoff
+    spacer(200),
+    new Paragraph({ spacing: { after: 40 }, children: [reg("Thanking you,", "0F172A", 19)] }),
+    new Paragraph({ children: [reg(m.by || "Hettiarachchi Surgicals", "0F172A", 19)] }),
+
+    // Signatures
+    ...sigBlock,
+  ];
+
+  const footerPara = new Paragraph({
+    alignment: AlignmentType.CENTER,
+    border: { top: { style: BorderStyle.SINGLE, size: 6, color: tealColor } },
+    spacing: { before: 80, after: 40 },
+    children: [reg("No.130, 1/1 Maitipe 1st Lane, Galle, Sri Lanka", "64748B", 15)]
+  });
+  const footerPara2 = new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { after: 40 },
+    children: [reg("Tel: 077 706 8063 | 077 924 9267  |  WhatsApp: 071 820 8654  |  Colombo: 078 966 9666", "64748B", 15)]
+  });
+  const footerPara3 = new Paragraph({
+    alignment: AlignmentType.CENTER,
+    children: [reg("www.surgicals.lk  |  BR: 9816", "64748B", 15)]
+  });
+
+  const document = new Document({
+    creator: "Hettiarachchi Surgicals Admin",
+    title: `${typeLabel} ${m.ref || ""}`,
+    sections: [{
+      properties: { page: { margin: { top: 720, bottom: 720, left: 900, right: 900 } } },
+      children,
+      footers: { default: { options: { children: [footerPara, footerPara2, footerPara3] } } }
+    }]
+  });
+
+  const blob = await Packer.toBlob(document);
+  const url  = URL.createObjectURL(blob);
+  const a    = Object.assign(document.createElement("a"), { href: url, download: `${docType === "bill" ? "Invoice" : "Quotation"}${m.ref ? "-" + m.ref : ""}.docx` });
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast("DOCX exported successfully.");
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NEW DOCUMENT
+// ═══════════════════════════════════════════════════════════════
+function resetDoc() {
+  lineItems = [];
+  itemIdSeq = 0;
+  ["doc-ref","doc-date","doc-valid","doc-by","buyer-name","buyer-address","buyer-phone","buyer-email",
+   "payment-method","payment-due","bank-details","payment-notes","doc-notes","doc-terms"]
+    .forEach(id => { const el = document.getElementById(id); if (el) el.value = ""; });
+  document.getElementById("doc-date").value = new Date().toISOString().slice(0,10);
+  // Clear signatures
+  clearSig("sig-authorized");
+  clearSig("sig-received");
+  renderItems();
+  updateExportLabel();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+function initApp() {
+  initSignaturePads();
+  buildCatFilter();
+  bindDocTypeTabs();
+
+  // Set defaults
+  document.getElementById("doc-date").value = new Date().toISOString().slice(0,10);
+  const d  = new Date();
+  const yy = d.getFullYear();
+  const mm = String(d.getMonth()+1).padStart(2,"0");
+  const dd = String(d.getDate()).padStart(2,"0");
+  document.getElementById("doc-ref").value = `QT-${yy}${mm}${dd}-001`;
+  document.getElementById("doc-by").value  = "Hettiarachchi Surgicals";
+
+  renderItems();
+  updateExportLabel();
+
+  document.getElementById("add-blank-btn").addEventListener("click", () => {
+    lineItems.push({ id: newItemId(), sku: "", description: "", qty: 1, unitPrice: "" });
+    renderItems();
+  });
+
+  document.getElementById("export-pdf-btn").addEventListener("click", () => {
+    if (!lineItems.length) { showToast("Add at least one item first."); return; }
+    exportPDF();
+  });
+
+  document.getElementById("export-docx-btn").addEventListener("click", () => {
+    if (!lineItems.length) { showToast("Add at least one item first."); return; }
+    exportDOCX();
+  });
+
+  document.getElementById("new-doc-btn").addEventListener("click", () => {
+    if (lineItems.length && !confirm("Start a new document? Current items will be cleared.")) return;
+    resetDoc();
+    docType = "quotation";
+    document.getElementById("doc-type-tabs").querySelectorAll(".doc-type-tab")
+      .forEach(t => t.classList.toggle("active", t.dataset.type === "quotation"));
+    const nd = new Date();
+    document.getElementById("doc-ref").value =
+      `QT-${nd.getFullYear()}${String(nd.getMonth()+1).padStart(2,"0")}${String(nd.getDate()).padStart(2,"0")}-001`;
+    showToast("New document started.");
+  });
+
+  document.getElementById("lock-btn").addEventListener("click", () => {
+    sessionStorage.removeItem(SESSION_KEY);
+    location.reload();
+  });
+}
+
+if (sessionStorage.getItem(SESSION_KEY) === "1") {
+  initApp();
+}
+</script>
+</body>
+</html>
