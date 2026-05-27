@@ -818,6 +818,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initProductGridInteractions();
   Drawer.init();
   initQuoteForm();
+  initHeroSlideshow();
 
   QuoteStore.subscribe(renderQuoteDrawer);
 
@@ -890,4 +891,82 @@ function applySearchFromUrl() {
   // Also open the search panel and scroll to results
   document.getElementById("search-panel")?.removeAttribute("hidden");
   document.getElementById("products")?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// ---------- Hero slideshow ----------
+
+function initHeroSlideshow() {
+  const slidesEl = document.getElementById("hero-slides");
+  if (!slidesEl) return;
+
+  const slides = Array.from(slidesEl.querySelectorAll(".hero__slide"));
+  if (slides.length <= 1) {
+    // Hide controls when there's nothing to slide through
+    document.getElementById("hero-prev")?.setAttribute("hidden", "");
+    document.getElementById("hero-next")?.setAttribute("hidden", "");
+    return;
+  }
+
+  const dotsEl = document.getElementById("hero-dots");
+  const prevBtn = document.getElementById("hero-prev");
+  const nextBtn = document.getElementById("hero-next");
+  let current = 0;
+  let timer = null;
+  const INTERVAL = 5000;
+
+  // Build dot buttons
+  slides.forEach((_, i) => {
+    const dot = document.createElement("button");
+    dot.type = "button";
+    dot.className = "hero__slide-dot" + (i === 0 ? " hero__slide-dot--active" : "");
+    dot.setAttribute("role", "tab");
+    dot.setAttribute("aria-selected", i === 0 ? "true" : "false");
+    dot.setAttribute("aria-label", "Slide " + (i + 1));
+    dot.addEventListener("click", () => goTo(i));
+    dotsEl.appendChild(dot);
+  });
+
+  function goTo(index) {
+    slides[current].classList.remove("hero__slide--active");
+    slides[current].setAttribute("aria-hidden", "true");
+    dotsEl.children[current].classList.remove("hero__slide-dot--active");
+    dotsEl.children[current].setAttribute("aria-selected", "false");
+
+    current = (index + slides.length) % slides.length;
+
+    slides[current].classList.add("hero__slide--active");
+    slides[current].setAttribute("aria-hidden", "false");
+    dotsEl.children[current].classList.add("hero__slide-dot--active");
+    dotsEl.children[current].setAttribute("aria-selected", "true");
+    slidesEl.dataset.active = current;
+  }
+
+  function startAuto() {
+    stopAuto();
+    timer = setInterval(() => goTo(current + 1), INTERVAL);
+  }
+
+  function stopAuto() {
+    if (timer) { clearInterval(timer); timer = null; }
+  }
+
+  prevBtn?.addEventListener("click", () => { goTo(current - 1); startAuto(); });
+  nextBtn?.addEventListener("click", () => { goTo(current + 1); startAuto(); });
+
+  // Pause on hover / focus inside the visual
+  const visual = document.getElementById("hero-slideshow");
+  visual?.addEventListener("mouseenter", stopAuto);
+  visual?.addEventListener("mouseleave", startAuto);
+  visual?.addEventListener("focusin", stopAuto);
+  visual?.addEventListener("focusout", startAuto);
+
+  // Keyboard: left/right arrows when focused inside visual
+  visual?.addEventListener("keydown", e => {
+    if (e.key === "ArrowLeft")  { goTo(current - 1); startAuto(); }
+    if (e.key === "ArrowRight") { goTo(current + 1); startAuto(); }
+  });
+
+  // Initialise data attribute for dot colour logic
+  slidesEl.dataset.active = "0";
+  startAuto();
 }
