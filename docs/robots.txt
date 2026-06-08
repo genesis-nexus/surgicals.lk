@@ -1,12 +1,22 @@
+# Robots.txt for surgicals.lk
+# Allows search engines to crawl and index the site
+
 User-agent: *
 Allow: /
+Allow: /images/
+Allow: /style.css
+Allow: /script.js
 
-# Sitemap
+# Disallow directories that shouldn't be indexed
+Disallow: /admin/
+Disallow: /private/
+
+# Slow down aggressive crawlers
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+# Point to sitemap for discovery
 Sitemap: https://surgicals.lk/sitemap.xml
-
-# Disallow cruft files
-Disallow: /*.DS_Store
-Disallow: /images/*.heic
-
-# Admin — hidden from search engines
-Disallow: /qhansbxtbekro/
