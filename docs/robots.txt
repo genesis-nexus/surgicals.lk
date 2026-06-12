@@ -20,3 +20,6 @@ Crawl-delay: 10
 
 # Point to sitemap for discovery
 Sitemap: https://surgicals.lk/sitemap.xml
+
+# AI assistant / LLM summary (llms.txt convention)
+# https://surgicals.lk/llms.txt
