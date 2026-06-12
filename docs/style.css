@@ -1040,11 +1040,26 @@ p { color: var(--ink-700); }
   position: relative;
 }
 .product-card__media img,
-.product-card__media picture {
+.product-card__media picture,
+.product-card__media video {
   width: 100%;
   height: 100%;
   object-fit: contain;
   transition: transform var(--dur-slow) var(--ease);
+}
+.product-card__media-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(15, 23, 42, 0.78);
+  color: var(--white);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  pointer-events: none;
 }
 .product-card:hover .product-card__media:not(.product-card__media--multi) img { transform: scale(1.04); }
 
@@ -1867,4 +1882,216 @@ p { color: var(--ink-700); }
 
   /* WhatsApp FABs: already handled, ensure label doesn't wrap */
   .whatsapp-fab__label { white-space: nowrap; }
+}
+
+/* FAQ accordion (wheelchair landing page) */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 760px;
+}
+.faq-list details {
+  border: 1px solid var(--ink-300);
+  border-radius: 12px;
+  padding: 16px 20px;
+  background: var(--white);
+}
+.faq-list summary {
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+}
+.faq-list summary::-webkit-details-marker { display: none; }
+.faq-list summary::after {
+  content: "+";
+  float: right;
+  font-weight: 400;
+}
+.faq-list details[open] summary::after { content: "\2212"; }
+.faq-list details p {
+  margin-top: 12px;
+  color: var(--ink-500);
+}
+
+/* Wheelchair product carousel (wheelchair landing page) */
+.wc-carousel {
+  position: relative;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+.wc-carousel__viewport {
+  overflow: hidden;
+  padding: 48px 0 40px;
+}
+.wc-carousel__track {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  transition: transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+}
+.wc-carousel__card {
+  width: 280px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  border-radius: 22px;
+  padding: 18px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  background: var(--white);
+  border: 1px solid var(--ink-100);
+  transform: scale(0.9);
+  opacity: 0.52;
+  box-shadow: 0 12px 28px -16px rgba(16, 48, 47, 0.4);
+  transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
+              opacity 0.6s, box-shadow 0.6s, background 0.6s, border-color 0.6s;
+}
+.wc-carousel__card.is-active {
+  background: linear-gradient(165deg, var(--teal-500) 0%, var(--teal-600) 100%);
+  border-color: rgba(255, 255, 255, 0.12);
+  transform: scale(1.08);
+  opacity: 1;
+  box-shadow: 0 34px 64px -20px rgba(10, 91, 90, 0.6);
+  z-index: 2;
+}
+.wc-carousel__stage {
+  position: relative;
+  border-radius: 15px;
+  overflow: hidden;
+  padding: 16px 14px 6px;
+  background: var(--ink-100);
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.wc-carousel__media {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 14px rgba(16, 48, 47, 0.13));
+}
+.wc-carousel__badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 3;
+  font-size: 0.71875rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: var(--teal-500);
+  color: var(--white);
+  box-shadow: 0 4px 10px rgba(14, 124, 123, 0.3);
+}
+.wc-carousel__meta {
+  margin-top: 16px;
+  font-size: 0.71875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--teal-500);
+}
+.wc-carousel__card.is-active .wc-carousel__meta { color: #bfe9e8; }
+.wc-carousel__name {
+  margin: 7px 0 0;
+  font-size: 1.1875rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--ink-900);
+}
+.wc-carousel__card.is-active .wc-carousel__name { color: var(--white); }
+.wc-carousel__desc {
+  margin: 9px 0 0;
+  font-size: 0.84375rem;
+  line-height: 1.55;
+  min-height: 62px;
+  color: var(--ink-500);
+}
+.wc-carousel__card.is-active .wc-carousel__desc { color: #d4eceb; }
+.wc-carousel__btn {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.875rem;
+  padding: 12px;
+  border-radius: 11px;
+  background: var(--whatsapp);
+  color: var(--white);
+  box-shadow: 0 6px 16px rgba(37, 211, 102, 0.28);
+  transition: background var(--dur-base) var(--ease);
+}
+.wc-carousel__card.is-active .wc-carousel__btn {
+  background: var(--white);
+  color: var(--teal-600);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+}
+.wc-carousel__btn:hover { background: var(--whatsapp-dark); color: var(--white); }
+.wc-carousel__card.is-active .wc-carousel__btn:hover { background: var(--teal-50); color: var(--teal-700); }
+
+.wc-carousel__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1px solid var(--ink-100);
+  background: var(--white);
+  color: var(--teal-600);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 26px -10px rgba(16, 48, 47, 0.4);
+  transition: background var(--dur-base) var(--ease), color var(--dur-base) var(--ease), border-color var(--dur-base) var(--ease);
+}
+.wc-carousel__arrow:hover {
+  background: var(--teal-500);
+  color: var(--white);
+  border-color: var(--teal-500);
+}
+.wc-carousel__arrow--prev { left: -8px; }
+.wc-carousel__arrow--next { right: -8px; }
+
+.wc-carousel__dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+.wc-carousel__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: var(--ink-300);
+  transition: width 0.4s, background 0.4s;
+}
+.wc-carousel__dot.is-active {
+  width: 26px;
+  background: var(--teal-500);
+}
+
+@media (max-width: 768px) {
+  .wc-carousel__arrow { width: 40px; height: 40px; }
+  .wc-carousel__arrow--prev { left: 4px; }
+  .wc-carousel__arrow--next { right: 4px; }
+  .wc-carousel__card { width: 240px; }
+}
+@media (max-width: 480px) {
+  .wc-carousel__card { width: 200px; padding: 14px; }
+  .wc-carousel__name { font-size: 1.0625rem; }
+  .wc-carousel__desc { font-size: 0.8125rem; min-height: 72px; }
 }
