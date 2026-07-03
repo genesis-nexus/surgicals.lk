@@ -1,0 +1,6 @@
+# security.txt for surgicals.lk (RFC 9116)
+Contact: mailto:hello@surgicals.lk
+Expires: 2027-07-03T00:00:00.000Z
+Preferred-Languages: en, si, ta
+Canonical: https://surgicals.lk/.well-known/security.txt
+Policy: https://github.com/genesis-nexus/surgicals.lk/blob/main/SECURITY.md

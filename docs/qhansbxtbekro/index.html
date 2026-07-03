@@ -3,15 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+<script src="../early.js"></script>
 <title>Hettiarachchi Surgicals — Admin</title>
 <meta name="robots" content="noindex, nofollow">
 <!-- jsPDF + autotable for PDF export -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="vendor/jspdf.umd.min.js"></script>
+<script src="vendor/jspdf.plugin.autotable.min.js"></script>
 <!-- docx.js for Word export -->
-<script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
+<script src="vendor/docx.umd.js"></script>
 <!-- Signature pad for digital signatures -->
-<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
+<script src="vendor/signature_pad.umd.min.js"></script>
 <style>
   :root {
     --teal-50: #E6F4F4;
@@ -557,9 +560,11 @@
 
 <script>
 // ═══════════════════════════════════════════════════════════════
-// PASSWORD — SHA-256 of "xk9pLmQ4wN2vRt7"
+// ACCESS GATE — stores only a SHA-256 hash; never commit the
+// plaintext password anywhere in this repository.
+// To rotate: printf '%s' 'newpassword' | sha256sum
 // ═══════════════════════════════════════════════════════════════
-const PASSWORD_HASH = "3580f23c6d812683242254a4bc0e276c12dadb6a1fe5a269be271d66fe75404e";
+const PASSWORD_HASH = "3e962868a9de9b8fb09f49e2ea12a40302b4d87bc97448fbcac1e7dffa72dd1b";
 const SESSION_KEY   = "hs_admin_auth";
 
 async function sha256hex(str) {
