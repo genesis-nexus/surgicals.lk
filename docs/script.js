@@ -313,6 +313,17 @@ const QuoteStore = {
 
 // ---------- Rendering ----------
 
+// Mark freshly rendered cards for the shared scroll-reveal system (motion.js).
+function revealCards(grid) {
+  if (!grid || !window.SurgicalsMotion) return;
+  Array.from(grid.children).forEach((card, i) => {
+    if (!card.matches(".product-card")) return;
+    card.setAttribute("data-reveal", "");
+    card.style.setProperty("--reveal-delay", `${(i % 4) * 70}ms`);
+    window.SurgicalsMotion.observe(card);
+  });
+}
+
 function renderFeaturedGrid() {
   const grid = document.getElementById("featured-gallery");
   if (!grid) return;
@@ -326,6 +337,7 @@ function renderFeaturedGrid() {
     frag.appendChild(card);
   });
   grid.appendChild(frag);
+  revealCards(grid);
 }
 
 function renderProductGrid(filter = "all") {
@@ -354,6 +366,7 @@ function renderProductGrid(filter = "all") {
     frag.appendChild(card);
   });
   grid.appendChild(frag);
+  revealCards(grid);
   if (count) count.textContent = `${list.length} products`;
 }
 
@@ -695,12 +708,22 @@ function renderCardHtml(p) {
 
 function initFilters() {
   const chips = document.querySelectorAll(".toolbar__chips .chip");
+  const grid = document.getElementById("products-gallery");
   chips.forEach(chip => {
     chip.addEventListener("click", () => {
       chips.forEach(c => { c.classList.remove("chip--active"); c.setAttribute("aria-selected", "false"); });
       chip.classList.add("chip--active");
       chip.setAttribute("aria-selected", "true");
-      renderProductGrid(chip.dataset.category);
+      // Soft crossfade between filter states
+      if (grid && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        grid.classList.add("is-swapping");
+        setTimeout(() => {
+          renderProductGrid(chip.dataset.category);
+          grid.classList.remove("is-swapping");
+        }, 180);
+      } else {
+        renderProductGrid(chip.dataset.category);
+      }
     });
   });
 }

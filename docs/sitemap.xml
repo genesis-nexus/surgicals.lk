@@ -1,146 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-  <!-- Homepage -->
+
+  <!-- Homepage - full medical supply catalog -->
   <url>
     <loc>https://surgicals.lk/</loc>
-    <lastmod>2026-06-12</lastmod>
+    <lastmod>2026-07-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://surgicals.lk/images/og-image.jpg</image:loc>
+      <image:title>Hettiarachchi Surgicals - medical supplies in Sri Lanka</image:title>
+    </image:image>
   </url>
 
   <!-- Wheelchairs landing page -->
   <url>
     <loc>https://surgicals.lk/wheelchairs-sri-lanka.html</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://surgicals.lk/images/new-cat/optimized/fully-functional-wheel-chair-1.png</image:loc>
+      <image:title>Fully functional wheelchair - Sri Lanka</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://surgicals.lk/images/new-cat/optimized/adult-wheel-chair.png</image:loc>
+      <image:title>Adult wheelchair - Sri Lanka</image:title>
+    </image:image>
   </url>
 
-  <!-- Product Deep Links (for site crawlability) -->
-  <!-- Mobility Aids - High Priority -->
+  <!-- Surgical consumables landing page -->
   <url>
-    <loc>https://surgicals.lk/?product=WC01</loc>
-    <lastmod>2026-06-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://surgicals.lk/?product=WC02</loc>
-    <lastmod>2026-06-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://surgicals.lk/?product=WC03</loc>
-    <lastmod>2026-06-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://surgicals.lk/?product=CO03</loc>
-    <lastmod>2026-06-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://surgicals.lk/?product=CN01</loc>
-    <lastmod>2026-06-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Diagnostics - High Search Volume -->
-  <url>
-    <loc>https://surgicals.lk/?product=DM01</loc>
-    <lastmod>2026-06-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://surgicals.lk/?product=DM02</loc>
-    <lastmod>2026-06-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://surgicals.lk/?product=DM07</loc>
-    <lastmod>2026-06-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Surgical Instruments - High Intent -->
-  <url>
-    <loc>https://surgicals.lk/?product=SG01</loc>
-    <lastmod>2026-06-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://surgicals.lk/?product=SG02</loc>
-    <lastmod>2026-06-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <!-- Hospital Furniture -->
-  <url>
-    <loc>https://surgicals.lk/?product=MG1010</loc>
-    <lastmod>2026-06-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://surgicals.lk/?product=MG2012</loc>
-    <lastmod>2026-06-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Home Care -->
-  <url>
-    <loc>https://surgicals.lk/?product=BD01</loc>
-    <lastmod>2026-06-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://surgicals.lk/?product=DI01</loc>
-    <lastmod>2026-06-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Page Sections -->
-  <url>
-    <loc>https://surgicals.lk/#popular</loc>
-    <lastmod>2026-06-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://surgicals.lk/#products</loc>
-    <lastmod>2026-06-08</lastmod>
+    <loc>https://surgicals.lk/surgical-consumables-sri-lanka.html</loc>
+    <lastmod>2026-07-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://surgicals.lk/images/products/optimized/IMG_2859%202.jpg</image:loc>
+      <image:title>Panther linear cutter surgical stapler - Sri Lanka</image:title>
+    </image:image>
   </url>
+
+  <!-- Hospital furniture landing page -->
   <url>
-    <loc>https://surgicals.lk/#about</loc>
-    <lastmod>2026-06-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://surgicals.lk/hospital-furniture-sri-lanka.html</loc>
+    <lastmod>2026-07-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://surgicals.lk/images/furniture/optimized/mg-1017.png</image:loc>
+      <image:title>Five function hydraulic hospital bed - Sri Lanka</image:title>
+    </image:image>
   </url>
-  <url>
-    <loc>https://surgicals.lk/#contact</loc>
-    <lastmod>2026-06-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://surgicals.lk/#faq</loc>
-    <lastmod>2026-06-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
+
 </urlset>
