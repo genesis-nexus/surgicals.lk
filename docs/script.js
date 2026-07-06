@@ -4,6 +4,13 @@
 const WHATSAPP_NUMBER = "94718208654";  // Galle WhatsApp
 const WHATSAPP_COLOMBO = "94789669666"; // Colombo WhatsApp
 
+// Escape untrusted strings before inserting into HTML (XSS defense).
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, ch => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  })[ch]);
+}
+
 const PRODUCT_CATEGORIES = {
   "mobility-aids": "Mobility Aids",
   furniture: "Hospital Furniture",
@@ -317,7 +324,18 @@ const QuoteStore = {
   load() {
     try {
       const raw = localStorage.getItem(this.key);
-      if (raw) this.lines = JSON.parse(raw);
+      const parsed = raw ? JSON.parse(raw) : [];
+      // Re-derive every line from the trusted catalog: only known SKUs survive,
+      // and title/image always come from our own data, never from storage.
+      this.lines = (Array.isArray(parsed) ? parsed : [])
+        .map(l => {
+          const product = products.find(p => p.sku === (l && l.sku));
+          if (!product) return null;
+          const qty = Math.min(Math.max(parseInt(l.qty, 10) || 1, 1), 999);
+          return { sku: product.sku, title: product.title, image: product.image, qty };
+        })
+        .filter(Boolean)
+        .slice(0, 100);
     } catch (_) {
       this.lines = [];
     }
@@ -495,10 +513,10 @@ function renderQuoteDrawer(lines) {
         </picture>
       </div>
       <div class="quote-line__info">
-        <div class="quote-line__title">${line.title}</div>
-        <div class="quote-line__sku">Code ${line.sku}</div>
+        <div class="quote-line__title">${escapeHtml(line.title)}</div>
+        <div class="quote-line__sku">Code ${escapeHtml(line.sku)}</div>
         <div class="quote-line__controls">
-          <div class="qty-stepper" role="group" aria-label="Quantity for ${line.title}">
+          <div class="qty-stepper" role="group" aria-label="Quantity for ${escapeHtml(line.title)}">
             <button type="button" data-dec="${line.sku}" aria-label="Decrease">−</button>
             <span>${line.qty}</span>
             <button type="button" data-inc="${line.sku}" aria-label="Increase">+</button>
@@ -735,7 +753,7 @@ function initHeader() {
     if (!grid) return;
     grid.innerHTML = "";
     if (list.length === 0) {
-      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:48px 16px;color:var(--ink-500);"><p>No products match "${raw}". <a href="https://wa.me/${WHATSAPP_NUMBER}" target="_blank" rel="noopener">Ask us on WhatsApp →</a></p></div>`;
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:48px 16px;color:var(--ink-500);"><p>No products match "${escapeHtml(raw)}". <a href="https://wa.me/${WHATSAPP_NUMBER}" target="_blank" rel="noopener">Ask us on WhatsApp →</a></p></div>`;
       if (count) count.textContent = "0 products";
       return;
     }

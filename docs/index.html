@@ -4,23 +4,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; media-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="description"
     content="Wheelchairs, hospital beds, BP monitors, glucometers, crutches, walking frames & surgical consumables in Sri Lanka. Galle showroom or order online via WhatsApp.">
   <meta name="keywords"
     content="wheelchair Sri Lanka, hospital bed Sri Lanka, BP monitor, blood pressure monitor, glucometer, glucose meter, crutches, walking frame, walking cane, commode chair, pulse oximeter, stethoscope, infrared thermometer, examination bed, patient trolley, surgical stapler, anti-bedsore mattress, adult diapers, cervical collar, lumbar support, NMRA registered, medical supplies Galle, medical equipment Colombo">
   <meta name="author" content="Hettiarachchi Surgicals">
   <meta name="robots" id="robots-meta" content="index, follow, max-image-preview:large">
-  <script>
-    // Query-param variants (?product=, ?q=) are in-page deep links, not separate pages.
-    // Mark them noindex so Google doesn't accumulate "Alternate page with proper canonical tag" entries.
-    (function() {
-      var p = new URLSearchParams(window.location.search);
-      if (p.has("product") || p.has("q")) {
-        var m = document.getElementById("robots-meta");
-        if (m) m.content = "noindex, follow";
-      }
-    })();
-  </script>
+  <script src="early.js"></script>
   <meta name="theme-color" content="#0E7C7B">
 
   <!-- Local SEO / Geo signals — Galle showroom -->
@@ -222,12 +214,7 @@
   </script>
 
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-BKS3RG4P6J"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-BKS3RG4P6J');
-  </script>
+  <script src="gtag-init.js"></script>
 </head>
 
 <body>
