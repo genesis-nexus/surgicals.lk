@@ -181,14 +181,6 @@
       },
       {
         "@type": "Question",
-        "name": "Are your wheelchairs NMRA registered?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes, our medical mobility equipment is sourced through our NMRA-compliant catalog, suitable for hospitals, clinics and home use."
-        }
-      },
-      {
-        "@type": "Question",
         "name": "How do I get a price for a wheelchair?",
         "acceptedAnswer": {
           "@type": "Answer",
@@ -323,9 +315,10 @@
               </div>
             <figure class="showroom__exhibit is-active" data-exhibit="WC01" aria-hidden="false">
               <div class="showroom__media-box">
-                <video class="showroom__media product-preview-video" poster="images/videos/adult-wheelchair-poster.jpg" muted loop playsinline preload="none" aria-label="Adult Wheelchair — 360-degree rotating product preview">
-                  <source data-src="images/videos/adult-wheelchair.mp4" type="video/mp4">
-                </video>
+                <picture>
+                  <source srcset="images/new-cat/optimized/adult-wheel-chair.webp" type="image/webp">
+                  <img src="images/new-cat/optimized/adult-wheel-chair.png" alt="Adult Wheelchair (Code WC01)" loading="eager" width="1000" height="774">
+                </picture>
               </div>
             </figure>
             <figure class="showroom__exhibit showroom__exhibit--dual" data-exhibit="WC02" aria-hidden="true">
@@ -346,9 +339,10 @@
             </figure>
             <figure class="showroom__exhibit" data-exhibit="WC03" aria-hidden="true">
               <div class="showroom__media-box">
-                <video class="showroom__media product-preview-video" poster="images/videos/fully-functional-wheelchair-poster.jpg" muted loop playsinline preload="none" aria-label="Fully Functional Wheelchair — 360-degree rotating product preview">
-                  <source data-src="images/videos/fully-functional-wheelchair.mp4" type="video/mp4">
-                </video>
+                <picture>
+                  <source srcset="images/new-cat/optimized/fully-functional-wheel-chair-1.webp" type="image/webp">
+                  <img src="images/new-cat/optimized/fully-functional-wheel-chair-1.png" alt="Fully Functional Wheelchair (Code WC03)" loading="lazy" width="1000" height="774">
+                </picture>
               </div>
             </figure>
             <figure class="showroom__exhibit showroom__exhibit--dual" data-exhibit="WC04" aria-hidden="true">
@@ -417,7 +411,6 @@
                 <li>Foldable steel frame — fits easily in a car boot</li>
                 <li>Comfortable leatherette seat &amp; backrest</li>
                 <li>Solid, low-maintenance tyres</li>
-                <li>Watch it turn — full 360&deg; rotating preview</li>
             </ul>
             <div class="showroom__cta">
               <a href="https://wa.me/94789669666?text=Hi%2C%20I%27m%20interested%20in%20the%20Adult%20Wheelchair%20(Code%20WC01)" target="_blank" rel="noopener" class="btn btn--whatsapp">
@@ -453,7 +446,6 @@
                 <li>Elevating, adjustable leg rests</li>
                 <li>High backrest for extended comfort</li>
                 <li>Ideal for post-surgery &amp; swelling management</li>
-                <li>Watch it turn — full 360&deg; rotating preview</li>
             </ul>
             <div class="showroom__cta">
               <a href="https://wa.me/94789669666?text=Hi%2C%20I%27m%20interested%20in%20the%20Fully%20Functional%20Wheelchair%20(Code%20WC03)" target="_blank" rel="noopener" class="btn btn--whatsapp">
@@ -548,10 +540,6 @@
             <p>Our range includes standard adult wheelchairs, functional wheelchairs with adjustable footrests, fully-functional wheelchairs with elevating leg rests, and commode wheelchairs that combine mobility with toileting needs.</p>
           </details>
           <details>
-            <summary>Are your wheelchairs NMRA registered?</summary>
-            <p>Yes, our medical mobility equipment is sourced through our NMRA-compliant catalog, suitable for hospitals, clinics and home use.</p>
-          </details>
-          <details>
             <summary>How do I get a price for a wheelchair?</summary>
             <p>Send us a WhatsApp message with the wheelchair type you need (or the product code, e.g. WC01–WC04) and your delivery location. Our team replies the same day with a stamped quotation.</p>
           </details>
@@ -640,8 +628,7 @@
 
   <script src="motion.js"></script>
   <script>
-    // Wheelchair showroom: rotating-platform stage with exhibit switching,
-    // lazy-loaded 360° videos and auto-advance.
+    // Wheelchair showroom: product stage with exhibit switching and auto-advance.
     (function () {
       var root = document.getElementById('wc-showroom');
       if (!root) return;
@@ -661,15 +648,6 @@
 
       function pad(n) { return n < 10 ? '0' + n : String(n); }
 
-      function loadVideo(video) {
-        var source = video.querySelector('source[data-src]');
-        if (source) {
-          source.src = source.getAttribute('data-src');
-          source.removeAttribute('data-src');
-          video.load();
-        }
-      }
-
       function goTo(i, dir) {
         var n = exhibits.length;
         var idx = ((i % n) + n) % n;
@@ -678,15 +656,6 @@
           ex.classList.toggle('is-active', on);
           ex.classList.toggle('is-leaving-back', !on && dir < 0);
           ex.setAttribute('aria-hidden', on ? 'false' : 'true');
-          var video = ex.querySelector('video');
-          if (video) {
-            if (on && inView) {
-              loadVideo(video);
-              video.play().catch(function () {});
-            } else {
-              video.pause();
-            }
-          }
         });
         infos.forEach(function (el, j) { el.classList.toggle('is-active', j === idx); });
         thumbs.forEach(function (t, j) {
@@ -722,7 +691,7 @@
         if (e.key === 'ArrowRight') { goTo(active + 1, 1); startAuto(); }
       });
 
-      // Only run videos + auto-advance while the showroom is on screen.
+      // Only auto-advance while the showroom is on screen.
       if ('IntersectionObserver' in window) {
         var observer = new IntersectionObserver(function (entries) {
           entries.forEach(function (entry) {
@@ -732,10 +701,6 @@
               startAuto();
             } else {
               stopAuto();
-              exhibits.forEach(function (ex) {
-                var video = ex.querySelector('video');
-                if (video) video.pause();
-              });
             }
           });
         }, { rootMargin: '80px' });
