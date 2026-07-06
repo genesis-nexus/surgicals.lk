@@ -292,27 +292,8 @@ p { color: var(--ink-700); }
   transition: color var(--dur-fast) var(--ease);
 }
 .utility-bar__link:hover { color: var(--white); }
-.utility-bar__lang {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding-left: 16px;
-  border-left: 1px solid rgba(255, 255, 255, 0.15);
-}
-.lang-pill {
-  padding: 3px 8px;
-  border-radius: var(--radius-pill);
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.5);
-  cursor: default;
-}
-.lang-pill--active {
-  background: rgba(255, 255, 255, 0.12);
-  color: var(--white);
-}
 @media (max-width: 768px) {
   .utility-bar__left { display: none; }
-  .utility-bar__lang { display: none; }
   .utility-bar__inner { justify-content: flex-end; }
   /* Hide the Galle label and divider — keep only the two links per location */
   .utility-bar__sep--divider { display: none; }
@@ -1185,18 +1166,25 @@ p { color: var(--ink-700); }
 }
 .product-card__actions {
   display: flex;
+  flex-wrap: nowrap;
   gap: 6px;
   padding: 0 16px 16px;
   align-items: stretch;
 }
-.product-card__actions .btn { flex: 1; }
+.product-card__actions .btn {
+  flex: 1 1 0;
+  min-width: 0;
+  white-space: nowrap;
+  padding-left: 10px;
+  padding-right: 10px;
+}
 .product-card__actions .btn--icon { flex: 0 0 auto; padding: 8px; }
 .product-card__share {
   background: var(--ink-100);
   color: var(--ink-700);
   border-radius: var(--radius-md);
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: auto;
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
@@ -2095,3 +2083,558 @@ p { color: var(--ink-700); }
   .wc-carousel__name { font-size: 1.0625rem; }
   .wc-carousel__desc { font-size: 0.8125rem; min-height: 72px; }
 }
+
+/* ============================================================
+   Motion system — calm, healthcare-appropriate reveals.
+   Only active when motion.js adds .has-reveal to <html>, which it
+   never does for prefers-reduced-motion users, so content is
+   always visible without JS or with reduced motion.
+   ============================================================ */
+.has-reveal [data-reveal] {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.65s var(--ease),
+    transform 0.65s var(--ease);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+.has-reveal [data-reveal="left"]  { transform: translateX(-30px); }
+.has-reveal [data-reveal="right"] { transform: translateX(30px); }
+.has-reveal [data-reveal="zoom"]  { transform: scale(0.95); }
+.has-reveal [data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* Product grid crossfade when filters/search re-render */
+.product-grid {
+  transition: opacity 0.22s var(--ease), transform 0.22s var(--ease);
+}
+.product-grid.is-swapping {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+/* Ambient hero motion */
+@media (prefers-reduced-motion: no-preference) {
+  .hero__card {
+    animation: float-soft 6.5s ease-in-out infinite;
+  }
+  .hero__card--years { animation-delay: 1.8s; }
+  @keyframes float-soft {
+    0%, 100% { translate: 0 0; }
+    50%      { translate: 0 -7px; }
+  }
+  .hero__content .eyebrow,
+  .hero__content h1,
+  .hero__content .hero__lede,
+  .hero__content .hero__actions,
+  .hero__content .hero__meta {
+    animation: hero-rise 0.8s var(--ease) both;
+  }
+  .hero__content h1            { animation-delay: 0.08s; }
+  .hero__content .hero__lede   { animation-delay: 0.16s; }
+  .hero__content .hero__actions{ animation-delay: 0.24s; }
+  .hero__content .hero__meta   { animation-delay: 0.32s; }
+  .hero__visual { animation: hero-fade 0.9s var(--ease) 0.15s both; }
+  @keyframes hero-rise {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes hero-fade {
+    from { opacity: 0; transform: scale(0.97); }
+    to   { opacity: 1; transform: none; }
+  }
+}
+
+/* ECG heartbeat divider — small healthcare motif */
+.ecg-divider {
+  display: flex;
+  justify-content: center;
+  color: var(--teal-500);
+  margin-bottom: 10px;
+}
+.ecg-divider svg { width: 132px; height: 26px; overflow: visible; }
+.ecg-divider path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ecg-divider path {
+    stroke-dasharray: 220;
+    stroke-dashoffset: 220;
+    animation: ecg-draw 3.4s linear infinite;
+  }
+  @keyframes ecg-draw {
+    0%   { stroke-dashoffset: 220; opacity: 0.25; }
+    45%  { stroke-dashoffset: 0;   opacity: 1; }
+    75%  { stroke-dashoffset: 0;   opacity: 1; }
+    100% { stroke-dashoffset: -220; opacity: 0.25; }
+  }
+}
+
+/* Buttons: gentle lift */
+.btn {
+  transition:
+    background var(--dur-base) var(--ease),
+    color var(--dur-base) var(--ease),
+    box-shadow var(--dur-base) var(--ease),
+    transform var(--dur-base) var(--ease);
+}
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0); }
+
+/* ============================================================
+   Wheelchair showroom — "rotating platform" product stage
+   ============================================================ */
+.section--showroom {
+  background:
+    radial-gradient(90% 70% at 50% -10%, var(--teal-50) 0%, transparent 60%),
+    var(--white);
+}
+/* Light studio backdrop — the chairs are black + chrome, so keep the stage pale */
+.showroom {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+  gap: clamp(20px, 3.5vw, 48px);
+  align-items: center;
+  border-radius: 30px;
+  padding: clamp(22px, 4vw, 54px);
+  overflow: hidden;
+  color: var(--ink-700);
+  background:
+    radial-gradient(120% 95% at 50% 0%, rgba(14, 124, 123, 0.07) 0%, transparent 55%),
+    linear-gradient(168deg, #FFFFFF 0%, #F1F6F7 52%, #E5EDEF 100%);
+  border: 1px solid var(--teal-100);
+  box-shadow: 0 40px 90px -48px rgba(8, 40, 44, 0.35);
+}
+
+/* Stage */
+.showroom__stage-wrap { position: relative; min-width: 0; }
+.showroom__stage {
+  position: relative;
+  height: clamp(340px, 44vw, 500px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.showroom__beam {
+  position: absolute;
+  top: -18%;
+  left: 50%;
+  width: 130%;
+  aspect-ratio: 1 / 1;
+  transform: translateX(-50%);
+  background: conic-gradient(
+    from 180deg at 50% 0%,
+    transparent 41%,
+    rgba(14, 124, 123, 0.05) 47%,
+    rgba(14, 124, 123, 0.09) 50%,
+    rgba(14, 124, 123, 0.05) 53%,
+    transparent 59%
+  );
+  pointer-events: none;
+}
+.showroom__spotlight {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(46% 40% at 50% 34%, rgba(14, 124, 123, 0.08), transparent 72%);
+  pointer-events: none;
+}
+
+/* Turntable platform */
+.showroom__platform {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: min(430px, 86%);
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, 42%);
+  pointer-events: none;
+}
+.showroom__platform-tilt {
+  position: absolute;
+  inset: 0;
+  transform: scaleY(0.26);
+}
+.showroom__platform-glow {
+  position: absolute;
+  inset: 6%;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgba(14, 124, 123, 0.18) 0%,
+    rgba(14, 124, 123, 0.07) 52%,
+    transparent 74%
+  );
+}
+.showroom__platform-ring,
+.showroom__platform-ticks {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+.showroom__platform-ring {
+  background: conic-gradient(
+    from 0deg,
+    rgba(14, 124, 123, 0) 0deg,
+    rgba(14, 124, 123, 0.65) 55deg,
+    rgba(14, 124, 123, 0) 120deg,
+    rgba(14, 124, 123, 0) 180deg,
+    rgba(14, 124, 123, 0.35) 240deg,
+    rgba(14, 124, 123, 0) 300deg
+  );
+  -webkit-mask: radial-gradient(closest-side, transparent 84%, #000 86%, #000 97%, transparent 99%);
+          mask: radial-gradient(closest-side, transparent 84%, #000 86%, #000 97%, transparent 99%);
+}
+.showroom__platform-ticks {
+  inset: 7.5%;
+  border: 1px dashed rgba(14, 124, 123, 0.30);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .showroom__platform-ring  { animation: platform-spin 8s linear infinite; }
+  .showroom__platform-ticks { animation: platform-spin 26s linear infinite reverse; }
+  @keyframes platform-spin { to { transform: rotate(360deg); } }
+}
+
+/* Exhibits (one per wheelchair, stacked & toggled) */
+.showroom__exhibit {
+  position: absolute;
+  inset: 0 0 8% 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(42px) scale(0.94);
+  transition:
+    opacity 0.55s var(--ease),
+    transform 0.55s var(--ease),
+    visibility 0s linear 0.55s;
+}
+.showroom__exhibit.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0.12s, 0.12s, 0s;
+}
+.showroom__exhibit.is-leaving-back { transform: translateX(-42px) scale(0.94); }
+.showroom__media-box {
+  position: relative;
+  width: min(460px, 92%);
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.showroom__media,
+.showroom__media-box img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 26px 22px rgba(15, 23, 42, 0.22));
+}
+@media (prefers-reduced-motion: no-preference) {
+  .showroom__exhibit.is-active .showroom__media-box {
+    animation: exhibit-float 7s ease-in-out infinite;
+  }
+  @keyframes exhibit-float {
+    0%, 100% { translate: 0 0; }
+    50%      { translate: 0 -8px; }
+  }
+}
+
+/* Two-angle exhibits: slow crossfade simulates the turntable */
+.showroom__media--a,
+.showroom__media--b {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.showroom__media--a img,
+.showroom__media--b img { width: auto; height: 100%; }
+.showroom__media--b { opacity: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .showroom__exhibit--dual .showroom__media--a { animation: xfade-a 9s ease-in-out infinite; }
+  .showroom__exhibit--dual .showroom__media--b { animation: xfade-b 9s ease-in-out infinite; }
+  @keyframes xfade-a {
+    0%, 40%  { opacity: 1; }
+    50%, 90% { opacity: 0; }
+    100%     { opacity: 1; }
+  }
+  @keyframes xfade-b {
+    0%, 40%  { opacity: 0; }
+    50%, 90% { opacity: 1; }
+    100%     { opacity: 0; }
+  }
+}
+
+/* Ghost slide number behind the product */
+.showroom__ghost {
+  position: absolute;
+  top: 2%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(6rem, 15vw, 11rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: rgba(8, 74, 72, 0.07);
+  user-select: none;
+  pointer-events: none;
+  font-family: var(--font-mono);
+}
+
+/* Info panel */
+.showroom__panel { position: relative; min-height: 380px; min-width: 0; }
+.showroom__info {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(18px);
+  transition:
+    opacity 0.5s var(--ease),
+    transform 0.5s var(--ease),
+    visibility 0s linear 0.5s;
+}
+.showroom__info.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0.18s, 0.18s, 0s;
+}
+.showroom__kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--teal-600);
+  margin-bottom: 14px;
+}
+.showroom__kicker .code {
+  font-family: var(--font-mono);
+  background: var(--teal-50);
+  border: 1px solid var(--teal-100);
+  color: var(--teal-700);
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  letter-spacing: 0.06em;
+}
+.showroom__info h3 {
+  color: var(--ink-900);
+  font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+}
+.showroom__info > p {
+  margin-top: 12px;
+  color: var(--ink-500);
+  font-size: 1rem;
+  line-height: 1.65;
+  max-width: 46ch;
+}
+.showroom__specs {
+  margin-top: 20px;
+  display: grid;
+  gap: 10px;
+}
+.showroom__specs li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--ink-700);
+  font-size: 0.9375rem;
+}
+.showroom__specs li::before {
+  content: "";
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background:
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%230B6260" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>') center / 11px no-repeat,
+    var(--teal-50);
+  border: 1px solid var(--teal-100);
+}
+.showroom__cta {
+  margin-top: 26px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.showroom__cta .btn--outline-light {
+  border: 1px solid var(--ink-300);
+  color: var(--ink-700);
+  background: transparent;
+}
+.showroom__cta .btn--outline-light:hover {
+  background: var(--ink-100);
+  color: var(--ink-900);
+}
+
+/* Controls: arrows + thumbnails + progress */
+.showroom__controls {
+  position: relative;
+  z-index: 3;
+  margin-top: clamp(30px, 5vw, 44px);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.showroom__arrow {
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid var(--ink-300);
+  color: var(--ink-700);
+  background: rgba(255, 255, 255, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  transition: background var(--dur-base) var(--ease), border-color var(--dur-base) var(--ease), transform var(--dur-base) var(--ease);
+}
+.showroom__arrow:hover {
+  background: var(--teal-50);
+  border-color: var(--teal-500);
+  transform: translateY(-2px);
+}
+.showroom__thumbs {
+  flex: 1;
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 4px 2px;
+}
+.showroom__thumbs::-webkit-scrollbar { display: none; }
+.showroom__thumb {
+  position: relative;
+  flex-shrink: 0;
+  width: 78px;
+  height: 64px;
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: var(--white);
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    border-color var(--dur-base) var(--ease),
+    background var(--dur-base) var(--ease),
+    transform var(--dur-base) var(--ease);
+}
+.showroom__thumb img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.showroom__thumb:hover { transform: translateY(-2px); }
+.showroom__thumb.is-active {
+  border-color: var(--teal-500);
+  background: var(--teal-50);
+  box-shadow: 0 0 0 3px rgba(14, 124, 123, 0.18);
+}
+.showroom__thumb .showroom__thumb-code {
+  position: absolute;
+  bottom: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 1px 7px;
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  border: 1px solid rgba(15, 23, 42, 0.15);
+  color: var(--teal-700);
+  white-space: nowrap;
+}
+.showroom__counter {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--ink-500);
+  letter-spacing: 0.08em;
+}
+.showroom__counter strong { color: var(--ink-900); font-weight: 600; }
+
+@media (max-width: 960px) {
+  .showroom { grid-template-columns: 1fr; }
+  .showroom__stage { height: clamp(300px, 62vw, 420px); }
+  .showroom__panel { min-height: 0; }
+  .showroom__info {
+    position: relative;
+    inset: auto;
+    display: none;
+  }
+  .showroom__info.is-active { display: flex; }
+}
+@media (max-width: 560px) {
+  .showroom { border-radius: 22px; }
+  .showroom__arrow { width: 40px; height: 40px; }
+  .showroom__thumb { width: 64px; height: 54px; }
+}
+
+/* ============================================================
+   Category landing pages (wheelchairs / consumables / furniture)
+   ============================================================ */
+.breadcrumb {
+  padding-top: 24px;
+  font-size: 0.875rem;
+  color: var(--ink-500);
+}
+.breadcrumb a { font-weight: 500; }
+.landing-cross-links {
+  margin-top: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.landing-cross-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 9px 16px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--teal-100);
+  background: var(--teal-50);
+  color: var(--teal-700);
+  transition: background var(--dur-base) var(--ease), transform var(--dur-base) var(--ease), box-shadow var(--dur-base) var(--ease);
+}
+.landing-cross-links a:hover {
+  background: var(--teal-100);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.showroom__media--a picture,
+.showroom__media--b picture {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+

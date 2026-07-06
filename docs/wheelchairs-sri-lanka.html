@@ -4,6 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; media-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <script src="early.js"></script>
   <meta name="description"
     content="Buy wheelchairs in Sri Lanka — manual, fully-functional and commode wheelchairs with Colombo and Galle delivery. NMRA-registered, order via WhatsApp for same-day quotation.">
   <meta name="author" content="Hettiarachchi Surgicals">
@@ -181,14 +184,6 @@
       },
       {
         "@type": "Question",
-        "name": "Are your wheelchairs NMRA registered?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes, our medical mobility equipment is sourced through our NMRA-compliant catalog, suitable for hospitals, clinics and home use."
-        }
-      },
-      {
-        "@type": "Question",
         "name": "How do I get a price for a wheelchair?",
         "acceptedAnswer": {
           "@type": "Answer",
@@ -200,12 +195,7 @@
   </script>
 
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-BKS3RG4P6J"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-BKS3RG4P6J');
-  </script>
+  <script src="gtag-init.js"></script>
 </head>
 
 <body>
@@ -257,7 +247,7 @@
 
   <main id="main-content">
 
-    <nav class="container" aria-label="Breadcrumb" style="padding-top: 24px; font-size: 0.875rem;">
+    <nav class="container breadcrumb" aria-label="Breadcrumb">
       <a href="/">Home</a> <span aria-hidden="true">/</span> <span>Wheelchairs in Sri Lanka</span>
     </nav>
 
@@ -299,114 +289,206 @@
       </div>
     </section>
 
-    <section class="section section--products" id="wheelchair-range">
+    <section class="section section--products section--showroom" id="wheelchair-range">
       <div class="container">
-        <div class="section-header">
+        <div class="section-header" data-reveal>
+          <div class="ecg-divider" aria-hidden="true"><svg viewBox="0 0 132 26"><path d="M0 13h28l6-9 8 18 8-14 5 5h22l6-7 8 14 6-7h35"/></svg></div>
           <span class="eyebrow">Our wheelchair range</span>
           <h2>Wheelchairs for home, hospital &amp; clinical use</h2>
           <p class="section-subtitle">Every wheelchair is available for WhatsApp order with delivery to Colombo, Galle and the rest of Sri Lanka.</p>
         </div>
 
-        <div class="wc-carousel" id="wc-carousel">
-          <button type="button" class="wc-carousel__arrow wc-carousel__arrow--prev" aria-label="Previous wheelchair">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-          </button>
-
-          <div class="wc-carousel__viewport">
-            <div class="wc-carousel__track" id="wc-carousel-track">
-              <article class="wc-carousel__card" data-code="WC01">
-                <div class="wc-carousel__stage">
-                  <span class="wc-carousel__badge">WC01</span>
-                  <video
-                    class="wc-carousel__media product-preview-video"
-                    poster="images/videos/adult-wheelchair-poster.jpg"
-                    muted loop playsinline preload="none"
-                    aria-label="Adult Wheelchair — 360-degree product preview">
-                    <source data-src="images/videos/adult-wheelchair.mp4" type="video/mp4">
-                  </video>
+        <div class="showroom" id="wc-showroom" data-reveal="zoom">
+          <div class="showroom__stage-wrap">
+            <div class="showroom__stage">
+              <div class="showroom__beam" aria-hidden="true"></div>
+              <div class="showroom__spotlight" aria-hidden="true"></div>
+              <div class="showroom__ghost" id="showroom-ghost" aria-hidden="true">01</div>
+              <div class="showroom__platform" aria-hidden="true">
+                <div class="showroom__platform-tilt">
+                  <span class="showroom__platform-glow"></span>
+                  <span class="showroom__platform-ring"></span>
+                  <span class="showroom__platform-ticks"></span>
                 </div>
-                <span class="wc-carousel__meta">Mobility Aid · Code WC01</span>
-                <h3 class="wc-carousel__name">Adult Wheelchair</h3>
-                <p class="wc-carousel__desc">Standard foldable manual wheelchair, suitable for everyday home and hospital use.</p>
-                <a href="https://wa.me/94789669666?text=Hi%2C%20I%27m%20interested%20in%20the%20Adult%20Wheelchair%20(Code%20WC01)" target="_blank" rel="noopener" class="wc-carousel__btn">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374A9.86 9.86 0 0 1 2.166 11.89c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
-                  Order on WhatsApp
-                </a>
-              </article>
-
-              <article class="wc-carousel__card" data-code="WC02">
-                <div class="wc-carousel__stage">
-                  <span class="wc-carousel__badge">WC02</span>
+              </div>
+            <figure class="showroom__exhibit is-active" data-exhibit="WC01" aria-hidden="false">
+              <div class="showroom__media-box">
+                <picture>
+                  <source srcset="images/new-cat/optimized/adult-wheel-chair.webp" type="image/webp">
+                  <img src="images/new-cat/optimized/adult-wheel-chair.png" alt="Adult Wheelchair (Code WC01)" loading="eager" width="1000" height="774">
+                </picture>
+              </div>
+            </figure>
+            <figure class="showroom__exhibit showroom__exhibit--dual" data-exhibit="WC02" aria-hidden="true">
+              <div class="showroom__media-box">
+                <span class="showroom__media--a">
                   <picture>
                     <source srcset="images/new-cat/optimized/functional-wheel-chair-1.webp" type="image/webp">
-                    <img class="wc-carousel__media" src="images/new-cat/optimized/functional-wheel-chair-1.png" alt="Functional Wheelchair — Code WC02" loading="lazy" width="600" height="600">
+                    <img src="images/new-cat/optimized/functional-wheel-chair-1.png" alt="Functional Wheelchair (Code WC02) — front view" loading="lazy" width="600" height="600">
                   </picture>
-                </div>
-                <span class="wc-carousel__meta">Mobility Aid · Code WC02</span>
-                <h3 class="wc-carousel__name">Functional Wheelchair</h3>
-                <p class="wc-carousel__desc">Durable frame with adjustable footrests — a versatile choice for daily mobility.</p>
-                <a href="https://wa.me/94789669666?text=Hi%2C%20I%27m%20interested%20in%20the%20Functional%20Wheelchair%20(Code%20WC02)" target="_blank" rel="noopener" class="wc-carousel__btn">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374A9.86 9.86 0 0 1 2.166 11.89c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
-                  Order on WhatsApp
-                </a>
-              </article>
-
-              <article class="wc-carousel__card" data-code="WC03">
-                <div class="wc-carousel__stage">
-                  <span class="wc-carousel__badge">WC03</span>
-                  <video
-                    class="wc-carousel__media product-preview-video"
-                    poster="images/videos/fully-functional-wheelchair-poster.jpg"
-                    muted loop playsinline preload="none"
-                    aria-label="Fully Functional Wheelchair — 360-degree product preview">
-                    <source data-src="images/videos/fully-functional-wheelchair.mp4" type="video/mp4">
-                  </video>
-                </div>
-                <span class="wc-carousel__meta">Mobility Aid · Code WC03</span>
-                <h3 class="wc-carousel__name">Fully Functional Wheelchair</h3>
-                <p class="wc-carousel__desc">Elevating leg rests and a folding frame for home, clinical and post-operative use.</p>
-                <a href="https://wa.me/94789669666?text=Hi%2C%20I%27m%20interested%20in%20the%20Fully%20Functional%20Wheelchair%20(Code%20WC03)" target="_blank" rel="noopener" class="wc-carousel__btn">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374A9.86 9.86 0 0 1 2.166 11.89c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
-                  Order on WhatsApp
-                </a>
-              </article>
-
-              <article class="wc-carousel__card" data-code="WC04">
-                <div class="wc-carousel__stage">
-                  <span class="wc-carousel__badge">WC04</span>
+                </span>
+                <span class="showroom__media--b" aria-hidden="true">
+                  <picture>
+                    <source srcset="images/new-cat/optimized/functional-wheel-chair-2.webp" type="image/webp">
+                    <img src="images/new-cat/optimized/functional-wheel-chair-2.png" alt="" loading="lazy" width="600" height="600">
+                  </picture>
+                </span>
+              </div>
+            </figure>
+            <figure class="showroom__exhibit" data-exhibit="WC03" aria-hidden="true">
+              <div class="showroom__media-box">
+                <picture>
+                  <source srcset="images/new-cat/optimized/fully-functional-wheel-chair-1.webp" type="image/webp">
+                  <img src="images/new-cat/optimized/fully-functional-wheel-chair-1.png" alt="Fully Functional Wheelchair (Code WC03)" loading="lazy" width="1000" height="774">
+                </picture>
+              </div>
+            </figure>
+            <figure class="showroom__exhibit showroom__exhibit--dual" data-exhibit="WC04" aria-hidden="true">
+              <div class="showroom__media-box">
+                <span class="showroom__media--a">
                   <picture>
                     <source srcset="images/new-cat/optimized/commode-wheelchair-angle-1.webp" type="image/webp">
-                    <img class="wc-carousel__media" src="images/new-cat/optimized/commode-wheelchair-angle-1.png" alt="Commode Wheelchair — Code WC04" loading="lazy" width="600" height="600">
+                    <img src="images/new-cat/optimized/commode-wheelchair-angle-1.png" alt="Commode Wheelchair (Code WC04) — front view" loading="lazy" width="600" height="600">
                   </picture>
-                </div>
-                <span class="wc-carousel__meta">Mobility Aid · Code WC04</span>
-                <h3 class="wc-carousel__name">Commode Wheelchair</h3>
-                <p class="wc-carousel__desc">Combines mobility with toileting needs — ideal for home care and assisted living.</p>
-                <a href="https://wa.me/94789669666?text=Hi%2C%20I%27m%20interested%20in%20the%20Commode%20Wheelchair%20(Code%20WC04)" target="_blank" rel="noopener" class="wc-carousel__btn">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374A9.86 9.86 0 0 1 2.166 11.89c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
-                  Order on WhatsApp
-                </a>
-              </article>
+                </span>
+                <span class="showroom__media--b" aria-hidden="true">
+                  <picture>
+                    <source srcset="images/new-cat/optimized/commode-wheelchair-angle-2.webp" type="image/webp">
+                    <img src="images/new-cat/optimized/commode-wheelchair-angle-2.png" alt="" loading="lazy" width="600" height="600">
+                  </picture>
+                </span>
+              </div>
+            </figure>
+            </div>
+            <div class="showroom__controls">
+              <button type="button" class="showroom__arrow" id="showroom-prev" aria-label="Previous wheelchair">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
+              <div class="showroom__thumbs" id="showroom-thumbs" role="tablist" aria-label="Choose a wheelchair">
+            <button type="button" class="showroom__thumb is-active" role="tab" aria-selected="true" aria-label="Show Adult Wheelchair (Code WC01)">
+              <picture>
+                <source srcset="images/new-cat/optimized/adult-wheel-chair.webp" type="image/webp">
+                <img src="images/new-cat/optimized/adult-wheel-chair.png" alt="" loading="lazy" width="120" height="120">
+              </picture>
+              <span class="showroom__thumb-code">WC01</span>
+            </button>
+            <button type="button" class="showroom__thumb" role="tab" aria-selected="false" aria-label="Show Functional Wheelchair (Code WC02)">
+              <picture>
+                <source srcset="images/new-cat/optimized/functional-wheel-chair-1.webp" type="image/webp">
+                <img src="images/new-cat/optimized/functional-wheel-chair-1.png" alt="" loading="lazy" width="120" height="120">
+              </picture>
+              <span class="showroom__thumb-code">WC02</span>
+            </button>
+            <button type="button" class="showroom__thumb" role="tab" aria-selected="false" aria-label="Show Fully Functional Wheelchair (Code WC03)">
+              <picture>
+                <source srcset="images/new-cat/optimized/fully-functional-wheel-chair-1.webp" type="image/webp">
+                <img src="images/new-cat/optimized/fully-functional-wheel-chair-1.png" alt="" loading="lazy" width="120" height="120">
+              </picture>
+              <span class="showroom__thumb-code">WC03</span>
+            </button>
+            <button type="button" class="showroom__thumb" role="tab" aria-selected="false" aria-label="Show Commode Wheelchair (Code WC04)">
+              <picture>
+                <source srcset="images/new-cat/optimized/commode-wheelchair-angle-1.webp" type="image/webp">
+                <img src="images/new-cat/optimized/commode-wheelchair-angle-1.png" alt="" loading="lazy" width="120" height="120">
+              </picture>
+              <span class="showroom__thumb-code">WC04</span>
+            </button>
+              </div>
+              <button type="button" class="showroom__arrow" id="showroom-next" aria-label="Next wheelchair">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+              <span class="showroom__counter" id="showroom-counter"><strong>01</strong> / 04</span>
             </div>
           </div>
-
-          <button type="button" class="wc-carousel__arrow wc-carousel__arrow--next" aria-label="Next wheelchair">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-          </button>
-
-          <div class="wc-carousel__dots" id="wc-carousel-dots" role="tablist" aria-label="Wheelchair slides"></div>
+          <div class="showroom__panel">
+          <div class="showroom__info is-active" data-info="WC01">
+            <span class="showroom__kicker"><span class="code">WC01</span> Manual wheelchair</span>
+            <h3>Adult Wheelchair</h3>
+            <p>The everyday workhorse — a standard foldable manual wheelchair that suits most adults for home, clinic and hospital use.</p>
+            <ul class="showroom__specs">
+                <li>Foldable steel frame — fits easily in a car boot</li>
+                <li>Comfortable leatherette seat &amp; backrest</li>
+                <li>Solid, low-maintenance tyres</li>
+            </ul>
+            <div class="showroom__cta">
+              <a href="https://wa.me/94789669666?text=Hi%2C%20I%27m%20interested%20in%20the%20Adult%20Wheelchair%20(Code%20WC01)" target="_blank" rel="noopener" class="btn btn--whatsapp">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374A9.86 9.86 0 0 1 2.166 11.89c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+                Order on WhatsApp
+              </a>
+              <a href="/#products" class="btn btn--outline-light">Full catalog</a>
+            </div>
+          </div>
+          <div class="showroom__info" data-info="WC02">
+            <span class="showroom__kicker"><span class="code">WC02</span> Manual wheelchair</span>
+            <h3>Functional Wheelchair</h3>
+            <p>A durable frame with adjustable footrests — the versatile choice for users who spend longer periods seated each day.</p>
+            <ul class="showroom__specs">
+                <li>Adjustable, swing-away footrests</li>
+                <li>Reinforced dual cross-brace frame</li>
+                <li>Folds flat for transport &amp; storage</li>
+                <li>Two viewing angles — watch it rotate</li>
+            </ul>
+            <div class="showroom__cta">
+              <a href="https://wa.me/94789669666?text=Hi%2C%20I%27m%20interested%20in%20the%20Functional%20Wheelchair%20(Code%20WC02)" target="_blank" rel="noopener" class="btn btn--whatsapp">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374A9.86 9.86 0 0 1 2.166 11.89c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+                Order on WhatsApp
+              </a>
+              <a href="/#products" class="btn btn--outline-light">Full catalog</a>
+            </div>
+          </div>
+          <div class="showroom__info" data-info="WC03">
+            <span class="showroom__kicker"><span class="code">WC03</span> Premium mobility</span>
+            <h3>Fully Functional Wheelchair</h3>
+            <p>Elevating leg rests and a folding frame make this the top pick for post-operative recovery and limited leg mobility.</p>
+            <ul class="showroom__specs">
+                <li>Elevating, adjustable leg rests</li>
+                <li>High backrest for extended comfort</li>
+                <li>Ideal for post-surgery &amp; swelling management</li>
+            </ul>
+            <div class="showroom__cta">
+              <a href="https://wa.me/94789669666?text=Hi%2C%20I%27m%20interested%20in%20the%20Fully%20Functional%20Wheelchair%20(Code%20WC03)" target="_blank" rel="noopener" class="btn btn--whatsapp">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374A9.86 9.86 0 0 1 2.166 11.89c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+                Order on WhatsApp
+              </a>
+              <a href="/#products" class="btn btn--outline-light">Full catalog</a>
+            </div>
+          </div>
+          <div class="showroom__info" data-info="WC04">
+            <span class="showroom__kicker"><span class="code">WC04</span> Home-care mobility</span>
+            <h3>Commode Wheelchair</h3>
+            <p>Mobility and toileting in one chair — the practical answer for home care where bathroom access is difficult.</p>
+            <ul class="showroom__specs">
+                <li>Removable commode pan — easy to clean</li>
+                <li>Padded seat with hygienic cut-out</li>
+                <li>Lockable wheels for safe transfers</li>
+                <li>Two viewing angles — watch it rotate</li>
+            </ul>
+            <div class="showroom__cta">
+              <a href="https://wa.me/94789669666?text=Hi%2C%20I%27m%20interested%20in%20the%20Commode%20Wheelchair%20(Code%20WC04)" target="_blank" rel="noopener" class="btn btn--whatsapp">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374A9.86 9.86 0 0 1 2.166 11.89c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+                Order on WhatsApp
+              </a>
+              <a href="/#products" class="btn btn--outline-light">Full catalog</a>
+            </div>
+          </div>
+          </div>
         </div>
 
         <p style="margin-top: 24px;">
           Looking for other mobility aids? See our full
           <a href="/#products">catalog of commodes, canes, crutches and walking frames</a>.
         </p>
+        <div class="landing-cross-links">
+          <a href="/hospital-furniture-sri-lanka.html">Hospital furniture &amp; beds →</a>
+          <a href="/surgical-consumables-sri-lanka.html">Surgical consumables →</a>
+          <a href="/#products">Full product catalog →</a>
+        </div>
       </div>
     </section>
 
     <section class="section">
       <div class="container">
-        <div class="section-header">
+        <div class="section-header" data-reveal>
           <span class="eyebrow">Buying guide</span>
           <h2>Choosing the right wheelchair</h2>
         </div>
@@ -438,11 +520,11 @@
 
     <section class="section">
       <div class="container">
-        <div class="section-header">
+        <div class="section-header" data-reveal>
           <span class="eyebrow">FAQ</span>
           <h2>Frequently asked questions about wheelchairs in Sri Lanka</h2>
         </div>
-        <div class="faq-list">
+        <div class="faq-list" data-reveal>
           <details>
             <summary>Where can I buy a wheelchair in Sri Lanka?</summary>
             <p>Hettiarachchi Surgicals (surgicals.lk) is an NMRA-registered medical supplier with a showroom in Galle and island-wide delivery. You can order manual, fully-functional and commode wheelchairs via WhatsApp from anywhere in Sri Lanka, including Colombo, with same-day quotations.</p>
@@ -456,10 +538,6 @@
             <p>Our range includes standard adult wheelchairs, functional wheelchairs with adjustable footrests, fully-functional wheelchairs with elevating leg rests, and commode wheelchairs that combine mobility with toileting needs.</p>
           </details>
           <details>
-            <summary>Are your wheelchairs NMRA registered?</summary>
-            <p>Yes, our medical mobility equipment is sourced through our NMRA-compliant catalog, suitable for hospitals, clinics and home use.</p>
-          </details>
-          <details>
             <summary>How do I get a price for a wheelchair?</summary>
             <p>Send us a WhatsApp message with the wheelchair type you need (or the product code, e.g. WC01–WC04) and your delivery location. Our team replies the same day with a stamped quotation.</p>
           </details>
@@ -469,7 +547,7 @@
 
     <section class="section section--contact">
       <div class="container">
-        <div class="contact-card">
+        <div class="contact-card" data-reveal="zoom">
           <div class="contact-card__left">
             <span class="eyebrow eyebrow--light">Order a wheelchair</span>
             <h2>Tell us what you need — we'll quote it today.</h2>
@@ -505,9 +583,9 @@
         <h4>Products</h4>
         <ul>
           <li><a href="/wheelchairs-sri-lanka.html">Wheelchairs</a></li>
-          <li><a href="/#products">Commodes</a></li>
-          <li><a href="/#products">Canes</a></li>
-          <li><a href="/#products">Crutches &amp; walkers</a></li>
+          <li><a href="/hospital-furniture-sri-lanka.html">Hospital furniture &amp; beds</a></li>
+          <li><a href="/surgical-consumables-sri-lanka.html">Surgical consumables</a></li>
+          <li><a href="/#products">Commodes, canes &amp; walkers</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -546,109 +624,89 @@
     </a>
   </div>
 
+  <script src="motion.js"></script>
   <script>
-    // Lazy-load product preview videos: only fetch + autoplay once the card scrolls into view.
+    // Wheelchair showroom: product stage with exhibit switching and auto-advance.
     (function () {
-      var videos = document.querySelectorAll('video.product-preview-video');
-      if (!('IntersectionObserver' in window)) {
-        videos.forEach(function (video) {
-          var source = video.querySelector('source[data-src]');
-          if (source) { source.src = source.dataset.src; video.load(); }
-          video.play().catch(function () {});
-        });
-        return;
-      }
-      var observer = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          var video = entry.target;
-          if (entry.isIntersecting) {
-            var source = video.querySelector('source[data-src]');
-            if (source && source.dataset.src) {
-              source.src = source.dataset.src;
-              delete source.dataset.src;
-              video.load();
-            }
-            video.play().catch(function () {});
-          } else {
-            video.pause();
-          }
-        });
-      }, { rootMargin: '100px' });
-      videos.forEach(function (video) { observer.observe(video); });
-    })();
-  </script>
-
-  <script>
-    // Wheelchair product carousel: centers the active card, scales neighbors down.
-    (function () {
-      var root = document.getElementById('wc-carousel');
+      var root = document.getElementById('wc-showroom');
       if (!root) return;
 
-      var track = document.getElementById('wc-carousel-track');
-      var cards = Array.prototype.slice.call(track.querySelectorAll('.wc-carousel__card'));
-      var dotsWrap = document.getElementById('wc-carousel-dots');
-      var prevBtn = root.querySelector('.wc-carousel__arrow--prev');
-      var nextBtn = root.querySelector('.wc-carousel__arrow--next');
+      var exhibits = Array.prototype.slice.call(root.querySelectorAll('.showroom__exhibit'));
+      var infos = Array.prototype.slice.call(root.querySelectorAll('.showroom__info'));
+      var thumbs = Array.prototype.slice.call(root.querySelectorAll('.showroom__thumb'));
+      var ghost = document.getElementById('showroom-ghost');
+      var counter = document.getElementById('showroom-counter');
+      var prevBtn = document.getElementById('showroom-prev');
+      var nextBtn = document.getElementById('showroom-next');
+      var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       var active = 0;
+      var timer = null;
+      var inView = true;
+      var AUTO_MS = 9000;
 
-      cards.forEach(function (card, i) {
-        var dot = document.createElement('button');
-        dot.type = 'button';
-        dot.className = 'wc-carousel__dot';
-        dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
-        dot.addEventListener('click', function () { goTo(i); });
-        dotsWrap.appendChild(dot);
-      });
-      var dots = Array.prototype.slice.call(dotsWrap.querySelectorAll('.wc-carousel__dot'));
+      function pad(n) { return n < 10 ? '0' + n : String(n); }
 
-      function cardWidth() {
-        return cards[0] ? cards[0].getBoundingClientRect().width : 0;
-      }
-      function gap() {
-        var styles = getComputedStyle(track);
-        return parseFloat(styles.gap || styles.columnGap || '0') || 0;
-      }
-
-      function render() {
-        var w = cardWidth();
-        var g = gap();
-        var offset = (w / 2) + active * (w + g);
-        track.style.transform = 'translateX(calc(50% - ' + offset + 'px))';
-
-        cards.forEach(function (card, i) {
-          card.classList.toggle('is-active', i === active);
-          var video = card.querySelector('video.product-preview-video');
-          if (!video) return;
-          if (i === active) {
-            video.play().catch(function () {});
-          } else {
-            video.pause();
-          }
+      function goTo(i, dir) {
+        var n = exhibits.length;
+        var idx = ((i % n) + n) % n;
+        exhibits.forEach(function (ex, j) {
+          var on = j === idx;
+          ex.classList.toggle('is-active', on);
+          ex.classList.toggle('is-leaving-back', !on && dir < 0);
+          ex.setAttribute('aria-hidden', on ? 'false' : 'true');
         });
-
-        dots.forEach(function (dot, i) {
-          dot.classList.toggle('is-active', i === active);
-          dot.setAttribute('aria-selected', i === active ? 'true' : 'false');
+        infos.forEach(function (el, j) { el.classList.toggle('is-active', j === idx); });
+        thumbs.forEach(function (t, j) {
+          t.classList.toggle('is-active', j === idx);
+          t.setAttribute('aria-selected', j === idx ? 'true' : 'false');
         });
+        if (ghost) ghost.textContent = pad(idx + 1);
+        if (counter) counter.innerHTML = '<strong>' + pad(idx + 1) + '</strong> / ' + pad(n);
+        active = idx;
       }
 
-      function goTo(i) {
-        var n = cards.length;
-        active = ((i % n) + n) % n;
-        render();
+      function startAuto() {
+        stopAuto();
+        if (reduced) return;
+        timer = setInterval(function () { goTo(active + 1, 1); }, AUTO_MS);
+      }
+      function stopAuto() {
+        if (timer) { clearInterval(timer); timer = null; }
       }
 
-      prevBtn.addEventListener('click', function () { goTo(active - 1); });
-      nextBtn.addEventListener('click', function () { goTo(active + 1); });
-      cards.forEach(function (card, i) {
-        card.addEventListener('click', function (e) {
-          if (e.target.closest('a')) return;
-          goTo(i);
-        });
+      prevBtn && prevBtn.addEventListener('click', function () { goTo(active - 1, -1); startAuto(); });
+      nextBtn && nextBtn.addEventListener('click', function () { goTo(active + 1, 1); startAuto(); });
+      thumbs.forEach(function (t, i) {
+        t.addEventListener('click', function () { goTo(i, i >= active ? 1 : -1); startAuto(); });
       });
 
-      window.addEventListener('resize', render);
-      render();
+      root.addEventListener('mouseenter', stopAuto);
+      root.addEventListener('mouseleave', startAuto);
+      root.addEventListener('focusin', stopAuto);
+      root.addEventListener('focusout', startAuto);
+      root.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft') { goTo(active - 1, -1); startAuto(); }
+        if (e.key === 'ArrowRight') { goTo(active + 1, 1); startAuto(); }
+      });
+
+      // Only auto-advance while the showroom is on screen.
+      if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            inView = entry.isIntersecting;
+            if (inView) {
+              goTo(active, 1);
+              startAuto();
+            } else {
+              stopAuto();
+            }
+          });
+        }, { rootMargin: '80px' });
+        observer.observe(root);
+      } else {
+        goTo(0, 1);
+        startAuto();
+      }
     })();
   </script>
 </body>

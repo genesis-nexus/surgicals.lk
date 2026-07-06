@@ -3,62 +3,81 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Page Not Found - Hettiarachchi Surgicals</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; media-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <script src="/early.js"></script>
+  <meta name="robots" content="noindex, follow">
+  <title>Page Not Found — Hettiarachchi Surgicals</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <style>
     .error-container {
       text-align: center;
-      padding: 4rem 2rem;
-      min-height: 60vh;
+      padding: 4rem 1.5rem;
+      min-height: 70vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
     }
     .error-code {
-      font-size: 8rem;
-      font-weight: 800;
-      color: #2563eb;
-      margin-bottom: 1rem;
+      font-family: var(--font-mono);
+      font-size: clamp(5rem, 16vw, 8rem);
+      font-weight: 700;
+      color: var(--teal-500);
       line-height: 1;
+      margin-bottom: 1rem;
     }
-    .error-message {
-      font-size: 1.5rem;
-      color: #374151;
-      margin-bottom: 2rem;
-    }
+    .error-message { font-size: 1.5rem; margin-bottom: 0.75rem; }
     .error-description {
-      color: #6b7280;
+      color: var(--ink-500);
       margin-bottom: 2rem;
-      max-width: 500px;
+      max-width: 460px;
     }
+    .error-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 2rem;
+    }
+    .error-links a {
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 9px 16px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--teal-100);
+      background: var(--teal-50);
+      color: var(--teal-700);
+    }
+    .error-links a:hover { background: var(--teal-100); }
     .back-home {
       display: inline-block;
-      background: #2563eb;
-      color: white;
-      padding: 0.75rem 2rem;
-      border-radius: 50px;
-      text-decoration: none;
+      background: var(--teal-500);
+      color: var(--white);
+      padding: 0.8rem 2rem;
+      border-radius: var(--radius-pill);
       font-weight: 600;
-      transition: all 0.3s ease;
+      transition: background 0.2s ease, transform 0.2s ease;
     }
-    .back-home:hover {
-      background: #1d4ed8;
-      transform: translateY(-2px);
-    }
+    .back-home:hover { background: var(--teal-600); color: var(--white); transform: translateY(-2px); }
   </style>
 </head>
 <body>
   <div class="error-container">
     <div class="error-code">404</div>
-    <h1 class="error-message">Page Not Found</h1>
+    <h1 class="error-message">Page not found</h1>
     <p class="error-description">
-      Sorry, the page you are looking for doesn't exist or has been moved. 
-      Please check the URL or return to our homepage.
+      The page you're looking for doesn't exist or has moved.
+      You might find what you need on one of these pages:
     </p>
-    <a href="/" class="back-home">Back to Homepage</a>
+    <div class="error-links">
+      <a href="/wheelchairs-sri-lanka.html">Wheelchairs</a>
+      <a href="/hospital-furniture-sri-lanka.html">Hospital furniture</a>
+      <a href="/surgical-consumables-sri-lanka.html">Surgical consumables</a>
+      <a href="/#products">Full catalog</a>
+    </div>
+    <a href="/" class="back-home">Back to homepage</a>
   </div>
 </body>
 </html>
-

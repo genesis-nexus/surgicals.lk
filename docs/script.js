@@ -4,6 +4,13 @@
 const WHATSAPP_NUMBER = "94718208654";  // Galle WhatsApp
 const WHATSAPP_COLOMBO = "94789669666"; // Colombo WhatsApp
 
+// Escape untrusted strings before inserting into HTML (XSS defense).
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, ch => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  })[ch]);
+}
+
 const PRODUCT_CATEGORIES = {
   "mobility-aids": "Mobility Aids",
   furniture: "Hospital Furniture",
@@ -42,7 +49,13 @@ const SKU_PREFIX_KEYWORDS = {
   BD: ["mattress", "ripple mattress", "anti-bedsore", "anti bedsore", "pressure relief", "decubitus"],
   DI: ["adult diaper", "diapers", "incontinence", "adult pants", "adult brief", "underwear"],
   SG: ["surgical", "ot instrument", "operation theatre"],
-  HC: ["home care"]
+  HC: ["home care"],
+  IV: ["iv cannula", "intravenous", "cannula", "venflon", "branula", "drip"],
+  CT: ["catheter", "urinary catheter", "urology"],
+  AN: ["airway", "anaesthesia", "anesthesia", "intubation", "tube"],
+  CV: ["cardiac", "cardiothoracic", "heart valve", "valve repair"],
+  NS: ["neurosurgery", "neuro", "csf", "shunt"],
+  RS: ["respiratory", "oxygen therapy", "breathing"]
 };
 // Specific extras for individual products
 const SKU_KEYWORDS = {
@@ -76,6 +89,17 @@ const SKU_KEYWORDS = {
   HC02: ["facial steamer", "benice", "bns-016"],
   HC03: ["diabetic shoes", "diabetic footwear", "beta", "diabetic sandals"],
   HC04: ["resistance bands", "rehabilitation bands", "texstretch", "physio bands", "exercise bands"],
+  IV01: ["14g", "16g", "18g", "20g", "22g", "24g", "26g", "gauge", "injection port", "winged cannula"],
+  CT01: ["silicone foley", "foley catheter", "all silicone", "long term catheter", "indwelling"],
+  CT02: ["foley", "latex catheter", "balloon catheter", "2 way", "two way"],
+  CT03: ["cvc", "central line", "triple lumen", "seldinger", "7fr", "icu"],
+  AN01: ["endotracheal", "et tube", "ett", "murphy eye", "cuffed tube", "oral nasal"],
+  AN02: ["double lumen", "dlt", "endobronchial", "one lung ventilation", "lung isolation", "thoracic", "robertshaw"],
+  CV01: ["annuloplasty", "mitral valve", "tricuspid valve", "valve ring", "cardiac implant"],
+  NS01: ["hydrocephalus", "csf shunt", "vp shunt", "shunt valve", "flow regulating"],
+  RS01: ["nasal cannula", "oxygen cannula", "nasal prongs", "oxygen tubing", "o2"],
+  RS02: ["nebulizer", "nebuliser", "nebulizer mask", "aerosol mask", "asthma", "inhalation"],
+  DM08: ["bp cuff", "blood pressure cuff", "pediatric cuff", "paediatric", "child cuff", "nibp"],
   SG01: ["orthopaedic implant", "bone plates", "bone screws", "k wire", "cerclage"],
   SG02: ["hemorrhoidal stapler", "hemorrhoid stapler", "haemorrhoidal", "panther"],
   SG03: ["linear cutter stapler", "surgical stapler", "panther"],
@@ -114,7 +138,20 @@ const FURNITURE_SPECS = {
   MG4016: { material: "Epoxy Powder Coated Steel", dimensions: "L 1980 × W 560 × H 790 mm", features: ["Removable aluminium top for easy transfer", "Side rails", "Heavy-duty castors"] },
   MG4017: { material: "Epoxy Powder Coated Steel", dimensions: "L 1870 × W 600 × H 550–780 mm", features: ["Height adjustable", "Adjustable backrest", "Heavy-duty castors", "IV pole"] },
   MG4019: { material: "Stainless Steel", dimensions: "L 1870 × W 600 × H 550–780 mm", features: ["Stainless steel frame", "Hydraulic height adjustment", "Adjustable backrest", "Side rails"] },
-  MG4021: { material: "Stainless Steel", dimensions: "L 1980 × W 560 × H 790 mm", features: ["Stainless steel frame", "Open frame design", "Removable top", "Heavy-duty castors"] }
+  MG4021: { material: "Stainless Steel", dimensions: "L 1980 × W 560 × H 790 mm", features: ["Stainless steel frame", "Open frame design", "Removable top", "Heavy-duty castors"] },
+
+  // Surgical & medical consumables (order-on-request range)
+  IV01: { material: "Sterile, single-use", features: ["Sizes 14G–26G with universal colour coding", "Stabilising wings with one-way injection port", "Kink-resistant catheter with flashback chamber"] },
+  CT01: { material: "100% Medical-grade Silicone", features: ["All-silicone build resists encrustation — suited to long-term catheterisation", "Symmetrical balloon for reliable anchoring", "Smooth rounded tip and drainage eyes for atraumatic insertion"] },
+  CT02: { material: "Silicone-Coated Natural Latex", features: ["Silicone coating reduces friction for smoother insertion", "Colour-coded valve for size identification (14–26 Fr)", "Reliable balloon inflation for secure indwelling use"] },
+  CT03: { material: "Kink-resistant Polyurethane", features: ["Triple-lumen 7Fr × 15cm for multi-line ICU therapy", "Seldinger insertion kit: J-tip guidewire, introducer needle & dilator", "Depth markings and soft tip for safe placement"] },
+  AN01: { material: "Clear Medical-grade PVC", features: ["Cuffed oral/nasal design with Murphy eye", "High-volume low-pressure cuff protects the trachea", "Radiopaque line and depth markings with ISO 15 mm connector"] },
+  AN02: { material: "Clear Medical-grade PVC", features: ["Robertshaw-style double lumen for one-lung ventilation in thoracic surgery", "Colour-coded tracheal and bronchial cuffs with pilot balloons", "Range of French sizes for adult airway anatomy"] },
+  CV01: { material: "Implant-grade, Radiopaque", features: ["Supports mitral and tricuspid valve repair (annuloplasty)", "Restores the annulus to its natural shape and size", "Supplied sterile in a range of ring sizes"] },
+  NS01: { material: "Implant-grade Silicone Housing", features: ["Flow-regulating valve keeps CSF drainage near physiological rates", "Reduces overdrainage risk versus fixed-pressure valves", "For hydrocephalus management — supplied sterile"] },
+  RS01: { material: "Soft Medical-grade PVC", features: ["Soft curved prongs in adult and pediatric sizes", "Approx. 2 m kink-resistant supply tubing", "Universal connector fits oxygen concentrators and cylinders"] },
+  RS02: { material: "Medical-grade PVC", features: ["Mask with medication chamber for aerosol therapy", "Adjustable elastic strap and nose clip for a secure fit", "Approx. 2 m oxygen tubing fits standard nebulizer compressors"] },
+  DM08: { material: "Durable Nylon Cuff", dimensions: "Limb circumference 13.8–21.5 cm", features: ["Child-size cuff with clear range markings", "Double-tube bladder fits patient monitors and sphygmomanometers", "Latex-free option for sensitive skin"] }
 };
 
 // Catalog is quote-only; no prices.
@@ -172,6 +209,19 @@ const products = [
   { sku: "SG03", title: "Panther Linear Cutter Stapler (SSAB-80)", category: "surgical", folder: "products", bases: ["IMG_2859 2"] },
   { sku: "SG04", title: "Reloading Unit for Linear Cutter Stapler (SADB-80D)", category: "surgical", folder: "products", bases: ["IMG_2860 2"] },
 
+  // ---- Surgical & Medical Consumables (order-on-request range) ----
+  { sku: "IV01", title: "IV Cannula with Wings & Injection Port (14G–26G)", category: "surgical", folder: "painted-door", bases: ["iv-cannula"] },
+  { sku: "CT01", title: "2-Way Foley Catheter — 100% Silicone", category: "surgical", folder: "painted-door", bases: ["foley-catheter-silicone"] },
+  { sku: "CT02", title: "2-Way Foley Balloon Catheter — Silicone-Coated Latex", category: "surgical", folder: "painted-door", bases: ["foley-catheter-latex"] },
+  { sku: "CT03", title: "Central Venous Catheter Kit — Triple Lumen (7Fr × 15cm)", category: "surgical", folder: "painted-door", bases: ["central-venous-catheter"] },
+  { sku: "AN01", title: "Cuffed Endotracheal Tubes — Oral/Nasal", category: "surgical", folder: "painted-door", bases: ["endotracheal-tube"] },
+  { sku: "AN02", title: "Double Lumen Endobronchial Tube", category: "surgical", folder: "painted-door", bases: ["endobronchial-tube-double-lumen"] },
+  { sku: "CV01", title: "Annuloplasty Ring — Heart Valve Repair", category: "surgical", folder: "painted-door", bases: ["annuloplasty-ring"] },
+  { sku: "NS01", title: "Flow Regulating CSF Shunt Valve", category: "surgical", folder: "painted-door", bases: ["flow-regulating-shunt"] },
+  { sku: "RS01", title: "Nasal Oxygen Cannula — Adult & Pediatric", category: "home-care", folder: "painted-door", bases: ["nasal-oxygen-cannula"] },
+  { sku: "RS02", title: "Nebulizer Mask Kit with Chamber & Tubing", category: "home-care", folder: "painted-door", bases: ["nebulizer-mask"] },
+  { sku: "DM08", title: "Pediatric BP Cuff (13.8–21.5 cm)", category: "diagnostics", folder: "painted-door", bases: ["bp-cuff-pediatric"] },
+
   // ---- Home Care ----
   { sku: "HC01", title: "Portable Phlegm Suction Unit (9E-A)", category: "home-care", folder: "products", bases: ["IMG_2832 2", "IMG_2833 2"] },
   { sku: "HC02", title: "Benice Facial Steamer (BNS-016)", category: "home-care", folder: "products", bases: ["IMG_2841 2", "IMG_2842 2"] },
@@ -213,9 +263,10 @@ const products = [
 ].map(p => {
   // Folder routing: each folder has its own optimized/ subdir + fallback extension.
   const FOLDER_CONFIG = {
-    "new-cat":   { dir: "images/new-cat/optimized",   ext: "png" }, // transparent product cutouts
-    products:    { dir: "images/products/optimized",  ext: "jpg" }, // opaque product photos
-    furniture:   { dir: "images/furniture/optimized", ext: "png" }  // spec-sheet style w/ transparent border
+    "new-cat":      { dir: "images/new-cat/optimized",      ext: "png" }, // transparent product cutouts
+    products:       { dir: "images/products/optimized",     ext: "jpg" }, // opaque product photos
+    furniture:      { dir: "images/furniture/optimized",    ext: "png" }, // spec-sheet style w/ transparent border
+    "painted-door": { dir: "images/painted-door/optimized", ext: "jpg" }  // branded white-bg consumable shots
   };
   const cfg = FOLDER_CONFIG[p.folder] || FOLDER_CONFIG.products;
   const categoryLabel = PRODUCT_CATEGORIES[p.category] || p.category;
@@ -273,7 +324,18 @@ const QuoteStore = {
   load() {
     try {
       const raw = localStorage.getItem(this.key);
-      if (raw) this.lines = JSON.parse(raw);
+      const parsed = raw ? JSON.parse(raw) : [];
+      // Re-derive every line from the trusted catalog: only known SKUs survive,
+      // and title/image always come from our own data, never from storage.
+      this.lines = (Array.isArray(parsed) ? parsed : [])
+        .map(l => {
+          const product = products.find(p => p.sku === (l && l.sku));
+          if (!product) return null;
+          const qty = Math.min(Math.max(parseInt(l.qty, 10) || 1, 1), 999);
+          return { sku: product.sku, title: product.title, image: product.image, qty };
+        })
+        .filter(Boolean)
+        .slice(0, 100);
     } catch (_) {
       this.lines = [];
     }
@@ -313,6 +375,17 @@ const QuoteStore = {
 
 // ---------- Rendering ----------
 
+// Mark freshly rendered cards for the shared scroll-reveal system (motion.js).
+function revealCards(grid) {
+  if (!grid || !window.SurgicalsMotion) return;
+  Array.from(grid.children).forEach((card, i) => {
+    if (!card.matches(".product-card")) return;
+    card.setAttribute("data-reveal", "");
+    card.style.setProperty("--reveal-delay", `${(i % 4) * 70}ms`);
+    window.SurgicalsMotion.observe(card);
+  });
+}
+
 function renderFeaturedGrid() {
   const grid = document.getElementById("featured-gallery");
   if (!grid) return;
@@ -326,6 +399,7 @@ function renderFeaturedGrid() {
     frag.appendChild(card);
   });
   grid.appendChild(frag);
+  revealCards(grid);
 }
 
 function renderProductGrid(filter = "all") {
@@ -354,6 +428,7 @@ function renderProductGrid(filter = "all") {
     frag.appendChild(card);
   });
   grid.appendChild(frag);
+  revealCards(grid);
   if (count) count.textContent = `${list.length} products`;
 }
 
@@ -438,10 +513,10 @@ function renderQuoteDrawer(lines) {
         </picture>
       </div>
       <div class="quote-line__info">
-        <div class="quote-line__title">${line.title}</div>
-        <div class="quote-line__sku">Code ${line.sku}</div>
+        <div class="quote-line__title">${escapeHtml(line.title)}</div>
+        <div class="quote-line__sku">Code ${escapeHtml(line.sku)}</div>
         <div class="quote-line__controls">
-          <div class="qty-stepper" role="group" aria-label="Quantity for ${line.title}">
+          <div class="qty-stepper" role="group" aria-label="Quantity for ${escapeHtml(line.title)}">
             <button type="button" data-dec="${line.sku}" aria-label="Decrease">−</button>
             <span>${line.qty}</span>
             <button type="button" data-inc="${line.sku}" aria-label="Increase">+</button>
@@ -678,7 +753,7 @@ function initHeader() {
     if (!grid) return;
     grid.innerHTML = "";
     if (list.length === 0) {
-      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:48px 16px;color:var(--ink-500);"><p>No products match "${raw}". <a href="https://wa.me/${WHATSAPP_NUMBER}" target="_blank" rel="noopener">Ask us on WhatsApp →</a></p></div>`;
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:48px 16px;color:var(--ink-500);"><p>No products match "${escapeHtml(raw)}". <a href="https://wa.me/${WHATSAPP_NUMBER}" target="_blank" rel="noopener">Ask us on WhatsApp →</a></p></div>`;
       if (count) count.textContent = "0 products";
       return;
     }
@@ -695,12 +770,22 @@ function renderCardHtml(p) {
 
 function initFilters() {
   const chips = document.querySelectorAll(".toolbar__chips .chip");
+  const grid = document.getElementById("products-gallery");
   chips.forEach(chip => {
     chip.addEventListener("click", () => {
       chips.forEach(c => { c.classList.remove("chip--active"); c.setAttribute("aria-selected", "false"); });
       chip.classList.add("chip--active");
       chip.setAttribute("aria-selected", "true");
-      renderProductGrid(chip.dataset.category);
+      // Soft crossfade between filter states
+      if (grid && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        grid.classList.add("is-swapping");
+        setTimeout(() => {
+          renderProductGrid(chip.dataset.category);
+          grid.classList.remove("is-swapping");
+        }, 180);
+      } else {
+        renderProductGrid(chip.dataset.category);
+      }
     });
   });
 }

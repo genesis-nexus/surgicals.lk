@@ -4,23 +4,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; media-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="description"
     content="Wheelchairs, hospital beds, BP monitors, glucometers, crutches, walking frames & surgical consumables in Sri Lanka. Galle showroom or order online via WhatsApp.">
   <meta name="keywords"
     content="wheelchair Sri Lanka, hospital bed Sri Lanka, BP monitor, blood pressure monitor, glucometer, glucose meter, crutches, walking frame, walking cane, commode chair, pulse oximeter, stethoscope, infrared thermometer, examination bed, patient trolley, surgical stapler, anti-bedsore mattress, adult diapers, cervical collar, lumbar support, NMRA registered, medical supplies Galle, medical equipment Colombo">
   <meta name="author" content="Hettiarachchi Surgicals">
   <meta name="robots" id="robots-meta" content="index, follow, max-image-preview:large">
-  <script>
-    // Query-param variants (?product=, ?q=) are in-page deep links, not separate pages.
-    // Mark them noindex so Google doesn't accumulate "Alternate page with proper canonical tag" entries.
-    (function() {
-      var p = new URLSearchParams(window.location.search);
-      if (p.has("product") || p.has("q")) {
-        var m = document.getElementById("robots-meta");
-        if (m) m.content = "noindex, follow";
-      }
-    })();
-  </script>
+  <script src="early.js"></script>
   <meta name="theme-color" content="#0E7C7B">
 
   <!-- Local SEO / Geo signals — Galle showroom -->
@@ -138,7 +130,12 @@
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
       "name": "Medical Supply Catalog",
-      "url": "https://surgicals.lk/#products"
+      "url": "https://surgicals.lk/#products",
+      "itemListElement": [
+        { "@type": "OfferCatalog", "name": "Wheelchairs", "url": "https://surgicals.lk/wheelchairs-sri-lanka.html" },
+        { "@type": "OfferCatalog", "name": "Surgical Consumables & Instruments", "url": "https://surgicals.lk/surgical-consumables-sri-lanka.html" },
+        { "@type": "OfferCatalog", "name": "Hospital Furniture & Medical Furniture", "url": "https://surgicals.lk/hospital-furniture-sri-lanka.html" }
+      ]
     }
   }
   </script>
@@ -217,12 +214,7 @@
   </script>
 
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-BKS3RG4P6J"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-BKS3RG4P6J');
-  </script>
+  <script src="gtag-init.js"></script>
 </head>
 
 <body>
@@ -281,11 +273,6 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374A9.86 9.86 0 0 1 2.166 11.89c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
           078 966 9666 — Colombo
         </a>
-        <span class="utility-bar__lang" aria-label="Language (Sinhala and Tamil coming soon)">
-          <span class="lang-pill lang-pill--active">EN</span>
-          <span class="lang-pill" title="Sinhala — coming soon">සිං</span>
-          <span class="lang-pill" title="Tamil — coming soon">தமி</span>
-        </span>
       </div>
     </div>
   </div>
@@ -434,29 +421,29 @@
 
     <section class="persona-doors" aria-label="Who we serve">
       <div class="container">
-        <div class="persona-doors__grid">
-          <a href="#for-hospitals" class="persona-card" id="for-hospitals">
+        <div class="persona-doors__grid" data-reveal-stagger>
+          <a href="#for-hospitals" class="persona-card" id="for-hospitals" data-reveal>
             <span class="persona-card__icon" aria-hidden="true">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M10 14h4"/><path d="M12 12v4"/></svg>
             </span>
             <h3>Hospitals &amp; Clinics</h3>
             <p>Multi-item quotes, stamped quotation PDFs, institutional compliance.</p>
           </a>
-          <a href="#products" class="persona-card" id="for-practitioners">
+          <a href="#products" class="persona-card" id="for-practitioners" data-reveal>
             <span class="persona-card__icon" aria-hidden="true">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="6" width="18" height="15" rx="2"/><path d="M3 11h18"/></svg>
             </span>
             <h3>Clinics &amp; Practitioners</h3>
             <p>Fast spec checks and product-aware WhatsApp replies within the hour.</p>
           </a>
-          <a href="#products" class="persona-card" id="for-home-care">
+          <a href="#products" class="persona-card" id="for-home-care" data-reveal>
             <span class="persona-card__icon" aria-hidden="true">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>
             </span>
             <h3>Home Care Families</h3>
             <p>Commodes, walkers, mobility aids — clear guidance from our team.</p>
           </a>
-          <a href="#products" class="persona-card" id="for-retail">
+          <a href="#products" class="persona-card" id="for-retail" data-reveal>
             <span class="persona-card__icon" aria-hidden="true">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4"/><path d="M5 8h14l-1.5 10a2 2 0 0 1-2 1.7H8.5a2 2 0 0 1-2-1.7z"/><path d="M9 12h6"/><path d="M12 9v6"/></svg>
             </span>
@@ -469,10 +456,15 @@
 
     <section class="section section--products" id="products">
       <div class="container">
-        <div class="section-header">
+        <div class="section-header" data-reveal>
           <span class="eyebrow">Shop by category</span>
           <h2>Mobility, diagnostics &amp; home-care essentials</h2>
-          <p class="section-subtitle">From <a href="/wheelchairs-sri-lanka.html">wheelchairs</a> and walking aids to BP monitors, supports, mattresses and surgical instruments. Filter below or search to find a match.</p>
+          <p class="section-subtitle">From <a href="/wheelchairs-sri-lanka.html">wheelchairs</a> and walking aids to BP monitors, supports, mattresses and <a href="/surgical-consumables-sri-lanka.html">surgical instruments</a>. Filter below or search to find a match.</p>
+          <div class="landing-cross-links" style="justify-content: center;">
+            <a href="/wheelchairs-sri-lanka.html">Wheelchairs in Sri Lanka →</a>
+            <a href="/hospital-furniture-sri-lanka.html">Hospital furniture &amp; beds →</a>
+            <a href="/surgical-consumables-sri-lanka.html">Surgical consumables →</a>
+          </div>
         </div>
 
         <div class="toolbar" id="products-toolbar">
@@ -591,7 +583,7 @@
 
     <section class="section section--popular" id="popular">
       <div class="container">
-        <div class="section-header">
+        <div class="section-header" data-reveal>
           <span class="eyebrow">Most requested</span>
           <h2>Fast-moving products</h2>
           <p class="section-subtitle">The items our customers order most — add to your quote and send via WhatsApp in seconds.</p>
@@ -601,20 +593,20 @@
     </section>
 
     <section class="trust-bar" aria-label="Trust indicators">
-      <div class="container trust-bar__inner">
-        <div class="trust-bar__item">
+      <div class="container trust-bar__inner" data-reveal-stagger>
+        <div class="trust-bar__item" data-reveal>
           <strong>NMRA</strong>
           <span>Registered medical device catalog</span>
         </div>
-        <div class="trust-bar__item">
+        <div class="trust-bar__item" data-reveal>
           <strong>ISO-certified</strong>
           <span>Equipment from certified manufacturers</span>
         </div>
-        <div class="trust-bar__item">
+        <div class="trust-bar__item" data-reveal>
           <strong>Galle Showroom</strong>
           <span>Visit us in person — no appointment needed</span>
         </div>
-        <div class="trust-bar__item">
+        <div class="trust-bar__item" data-reveal>
           <strong>WhatsApp</strong>
           <span>Same-hour product-aware replies</span>
         </div>
@@ -623,7 +615,7 @@
 
     <section class="section section--about" id="about">
       <div class="container about__layout">
-        <div class="about__text">
+        <div class="about__text" data-reveal="left">
           <span class="eyebrow">About us</span>
           <h2>A Galle heritage, built for modern Sri Lankan healthcare.</h2>
           <p>
@@ -647,7 +639,7 @@
             </div>
           </div>
         </div>
-        <div class="about__visual">
+        <div class="about__visual" data-reveal="right">
           <div class="about__card">
             <h3>How a quote works</h3>
             <ol>
@@ -663,13 +655,13 @@
 
     <section class="section section--location" id="location">
       <div class="container">
-        <div class="section-header">
+        <div class="section-header" data-reveal>
           <span class="eyebrow">Visit us</span>
           <h2>Galle showroom</h2>
           <p class="section-subtitle">See the products in person. No appointment needed.</p>
         </div>
         <div class="location-layout">
-          <div class="location-info">
+          <div class="location-info" data-reveal="left">
             <div class="info-block">
               <h3>Address</h3>
               <address>No.130, 1/1 Maitipe 1st Ln<br>Galle, Sri Lanka</address>
@@ -691,18 +683,18 @@
               <p><a href="tel:+94719249267">Mobile: 071 924 9267</a></p>
             </div>
           </div>
-          <div class="location-gallery" id="location-gallery" aria-label="Our Galle facility"></div>
+          <div class="location-gallery" id="location-gallery" data-reveal="right" aria-label="Our Galle facility"></div>
         </div>
       </div>
     </section>
 
     <section class="section" id="faq">
       <div class="container">
-        <div class="section-header">
+        <div class="section-header" data-reveal>
           <span class="eyebrow">FAQ</span>
           <h2>Frequently asked questions about medical &amp; surgical supplies in Sri Lanka</h2>
         </div>
-        <div class="faq-list">
+        <div class="faq-list" data-reveal>
           <details>
             <summary>Where can I buy medical and surgical supplies in Sri Lanka?</summary>
             <p>Hettiarachchi Surgicals (surgicals.lk) is an NMRA-registered medical equipment and surgical consumables supplier with a showroom in Galle and island-wide delivery. Browse our catalog of wheelchairs, hospital beds, diagnostics, surgical instruments and home-care equipment, then order via WhatsApp for a same-day quotation — from anywhere in Sri Lanka, including Colombo.</p>
@@ -733,7 +725,7 @@
 
     <section class="section section--contact" id="contact">
       <div class="container">
-        <div class="contact-card" id="quote">
+        <div class="contact-card" id="quote" data-reveal="zoom">
           <div class="contact-card__left">
             <span class="eyebrow eyebrow--light">Request a quote</span>
             <h2>Tell us what you need — we'll quote it today.</h2>
@@ -802,9 +794,9 @@
         <h4>Products</h4>
         <ul>
           <li><a href="/wheelchairs-sri-lanka.html">Wheelchairs</a></li>
-          <li><a href="#products">Commodes</a></li>
-          <li><a href="#products">Canes</a></li>
-          <li><a href="#products">Crutches &amp; walkers</a></li>
+          <li><a href="/hospital-furniture-sri-lanka.html">Hospital furniture &amp; beds</a></li>
+          <li><a href="/surgical-consumables-sri-lanka.html">Surgical consumables</a></li>
+          <li><a href="#products">Commodes, canes &amp; walkers</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -871,6 +863,7 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
+  <script src="motion.js"></script>
   <script src="script.js"></script>
 </body>
 
