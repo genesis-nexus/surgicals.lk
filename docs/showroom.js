@@ -1,5 +1,4 @@
-// Wheelchair showroom: rotating-platform stage with exhibit switching,
-// lazy-loaded 360° videos and auto-advance.
+// Wheelchair showroom: product stage with exhibit switching and auto-advance.
 (function () {
   var root = document.getElementById('wc-showroom');
   if (!root) return;
@@ -19,15 +18,6 @@
 
   function pad(n) { return n < 10 ? '0' + n : String(n); }
 
-  function loadVideo(video) {
-    var source = video.querySelector('source[data-src]');
-    if (source) {
-      source.src = source.getAttribute('data-src');
-      source.removeAttribute('data-src');
-      video.load();
-    }
-  }
-
   function goTo(i, dir) {
     var n = exhibits.length;
     var idx = ((i % n) + n) % n;
@@ -36,15 +26,6 @@
       ex.classList.toggle('is-active', on);
       ex.classList.toggle('is-leaving-back', !on && dir < 0);
       ex.setAttribute('aria-hidden', on ? 'false' : 'true');
-      var video = ex.querySelector('video');
-      if (video) {
-        if (on && inView) {
-          loadVideo(video);
-          video.play().catch(function () {});
-        } else {
-          video.pause();
-        }
-      }
     });
     infos.forEach(function (el, j) { el.classList.toggle('is-active', j === idx); });
     thumbs.forEach(function (t, j) {
@@ -80,7 +61,7 @@
     if (e.key === 'ArrowRight') { goTo(active + 1, 1); startAuto(); }
   });
 
-  // Only run videos + auto-advance while the showroom is on screen.
+  // Only auto-advance while the showroom is on screen.
   if ('IntersectionObserver' in window) {
     var observer = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
@@ -90,10 +71,6 @@
           startAuto();
         } else {
           stopAuto();
-          exhibits.forEach(function (ex) {
-            var video = ex.querySelector('video');
-            if (video) video.pause();
-          });
         }
       });
     }, { rootMargin: '80px' });
