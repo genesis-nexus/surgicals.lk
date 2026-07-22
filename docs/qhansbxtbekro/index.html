@@ -19,6 +19,8 @@
   :root {
     --teal-50: #E6F4F4;
     --teal-100: #BFE1E0;
+    --teal-300: #7EC8C7;
+    --teal-400: #3FA3A2;
     --teal-500: #0E7C7B;
     --teal-600: #0B6260;
     --teal-700: #084A48;
@@ -32,6 +34,8 @@
     --danger: #B91C1C;
     --danger-bg: #FEF2F2;
     --success: #15803D;
+    --amber-bg: #FFFBEB;
+    --amber: #B45309;
     --radius-sm: 6px;
     --radius-md: 10px;
     --radius-lg: 14px;
@@ -96,24 +100,25 @@
     border-bottom: 3px solid var(--teal-500);
     color: var(--ink-900);
     padding: 0.6rem 1.5rem;
-    height: 68px;
+    min-height: 68px;
     display: flex; align-items: center; justify-content: space-between;
     position: sticky; top: 0; z-index: 100;
     box-shadow: var(--shadow-md);
+    flex-wrap: wrap; gap: 0.5rem;
   }
   header .brand { display: flex; align-items: center; gap: 0.85rem; }
   header .brand img { height: 48px; width: auto; }
   header .brand-text { display: flex; flex-direction: column; }
   header .brand-text .name { font-weight: 700; font-size: 0.95rem; letter-spacing: -0.01em; color: var(--teal-700); }
   header .brand-text .sub { font-size: 0.7rem; color: var(--ink-500); }
-  .header-actions { display: flex; gap: 0.5rem; align-items: center; }
+  .header-actions { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
   .btn { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.45rem 0.9rem; border-radius: var(--radius-sm); font-size: 0.82rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; }
   .btn:disabled { opacity: 0.45; cursor: not-allowed; }
   .btn-ghost { background: var(--teal-50); color: var(--teal-700); border: 1px solid var(--teal-100); }
   .btn-ghost:hover:not(:disabled) { background: var(--teal-100); }
   .btn-teal { background: var(--teal-500); color: var(--white); }
   .btn-teal:hover:not(:disabled) { background: var(--teal-600); }
-  .btn-outline { background: var(--white); color: var(--teal-600); border: 1.5px solid var(--teal-300, #7EC8C7); }
+  .btn-outline { background: var(--white); color: var(--teal-600); border: 1.5px solid var(--teal-300); }
   .btn-outline:hover:not(:disabled) { background: var(--teal-50); }
   .btn-danger { background: var(--danger-bg); color: var(--danger); }
   .btn-danger:hover:not(:disabled) { background: #fee2e2; }
@@ -149,10 +154,16 @@
     border-bottom: 1px solid var(--ink-100);
     font-weight: 700; font-size: 0.88rem;
     color: var(--ink-700);
-    display: flex; align-items: center; justify-content: space-between;
+    display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
     background: linear-gradient(to right, var(--teal-50), transparent);
   }
   .panel-body { padding: 1.1rem 1.2rem; }
+
+  /* ── Collapsible ──────────────────────────────── */
+  .panel-header.collapsible { cursor: pointer; user-select: none; }
+  .panel-header.collapsible .chev { transition: transform 0.2s; font-size: 0.75rem; color: var(--ink-500); }
+  .panel.collapsed .panel-body { display: none; }
+  .panel.collapsed .panel-header .chev { transform: rotate(-90deg); }
 
   /* ── Product picker ───────────────────────────── */
   .search-row { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
@@ -172,15 +183,18 @@
     color: var(--ink-500); cursor: pointer; transition: all 0.12s;
   }
   .cat-chip.active { background: linear-gradient(135deg, var(--teal-500), var(--teal-600)); border-color: var(--teal-500); color: var(--white); }
-  .product-list { max-height: 380px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.4rem; }
+  .product-list { max-height: 340px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.4rem; }
   .product-item {
-    display: flex; align-items: center; gap: 0.65rem;
+    display: flex; align-items: center; gap: 0.6rem;
     padding: 0.55rem 0.6rem; border-radius: var(--radius-sm);
     border: 1.5px solid transparent; cursor: pointer; transition: all 0.12s;
   }
   .product-item:hover { background: var(--teal-50); border-color: var(--teal-100); }
   .product-item .sku { font-size: 0.7rem; color: var(--ink-500); font-family: monospace; min-width: 52px; font-weight: 600; }
+  .product-item .pinfo { flex: 1; min-width: 0; }
   .product-item .name { font-size: 0.82rem; color: var(--ink-900); line-height: 1.3; }
+  .product-item .price { font-size: 0.7rem; color: var(--teal-600); font-weight: 600; }
+  .product-item .price.unset { color: var(--ink-300); font-weight: 400; font-style: italic; }
   .product-item .add-btn {
     margin-left: auto; flex-shrink: 0;
     width: 26px; height: 26px; border-radius: 50%;
@@ -191,6 +205,7 @@
   }
   .product-item .add-btn:hover { background: var(--teal-500); border-color: var(--teal-500); color: var(--white); transform: scale(1.1); }
   .empty-state { color: var(--ink-500); font-size: 0.82rem; text-align: center; padding: 1.5rem 0; }
+  .picker-footer { margin-top: 0.75rem; display: flex; gap: 0.5rem; }
 
   /* ── Right column ─────────────────────────────── */
   .right-col { display: flex; flex-direction: column; gap: 1.5rem; }
@@ -255,15 +270,16 @@
   .totals-block {
     margin-top: 0.5rem; display: flex; flex-direction: column; align-items: flex-end; gap: 0.4rem;
   }
-  .total-row { display: flex; gap: 2rem; font-size: 0.85rem; color: var(--ink-700); }
+  .total-row { display: flex; gap: 2rem; font-size: 0.85rem; color: var(--ink-700); align-items: center; }
   .total-row.grand { font-size: 1.05rem; font-weight: 700; color: var(--white); background: linear-gradient(135deg, var(--teal-500), var(--teal-600)); padding: 0.65rem 1rem; border-radius: var(--radius-sm); margin-top: 0.35rem; }
-  .total-row span:first-child { min-width: 80px; text-align: right; }
-  .total-row span:last-child { min-width: 100px; text-align: right; font-family: monospace; }
+  .total-row > span:first-child { min-width: 90px; text-align: right; }
+  .total-row > span:last-child { min-width: 120px; text-align: right; font-family: monospace; }
+  .total-row .adj-input { width: 72px; padding: 0.3rem 0.4rem; border: 1.5px solid var(--ink-300); border-radius: var(--radius-sm); font-size: 0.8rem; text-align: right; font-family: inherit; }
+  .total-row .adj-input:focus { border-color: var(--teal-500); outline: none; }
+  .adjust-toolbar { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
 
   /* ── Signature pad ────────────────────────────── */
-  .signature-container {
-    display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: flex-start;
-  }
+  .signature-container { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: flex-start; }
   .sig-pad-wrapper {
     flex: 1; min-width: 160px;
     border: 1.5px solid var(--ink-300); border-radius: var(--radius-sm);
@@ -272,8 +288,7 @@
   .sig-pad-wrapper label { display: block; font-size: 0.74rem; font-weight: 600; color: var(--ink-700); margin-bottom: 0.4rem; }
   .sig-pad-wrapper canvas {
     display: block; border: 1px solid var(--ink-200);
-    border-radius: 4px; cursor: crosshair;
-    background: var(--white);
+    border-radius: 4px; cursor: crosshair; background: var(--white);
     width: 100%; height: 80px;
   }
   .sig-btn-group { display: flex; gap: 0.4rem; margin-top: 0.4rem; }
@@ -297,6 +312,7 @@
     padding: 1rem 1.2rem;
     display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.85rem;
     border: 1px solid var(--teal-100);
+    position: sticky; bottom: 0; z-index: 50;
   }
   .export-bar .doc-ref { font-size: 0.82rem; color: var(--ink-500); }
   .export-bar .doc-ref strong { color: var(--teal-700); }
@@ -312,13 +328,50 @@
   #toast {
     position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(80px);
     background: var(--ink-900); color: var(--white);
-    padding: 0.7rem 1.3rem; border-radius: var(--radius-pill, 999px);
+    padding: 0.7rem 1.3rem; border-radius: 999px;
     font-size: 0.83rem; font-weight: 500;
     transition: transform 0.25s ease, opacity 0.25s ease;
     opacity: 0; pointer-events: none; z-index: 9999; white-space: nowrap;
     box-shadow: var(--shadow-lg);
   }
   #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+  /* ── Modal ────────────────────────────────────── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(15,23,42,0.5);
+    display: none; align-items: center; justify-content: center; z-index: 900; padding: 1rem;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--white); border-radius: var(--radius-lg);
+    width: min(560px, 96vw); max-height: 88vh; display: flex; flex-direction: column;
+    box-shadow: var(--shadow-lg); overflow: hidden;
+  }
+  .modal-header { padding: 1rem 1.3rem; border-bottom: 1px solid var(--ink-100); display: flex; align-items: center; justify-content: space-between; font-weight: 700; color: var(--ink-700); background: linear-gradient(to right, var(--teal-50), transparent); }
+  .modal-header .close-x { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--ink-500); line-height: 1; }
+  .modal-body { padding: 1.2rem 1.3rem; overflow-y: auto; }
+  .modal-footer { padding: 0.9rem 1.3rem; border-top: 1px solid var(--ink-100); display: flex; justify-content: flex-end; gap: 0.6rem; }
+
+  /* Draft / product manager list rows */
+  .list-row {
+    display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 0.7rem;
+    border: 1.5px solid var(--ink-200); border-radius: var(--radius-sm); margin-bottom: 0.5rem;
+  }
+  .list-row .lr-main { flex: 1; min-width: 0; }
+  .list-row .lr-title { font-size: 0.85rem; font-weight: 600; color: var(--ink-900); }
+  .list-row .lr-sub { font-size: 0.72rem; color: var(--ink-500); }
+  .list-row input, .list-row select {
+    padding: 0.4rem 0.5rem; border: 1.5px solid var(--ink-300); border-radius: var(--radius-sm);
+    font-size: 0.8rem; font-family: inherit; outline: none;
+  }
+  .list-row input:focus { border-color: var(--teal-500); }
+  .pm-grid { display: grid; grid-template-columns: 90px 1fr 130px 110px 30px; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem; }
+  .pm-grid input, .pm-grid select { padding: 0.4rem 0.5rem; border: 1.5px solid var(--ink-300); border-radius: var(--radius-sm); font-size: 0.8rem; font-family: inherit; outline: none; width: 100%; }
+  .pm-grid input:focus, .pm-grid select:focus { border-color: var(--teal-500); }
+  .pm-grid .del { background: none; border: none; color: var(--ink-300); cursor: pointer; font-size: 1rem; }
+  .pm-grid .del:hover { color: var(--danger); }
+  .pm-head { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-500); font-weight: 700; }
+  .hint { font-size: 0.75rem; color: var(--ink-500); margin-bottom: 0.75rem; }
 </style>
 </head>
 <body>
@@ -352,6 +405,9 @@
       </div>
     </div>
     <div class="header-actions">
+      <button class="btn btn-ghost btn-sm" id="save-draft-btn" type="button">💾 Save draft</button>
+      <button class="btn btn-ghost btn-sm" id="open-draft-btn" type="button">📂 Drafts</button>
+      <button class="btn btn-ghost btn-sm" id="manage-products-btn" type="button">⚙ Products</button>
       <button class="btn btn-ghost btn-sm" id="new-doc-btn" type="button">+ New</button>
       <button class="btn btn-ghost btn-sm" id="lock-btn" type="button">Lock</button>
     </div>
@@ -368,6 +424,9 @@
           </div>
           <div class="cat-filter" id="cat-filter"></div>
           <div class="product-list" id="product-list"></div>
+          <div class="picker-footer">
+            <button class="btn btn-outline btn-sm" id="quick-add-product-btn" type="button" style="flex:1">+ New product</button>
+          </div>
         </div>
       </div>
     </div>
@@ -459,24 +518,31 @@
           </div>
         </div>
         <div style="padding:0.85rem 1.3rem 1.1rem; border-top: 1px solid var(--ink-100); background: var(--teal-50);">
+          <div class="adjust-toolbar" id="adjust-toolbar">
+            <button class="btn btn-outline btn-sm" id="toggle-discount-btn" type="button">+ Discount</button>
+            <button class="btn btn-outline btn-sm" id="toggle-tax-btn" type="button">+ Tax</button>
+          </div>
           <div class="totals-block" id="totals-block"></div>
         </div>
       </div>
 
-      <!-- Payment details -->
-      <div class="panel">
-        <div class="panel-header">Payment Details</div>
+      <!-- Advanced: Payment (collapsible) -->
+      <div class="panel collapsed" id="panel-payment">
+        <div class="panel-header collapsible" data-toggle="panel-payment">
+          <span>Payment Details <span style="font-weight:400;color:var(--ink-500);font-size:0.78rem">(optional)</span></span>
+          <span class="chev">▼</span>
+        </div>
         <div class="panel-body">
           <div class="payment-grid">
             <div class="form-group">
               <label>Payment Method</label>
               <select id="payment-method">
                 <option value="">Select payment method</option>
-                <option value="cash">Cash</option>
-                <option value="bank-transfer">Bank Transfer</option>
-                <option value="cheque">Cheque</option>
-                <option value="card">Credit/Debit Card</option>
-                <option value="other">Other</option>
+                <option value="Cash">Cash</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+                <option value="Cheque">Cheque</option>
+                <option value="Credit/Debit Card">Credit/Debit Card</option>
+                <option value="Other">Other</option>
               </select>
             </div>
             <div class="form-group">
@@ -495,9 +561,12 @@
         </div>
       </div>
 
-      <!-- Digital signatures -->
-      <div class="panel">
-        <div class="panel-header">Digital Signatures</div>
+      <!-- Advanced: Signatures (collapsible) -->
+      <div class="panel collapsed" id="panel-signatures">
+        <div class="panel-header collapsible" data-toggle="panel-signatures">
+          <span>Digital Signatures <span style="font-weight:400;color:var(--ink-500);font-size:0.78rem">(optional)</span></span>
+          <span class="chev">▼</span>
+        </div>
         <div class="panel-body">
           <div class="signature-container">
             <div class="sig-pad-wrapper">
@@ -520,9 +589,12 @@
         </div>
       </div>
 
-      <!-- Notes & Terms -->
-      <div class="panel">
-        <div class="panel-header">Notes &amp; Terms</div>
+      <!-- Advanced: Notes & Terms (collapsible) -->
+      <div class="panel collapsed" id="panel-notes">
+        <div class="panel-header collapsible" data-toggle="panel-notes">
+          <span>Notes &amp; Terms <span style="font-weight:400;color:var(--ink-500);font-size:0.78rem">(optional)</span></span>
+          <span class="chev">▼</span>
+        </div>
         <div class="panel-body">
           <div class="doc-meta-grid">
             <div class="form-group">
@@ -556,6 +628,40 @@
   </div><!-- /workspace -->
 </div><!-- /app -->
 
+<!-- ══════════════════════════════════════════════
+     MODAL: Drafts
+══════════════════════════════════════════════ -->
+<div class="modal-overlay" id="drafts-modal">
+  <div class="modal">
+    <div class="modal-header">Saved Drafts <button class="close-x" type="button" data-close="drafts-modal">×</button></div>
+    <div class="modal-body" id="drafts-list"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" type="button" data-close="drafts-modal">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODAL: Product manager
+══════════════════════════════════════════════ -->
+<div class="modal-overlay" id="products-modal">
+  <div class="modal" style="width:min(720px,96vw)">
+    <div class="modal-header">Manage Products &amp; Prices <button class="close-x" type="button" data-close="products-modal">×</button></div>
+    <div class="modal-body">
+      <div class="hint">Edit SKU, name, category and unit price. Prices are remembered and pre-fill new line items. Changes save on close.</div>
+      <div class="pm-grid pm-head">
+        <div>SKU</div><div>Name</div><div>Category</div><div>Price (LKR)</div><div></div>
+      </div>
+      <div id="pm-list"></div>
+      <button class="btn btn-outline btn-sm" id="pm-add-btn" type="button" style="margin-top:0.5rem">+ Add product</button>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" id="pm-reset-btn" type="button">Reset to defaults</button>
+      <button class="btn btn-teal" id="pm-save-btn" type="button">Save changes</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -566,6 +672,8 @@
 // ═══════════════════════════════════════════════════════════════
 const PASSWORD_HASH = "3e962868a9de9b8fb09f49e2ea12a40302b4d87bc97448fbcac1e7dffa72dd1b";
 const SESSION_KEY   = "hs_admin_auth";
+const PRODUCTS_KEY  = "hs_products_v1";
+const DRAFTS_KEY    = "hs_drafts_v1";
 
 async function sha256hex(str) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
@@ -604,8 +712,8 @@ function initSignaturePads() {
   ["sig-authorized", "sig-received"].forEach(id => {
     const canvas = document.getElementById(id);
     const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width;
-    canvas.height = rect.height;
+    canvas.width = rect.width || 240;
+    canvas.height = rect.height || 80;
     sigPads[id] = new SignaturePad(canvas, {
       penColor: "rgb(8, 74, 72)",
       minWidth: 0.5,
@@ -617,6 +725,7 @@ function initSignaturePads() {
 
 function clearSig(id) {
   if (sigPads[id]) sigPads[id].clear();
+  window[`${id}_data`] = null;
 }
 
 function saveSigImage(id) {
@@ -624,17 +733,12 @@ function saveSigImage(id) {
     showToast("No signature to save.");
     return;
   }
-  // Store as data URL internally
   window[`${id}_data`] = sigPads[id].toDataURL();
   showToast(`${id === "sig-authorized" ? "Authorized" : "Received"} signature saved.`);
 }
 
-function getSigData(id) {
-  return window[`${id}_data`] || null;
-}
-
 // ═══════════════════════════════════════════════════════════════
-// PRODUCT DATA
+// PRODUCT DATA (editable, persisted in localStorage)
 // ═══════════════════════════════════════════════════════════════
 const CATEGORY_LABELS = {
   "mobility-aids": "Mobility Aids",
@@ -643,79 +747,96 @@ const CATEGORY_LABELS = {
   "supports":      "Supports & Braces",
   "beds":          "Beds & Mattresses",
   "surgical":      "Surgical",
-  "home-care":     "Home Care"
+  "home-care":     "Home Care",
+  "other":         "Other"
 };
 
-const PRODUCTS = [
-  { sku:"WC01", title:"Adult Wheelchair", category:"mobility-aids" },
-  { sku:"WC02", title:"Functional Wheelchair", category:"mobility-aids" },
-  { sku:"WC03", title:"Fully Functional Wheelchair", category:"mobility-aids" },
-  { sku:"WC04", title:"Commode Wheelchair", category:"mobility-aids" },
-  { sku:"CO01", title:"Commode Chair", category:"mobility-aids" },
-  { sku:"CO02", title:"High Commode Chair", category:"mobility-aids" },
-  { sku:"CO03", title:"Commode Chair with Wheels", category:"mobility-aids" },
-  { sku:"CO04", title:"Padded Commode Chair with Wheels", category:"mobility-aids" },
-  { sku:"CO05", title:"Toilet Chair", category:"mobility-aids" },
-  { sku:"CN01", title:"Walking Cane", category:"mobility-aids" },
-  { sku:"CN02", title:"Walking Cane (Curved Handle)", category:"mobility-aids" },
-  { sku:"CN03", title:"Walking Cane (Shaped Handle)", category:"mobility-aids" },
-  { sku:"CN04", title:"Quad Cane", category:"mobility-aids" },
-  { sku:"CN05", title:"Tripod Cane", category:"mobility-aids" },
-  { sku:"CR01", title:"Elbow Crutches", category:"mobility-aids" },
-  { sku:"CR02", title:"Under-arm Crutches", category:"mobility-aids" },
-  { sku:"WF01", title:"Walking Frame", category:"mobility-aids" },
-  { sku:"DM01", title:"Norditalia BP-1000 Blood Pressure Monitor", category:"diagnostics" },
-  { sku:"DM02", title:"Berrcom Non-contact Infrared Thermometer", category:"diagnostics" },
-  { sku:"DM03", title:"3M Littmann Classic III Stethoscope", category:"diagnostics" },
-  { sku:"DM04", title:"Blood Glucose Meters (FreeStyle Optium, Accu-Chek Active, VivaChek Ino)", category:"diagnostics" },
-  { sku:"DM07", title:"Fingertip Pulse Oximeter (X1805)", category:"diagnostics" },
-  { sku:"SU01", title:"DYNA Clavicle Brace", category:"supports" },
-  { sku:"SU02", title:"DYNA Arm Sling", category:"supports" },
-  { sku:"SU03", title:"DYNA Soft Cervical Collar", category:"supports" },
-  { sku:"SU04", title:"I-M Breathable Lumbar Support (4 Stays)", category:"supports" },
-  { sku:"BD01", title:"Anti-Decubitus Bubble Mattress", category:"beds" },
-  { sku:"BD02", title:"Medtech AB-03 Air Pressure Mattress", category:"beds" },
-  { sku:"DI01", title:"Marvel Guard Adult Diapers (Medium, 10pcs)", category:"home-care" },
-  { sku:"DI02", title:"Easy Friends Adult Diapers (Medium, 10pcs)", category:"home-care" },
-  { sku:"DI03", title:"Safe Guard Premium Adult Diapers (M/L, 10pcs)", category:"home-care" },
-  { sku:"SG01", title:"Orthopaedic Implant Kit (Plates, Screws & Wires)", category:"surgical" },
-  { sku:"SG02", title:"Panther Hemorrhoidal Surgical Stapler (FCSSME33)", category:"surgical" },
-  { sku:"SG03", title:"Panther Linear Cutter Stapler (SSAB-80)", category:"surgical" },
-  { sku:"SG04", title:"Reloading Unit for Linear Cutter Stapler (SADB-80D)", category:"surgical" },
-  { sku:"HC01", title:"Portable Phlegm Suction Unit (9E-A)", category:"home-care" },
-  { sku:"HC02", title:"Benice Facial Steamer (BNS-016)", category:"home-care" },
-  { sku:"HC03", title:"Beta Diabetic Footwear", category:"home-care" },
-  { sku:"HC04", title:"TexStretch Rehabilitation Bands & Accessories", category:"home-care" },
-  { sku:"MG1010", title:"Two Function Bed", category:"furniture" },
-  { sku:"MG1011", title:"Head Adjustable Bed", category:"furniture" },
-  { sku:"MG1012", title:"Head Adjustable Bed — Home Use", category:"furniture" },
-  { sku:"MG1013", title:"Two Function Bed — Home Use", category:"furniture" },
-  { sku:"MG1014", title:"Head Adjustable Bed (Stainless Steel)", category:"furniture" },
-  { sku:"MG1015", title:"Patient Bed — Basic", category:"furniture" },
-  { sku:"MG1016", title:"Three Function Bed — Manual", category:"furniture" },
-  { sku:"MG1017", title:"Five Function Bed — Hydraulic", category:"furniture" },
-  { sku:"MG1018", title:"Two Function Bed — Classic", category:"furniture" },
-  { sku:"MG1019", title:"Head Adjustable Bed — Classic", category:"furniture" },
-  { sku:"MG1020", title:"Three Function Bed — Classic", category:"furniture" },
-  { sku:"MG1021", title:"Five Function Bed — Classic", category:"furniture" },
-  { sku:"MG1022", title:"Three Function Bed — Electric", category:"furniture" },
-  { sku:"MG2010", title:"Gynecological Bed", category:"furniture" },
-  { sku:"MG2011", title:"Tilt Bed", category:"furniture" },
-  { sku:"MG2012", title:"Examination Bed", category:"furniture" },
-  { sku:"MG2013A", title:"Examination Bed with Cabinet", category:"furniture" },
-  { sku:"MG2014", title:"Gynecological Bed (Stainless Steel)", category:"furniture" },
-  { sku:"MG2015", title:"Examination Bed (Stainless Steel)", category:"furniture" },
-  { sku:"MG4010", title:"Patient Transport Trolley (Stainless Steel)", category:"furniture" },
-  { sku:"MG4011", title:"Patient Transport Trolley (Epoxy Steel)", category:"furniture" },
-  { sku:"MG4012", title:"Patient Transfer Trolley (Stainless Steel)", category:"furniture" },
-  { sku:"MG4013", title:"Stretcher Trolley", category:"furniture" },
-  { sku:"MG4014", title:"Patient Trolley (Stainless Steel)", category:"furniture" },
-  { sku:"MG4015", title:"Patient Trolley — Open Frame", category:"furniture" },
-  { sku:"MG4016", title:"Patient Trolley (Epoxy Steel)", category:"furniture" },
-  { sku:"MG4017", title:"Recovery Trolley (Epoxy Steel)", category:"furniture" },
-  { sku:"MG4019", title:"Recovery Trolley (Stainless Steel)", category:"furniture" },
-  { sku:"MG4021", title:"Patient Transfer Trolley — Open Frame", category:"furniture" },
+// Default catalogue — used on first run and by "Reset to defaults".
+const DEFAULT_PRODUCTS = [
+  { sku:"WC01", title:"Adult Wheelchair", category:"mobility-aids", price:0 },
+  { sku:"WC02", title:"Functional Wheelchair", category:"mobility-aids", price:0 },
+  { sku:"WC03", title:"Fully Functional Wheelchair", category:"mobility-aids", price:0 },
+  { sku:"WC04", title:"Commode Wheelchair", category:"mobility-aids", price:0 },
+  { sku:"CO01", title:"Commode Chair", category:"mobility-aids", price:0 },
+  { sku:"CO02", title:"High Commode Chair", category:"mobility-aids", price:0 },
+  { sku:"CO03", title:"Commode Chair with Wheels", category:"mobility-aids", price:0 },
+  { sku:"CO04", title:"Padded Commode Chair with Wheels", category:"mobility-aids", price:0 },
+  { sku:"CO05", title:"Toilet Chair", category:"mobility-aids", price:0 },
+  { sku:"CN01", title:"Walking Cane", category:"mobility-aids", price:0 },
+  { sku:"CN02", title:"Walking Cane (Curved Handle)", category:"mobility-aids", price:0 },
+  { sku:"CN03", title:"Walking Cane (Shaped Handle)", category:"mobility-aids", price:0 },
+  { sku:"CN04", title:"Quad Cane", category:"mobility-aids", price:0 },
+  { sku:"CN05", title:"Tripod Cane", category:"mobility-aids", price:0 },
+  { sku:"CR01", title:"Elbow Crutches", category:"mobility-aids", price:0 },
+  { sku:"CR02", title:"Under-arm Crutches", category:"mobility-aids", price:0 },
+  { sku:"WF01", title:"Walking Frame", category:"mobility-aids", price:0 },
+  { sku:"DM01", title:"Norditalia BP-1000 Blood Pressure Monitor", category:"diagnostics", price:0 },
+  { sku:"DM02", title:"Berrcom Non-contact Infrared Thermometer", category:"diagnostics", price:0 },
+  { sku:"DM03", title:"3M Littmann Classic III Stethoscope", category:"diagnostics", price:0 },
+  { sku:"DM04", title:"Blood Glucose Meters (FreeStyle Optium, Accu-Chek Active, VivaChek Ino)", category:"diagnostics", price:0 },
+  { sku:"DM07", title:"Fingertip Pulse Oximeter (X1805)", category:"diagnostics", price:0 },
+  { sku:"SU01", title:"DYNA Clavicle Brace", category:"supports", price:0 },
+  { sku:"SU02", title:"DYNA Arm Sling", category:"supports", price:0 },
+  { sku:"SU03", title:"DYNA Soft Cervical Collar", category:"supports", price:0 },
+  { sku:"SU04", title:"I-M Breathable Lumbar Support (4 Stays)", category:"supports", price:0 },
+  { sku:"BD01", title:"Anti-Decubitus Bubble Mattress", category:"beds", price:0 },
+  { sku:"BD02", title:"Medtech AB-03 Air Pressure Mattress", category:"beds", price:0 },
+  { sku:"DI01", title:"Marvel Guard Adult Diapers (Medium, 10pcs)", category:"home-care", price:0 },
+  { sku:"DI02", title:"Easy Friends Adult Diapers (Medium, 10pcs)", category:"home-care", price:0 },
+  { sku:"DI03", title:"Safe Guard Premium Adult Diapers (M/L, 10pcs)", category:"home-care", price:0 },
+  { sku:"SG01", title:"Orthopaedic Implant Kit (Plates, Screws & Wires)", category:"surgical", price:0 },
+  { sku:"SG02", title:"Panther Hemorrhoidal Surgical Stapler (FCSSME33)", category:"surgical", price:0 },
+  { sku:"SG03", title:"Panther Linear Cutter Stapler (SSAB-80)", category:"surgical", price:0 },
+  { sku:"SG04", title:"Reloading Unit for Linear Cutter Stapler (SADB-80D)", category:"surgical", price:0 },
+  { sku:"HC01", title:"Portable Phlegm Suction Unit (9E-A)", category:"home-care", price:0 },
+  { sku:"HC02", title:"Benice Facial Steamer (BNS-016)", category:"home-care", price:0 },
+  { sku:"HC03", title:"Beta Diabetic Footwear", category:"home-care", price:0 },
+  { sku:"HC04", title:"TexStretch Rehabilitation Bands & Accessories", category:"home-care", price:0 },
+  { sku:"MG1010", title:"Two Function Bed", category:"furniture", price:0 },
+  { sku:"MG1011", title:"Head Adjustable Bed", category:"furniture", price:0 },
+  { sku:"MG1012", title:"Head Adjustable Bed — Home Use", category:"furniture", price:0 },
+  { sku:"MG1013", title:"Two Function Bed — Home Use", category:"furniture", price:0 },
+  { sku:"MG1014", title:"Head Adjustable Bed (Stainless Steel)", category:"furniture", price:0 },
+  { sku:"MG1015", title:"Patient Bed — Basic", category:"furniture", price:0 },
+  { sku:"MG1016", title:"Three Function Bed — Manual", category:"furniture", price:0 },
+  { sku:"MG1017", title:"Five Function Bed — Hydraulic", category:"furniture", price:0 },
+  { sku:"MG1018", title:"Two Function Bed — Classic", category:"furniture", price:0 },
+  { sku:"MG1019", title:"Head Adjustable Bed — Classic", category:"furniture", price:0 },
+  { sku:"MG1020", title:"Three Function Bed — Classic", category:"furniture", price:0 },
+  { sku:"MG1021", title:"Five Function Bed — Classic", category:"furniture", price:0 },
+  { sku:"MG1022", title:"Three Function Bed — Electric", category:"furniture", price:0 },
+  { sku:"MG2010", title:"Gynecological Bed", category:"furniture", price:0 },
+  { sku:"MG2011", title:"Tilt Bed", category:"furniture", price:0 },
+  { sku:"MG2012", title:"Examination Bed", category:"furniture", price:0 },
+  { sku:"MG2013A", title:"Examination Bed with Cabinet", category:"furniture", price:0 },
+  { sku:"MG2014", title:"Gynecological Bed (Stainless Steel)", category:"furniture", price:0 },
+  { sku:"MG2015", title:"Examination Bed (Stainless Steel)", category:"furniture", price:0 },
+  { sku:"MG4010", title:"Patient Transport Trolley (Stainless Steel)", category:"furniture", price:0 },
+  { sku:"MG4011", title:"Patient Transport Trolley (Epoxy Steel)", category:"furniture", price:0 },
+  { sku:"MG4012", title:"Patient Transfer Trolley (Stainless Steel)", category:"furniture", price:0 },
+  { sku:"MG4013", title:"Stretcher Trolley", category:"furniture", price:0 },
+  { sku:"MG4014", title:"Patient Trolley (Stainless Steel)", category:"furniture", price:0 },
+  { sku:"MG4015", title:"Patient Trolley — Open Frame", category:"furniture", price:0 },
+  { sku:"MG4016", title:"Patient Trolley (Epoxy Steel)", category:"furniture", price:0 },
+  { sku:"MG4017", title:"Recovery Trolley (Epoxy Steel)", category:"furniture", price:0 },
+  { sku:"MG4019", title:"Recovery Trolley (Stainless Steel)", category:"furniture", price:0 },
+  { sku:"MG4021", title:"Patient Transfer Trolley — Open Frame", category:"furniture", price:0 },
 ];
+
+let PRODUCTS = [];
+
+function loadProducts() {
+  try {
+    const raw = localStorage.getItem(PRODUCTS_KEY);
+    if (raw) { PRODUCTS = JSON.parse(raw); return; }
+  } catch (e) { /* fall through to defaults */ }
+  PRODUCTS = DEFAULT_PRODUCTS.map(p => ({ ...p }));
+}
+
+function saveProducts() {
+  try { localStorage.setItem(PRODUCTS_KEY, JSON.stringify(PRODUCTS)); }
+  catch (e) { showToast("Could not save products (storage full?)."); }
+}
 
 // ═══════════════════════════════════════════════════════════════
 // STATE
@@ -723,6 +844,9 @@ const PRODUCTS = [
 let lineItems = [];
 let docType   = "quotation";
 let itemIdSeq = 0;
+// Adjustments: discount + tax. type "pct" or "amt". null = hidden.
+let discount  = null;   // { type: "pct"|"amt", value: number }
+let tax       = null;   // { type: "pct"|"amt", value: number, label: string }
 
 function newItemId() { return ++itemIdSeq; }
 
@@ -738,6 +862,22 @@ function lineTotal(item) {
 }
 
 function subtotal() { return lineItems.reduce((s, i) => s + lineTotal(i), 0); }
+
+function discountAmount() {
+  if (!discount) return 0;
+  const v = parseFloat(discount.value) || 0;
+  return discount.type === "pct" ? subtotal() * v / 100 : v;
+}
+
+function taxableBase() { return Math.max(0, subtotal() - discountAmount()); }
+
+function taxAmount() {
+  if (!tax) return 0;
+  const v = parseFloat(tax.value) || 0;
+  return tax.type === "pct" ? taxableBase() * v / 100 : v;
+}
+
+function grandTotal() { return taxableBase() + taxAmount(); }
 
 function getDocMeta() {
   return {
@@ -771,15 +911,72 @@ function showToast(msg, dur = 2500) {
   setTimeout(() => t.classList.remove("show"), dur);
 }
 
+function escHtml(str) {
+  return String(str || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SHARED DOCUMENT MODEL
+// ── Single source of truth for what appears on the printed doc.
+// ── Both PDF and DOCX exporters read from here, so layout/label
+// ── changes only need to be made once.
+// ═══════════════════════════════════════════════════════════════
+function buildDocModel() {
+  const m = getDocMeta();
+  const isBill = docType === "bill";
+
+  // Summary rows shown under the items table (subtotal / discount / tax / total).
+  const summaryRows = [];
+  const hasAdjust = discount || tax;
+  if (hasAdjust) {
+    summaryRows.push({ label: "Subtotal", value: subtotal(), strong: false });
+  }
+  if (discount) {
+    const lbl = discount.type === "pct" ? `Discount (${parseFloat(discount.value) || 0}%)` : "Discount";
+    summaryRows.push({ label: lbl, value: -discountAmount(), strong: false });
+  }
+  if (tax) {
+    const base = tax.label || (tax.type === "pct" ? `Tax (${parseFloat(tax.value) || 0}%)` : "Tax");
+    summaryRows.push({ label: base, value: taxAmount(), strong: false });
+  }
+
+  return {
+    isBill,
+    typeLabel:    isBill ? "BILL / INVOICE" : "QUOTATION",
+    subjectLabel: isBill ? "Invoice for Supplies" : "Quotation for Surgical Supplies",
+    totalLabel:   isBill ? "Total Due" : "Total",
+    meta: m,
+    metaLines: [
+      ...(m.ref  ? [`Ref: ${m.ref}`]                            : []),
+      ...(m.date ? [`Date: ${formatDate(m.date)}`]              : []),
+      ...(!isBill && m.valid ? [`Valid until: ${formatDate(m.valid)}`] : []),
+    ],
+    tableHead: ["Name of the Item", "Qty", "Unit Price (Rs.)", "Total (Rs.)"],
+    tableBody: lineItems.map(item => [
+      item.description || "",
+      String(item.qty),
+      item.unitPrice ? fmt(item.unitPrice) : "—",
+      item.unitPrice ? fmt(lineTotal(item)) : "—",
+    ]),
+    summaryRows,
+    grandTotal: grandTotal(),
+    sigAuth: window["sig-authorized_data"] || null,
+    sigRecv: window["sig-received_data"] || null,
+  };
+}
+
 // ═══════════════════════════════════════════════════════════════
 // PRODUCT PICKER
 // ═══════════════════════════════════════════════════════════════
-function renderProductPicker(filter = "", catFilter = "all") {
+let pickerQuery = "";
+let pickerCat   = "all";
+
+function renderProductPicker() {
   const list = document.getElementById("product-list");
-  const q = filter.toLowerCase();
+  const q = pickerQuery.toLowerCase();
   const filtered = PRODUCTS.filter(p => {
-    const matchCat = catFilter === "all" || p.category === catFilter;
-    const matchQ   = !q || p.title.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q);
+    const matchCat = pickerCat === "all" || p.category === pickerCat;
+    const matchQ   = !q || (p.title||"").toLowerCase().includes(q) || (p.sku||"").toLowerCase().includes(q);
     return matchCat && matchQ;
   });
   if (!filtered.length) {
@@ -787,17 +984,17 @@ function renderProductPicker(filter = "", catFilter = "all") {
     return;
   }
   list.innerHTML = filtered.map(p => `
-    <div class="product-item" data-sku="${p.sku}">
-      <span class="sku">${p.sku}</span>
-      <span class="name">${p.title}</span>
-      <button class="add-btn" data-sku="${p.sku}" title="Add to document" type="button">+</button>
+    <div class="product-item" data-sku="${escHtml(p.sku)}">
+      <span class="sku">${escHtml(p.sku)}</span>
+      <span class="pinfo">
+        <span class="name">${escHtml(p.title)}</span><br>
+        <span class="price${p.price ? "" : " unset"}">${p.price ? "LKR " + fmt(p.price) : "no price set"}</span>
+      </span>
+      <button class="add-btn" data-sku="${escHtml(p.sku)}" title="Add to document" type="button">+</button>
     </div>
   `).join("");
   list.querySelectorAll(".add-btn").forEach(btn => {
-    btn.addEventListener("click", e => {
-      e.stopPropagation();
-      addProduct(btn.dataset.sku);
-    });
+    btn.addEventListener("click", e => { e.stopPropagation(); addProduct(btn.dataset.sku); });
   });
   list.querySelectorAll(".product-item").forEach(row => {
     row.addEventListener("click", () => addProduct(row.dataset.sku));
@@ -807,29 +1004,22 @@ function renderProductPicker(filter = "", catFilter = "all") {
 function buildCatFilter() {
   const wrap = document.getElementById("cat-filter");
   const cats = ["all", ...Object.keys(CATEGORY_LABELS)];
-  let active = "all";
   wrap.innerHTML = cats.map(c =>
-    `<button class="cat-chip${c === "all" ? " active" : ""}" data-cat="${c}" type="button">${c === "all" ? "All" : CATEGORY_LABELS[c]}</button>`
+    `<button class="cat-chip${c === pickerCat ? " active" : ""}" data-cat="${c}" type="button">${c === "all" ? "All" : CATEGORY_LABELS[c]}</button>`
   ).join("");
-  let q = "";
   wrap.querySelectorAll(".cat-chip").forEach(chip => {
     chip.addEventListener("click", () => {
-      active = chip.dataset.cat;
-      wrap.querySelectorAll(".cat-chip").forEach(c => c.classList.toggle("active", c.dataset.cat === active));
-      renderProductPicker(q, active);
+      pickerCat = chip.dataset.cat;
+      wrap.querySelectorAll(".cat-chip").forEach(c => c.classList.toggle("active", c.dataset.cat === pickerCat));
+      renderProductPicker();
     });
   });
-  document.getElementById("product-search").addEventListener("input", e => {
-    q = e.target.value;
-    renderProductPicker(q, active);
-  });
-  renderProductPicker("", "all");
 }
 
 function addProduct(sku) {
   const p = PRODUCTS.find(x => x.sku === sku);
   if (!p) return;
-  lineItems.push({ id: newItemId(), sku: p.sku, description: p.title, qty: 1, unitPrice: "" });
+  lineItems.push({ id: newItemId(), sku: p.sku, description: p.title, qty: 1, unitPrice: p.price ? String(p.price) : "" });
   renderItems();
   showToast(`"${p.title}" added`);
 }
@@ -844,6 +1034,7 @@ function renderItems() {
   if (!lineItems.length) {
     tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:1.5rem;color:var(--ink-500);font-size:0.82rem">No items yet — add from the product list or click "+ Add blank line".</td></tr>`;
     renderTotals();
+    updateExportLabel();
     return;
   }
 
@@ -857,10 +1048,10 @@ function renderItems() {
         <input type="text" class="sku-input" value="${escHtml(item.sku)}" placeholder="SKU" style="width:72px" data-field="sku">
       </td>
       <td style="text-align:right">
-        <input type="number" class="qty-input" value="${item.qty}" min="0" step="1" data-field="qty">
+        <input type="number" class="qty-input" value="${escHtml(item.qty)}" min="0" step="1" data-field="qty">
       </td>
       <td style="text-align:right">
-        <input type="number" class="price-input" value="${item.unitPrice}" min="0" step="0.01" placeholder="0.00" data-field="unitPrice">
+        <input type="number" class="price-input" value="${escHtml(item.unitPrice)}" min="0" step="0.01" placeholder="0.00" data-field="unitPrice">
       </td>
       <td class="line-total">${item.unitPrice ? fmt(lineTotal(item)) : "—"}</td>
       <td>
@@ -895,17 +1086,95 @@ function renderItems() {
 
 function renderTotals() {
   const block = document.getElementById("totals-block");
-  const sub   = subtotal();
-  block.innerHTML = `
+  const rows = [];
+
+  const showBreakdown = discount || tax;
+  if (showBreakdown) {
+    rows.push(`<div class="total-row"><span>Subtotal</span><span>LKR ${fmt(subtotal())}</span></div>`);
+  }
+
+  if (discount) {
+    rows.push(`
+      <div class="total-row">
+        <span>Discount</span>
+        <span style="display:flex;gap:0.3rem;align-items:center;font-family:inherit">
+          <input type="number" class="adj-input" id="discount-value" value="${escHtml(discount.value)}" min="0" step="0.01" placeholder="0">
+          <select class="adj-input" id="discount-type" style="width:56px">
+            <option value="pct"${discount.type==="pct"?" selected":""}>%</option>
+            <option value="amt"${discount.type==="amt"?" selected":""}>LKR</option>
+          </select>
+          <button class="remove-btn" id="discount-remove" title="Remove discount" type="button">✕</button>
+        </span>
+      </div>
+      <div class="total-row"><span>− Discount</span><span>LKR ${fmt(discountAmount())}</span></div>
+    `);
+  }
+
+  if (tax) {
+    rows.push(`
+      <div class="total-row">
+        <span>Tax</span>
+        <span style="display:flex;gap:0.3rem;align-items:center">
+          <input type="text" class="adj-input" id="tax-label" value="${escHtml(tax.label || "")}" placeholder="VAT" style="width:70px;text-align:left">
+          <input type="number" class="adj-input" id="tax-value" value="${escHtml(tax.value)}" min="0" step="0.01" placeholder="0">
+          <select class="adj-input" id="tax-type" style="width:56px">
+            <option value="pct"${tax.type==="pct"?" selected":""}>%</option>
+            <option value="amt"${tax.type==="amt"?" selected":""}>LKR</option>
+          </select>
+          <button class="remove-btn" id="tax-remove" title="Remove tax" type="button">✕</button>
+        </span>
+      </div>
+      <div class="total-row"><span>+ Tax</span><span>LKR ${fmt(taxAmount())}</span></div>
+    `);
+  }
+
+  rows.push(`
     <div class="total-row grand">
       <span>${docType === "bill" ? "Total Due" : "Total"}</span>
-      <span>LKR ${fmt(sub)}</span>
+      <span>LKR ${fmt(grandTotal())}</span>
     </div>
-  `;
+  `);
+
+  block.innerHTML = rows.join("");
+  bindAdjustInputs();
+  updateAdjustToolbar();
 }
 
-function escHtml(str) {
-  return String(str || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+function bindAdjustInputs() {
+  const dv = document.getElementById("discount-value");
+  const dt = document.getElementById("discount-type");
+  const dr = document.getElementById("discount-remove");
+  if (dv) dv.addEventListener("input", () => { discount.value = dv.value; refreshTotalsSoft(); });
+  if (dt) dt.addEventListener("change", () => { discount.type = dt.value; renderTotals(); });
+  if (dr) dr.addEventListener("click", () => { discount = null; renderTotals(); updateExportLabel(); });
+
+  const tv = document.getElementById("tax-value");
+  const tt = document.getElementById("tax-type");
+  const tl = document.getElementById("tax-label");
+  const tr = document.getElementById("tax-remove");
+  if (tv) tv.addEventListener("input", () => { tax.value = tv.value; refreshTotalsSoft(); });
+  if (tt) tt.addEventListener("change", () => { tax.type = tt.value; renderTotals(); });
+  if (tl) tl.addEventListener("input", () => { tax.label = tl.value; });
+  if (tr) tr.addEventListener("click", () => { tax = null; renderTotals(); updateExportLabel(); });
+}
+
+// Update only the computed amounts without re-rendering inputs (keeps focus).
+function refreshTotalsSoft() {
+  const rows = document.querySelectorAll("#totals-block .total-row");
+  // Simplest reliable approach: re-render, then restore focus target by id.
+  const active = document.activeElement ? document.activeElement.id : null;
+  const selStart = document.activeElement && document.activeElement.selectionStart;
+  renderTotals();
+  updateExportLabel();
+  if (active) {
+    const el = document.getElementById(active);
+    if (el) { el.focus(); if (selStart != null && el.setSelectionRange) { try { el.setSelectionRange(selStart, selStart); } catch(e){} } }
+  }
+}
+
+function updateAdjustToolbar() {
+  document.getElementById("toggle-discount-btn").style.display = discount ? "none" : "";
+  document.getElementById("toggle-tax-btn").style.display = tax ? "none" : "";
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -930,11 +1199,22 @@ function updateExportLabel() {
   const typeLabel = docType === "bill" ? "Bill / Invoice" : "Quotation";
   const ref = m.ref || "—";
   const buyer = m.buyer || "—";
-  label.innerHTML = `<strong>${typeLabel}</strong> · Ref: ${ref} · ${buyer} · ${lineItems.length} item(s) · LKR ${fmt(subtotal())}`;
+  label.innerHTML = `<strong>${escHtml(typeLabel)}</strong> · Ref: ${escHtml(ref)} · ${escHtml(buyer)} · ${lineItems.length} item(s) · LKR ${fmt(grandTotal())}`;
 }
 
 // ═══════════════════════════════════════════════════════════════
-// PDF EXPORT (Enhanced design)
+// COLLAPSIBLE PANELS
+// ═══════════════════════════════════════════════════════════════
+function bindCollapsibles() {
+  document.querySelectorAll(".panel-header.collapsible").forEach(h => {
+    h.addEventListener("click", () => {
+      document.getElementById(h.dataset.toggle).classList.toggle("collapsed");
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PDF EXPORT — reads buildDocModel()
 // ═══════════════════════════════════════════════════════════════
 function loadLogoDataURL() {
   return new Promise((resolve) => {
@@ -953,77 +1233,49 @@ function loadLogoDataURL() {
 }
 
 async function exportPDF() {
-  const m         = getDocMeta();
-  const typeLabel = docType === "bill" ? "BILL / INVOICE" : "QUOTATION";
+  const M = buildDocModel();
+  const m = M.meta;
   const { jsPDF } = window.jspdf;
   const doc       = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   const W         = 210;
   const margin    = 18;
   const pageH     = 297;
-  // Logo true aspect: 800 × 276 px  →  ratio = 2.899
-  const LOGO_RATIO = 800 / 276;
+  const LOGO_RATIO = 800 / 276;   // true logo aspect
 
   const logoData = await loadLogoDataURL();
 
-  // ── Header band: white with teal left accent bar ──
+  // ── Header band ──
   doc.setFillColor(255, 255, 255);
   doc.rect(0, 0, W, 42, "F");
-  doc.setFillColor(11, 98, 96);   // teal-600
+  doc.setFillColor(11, 98, 96);
   doc.rect(0, 0, 4, 42, "F");
 
-  // Logo — left-aligned, height 16 mm, width calculated from true aspect ratio
   if (logoData) {
     const logoH = 16;
-    const logoW = logoH * LOGO_RATIO;   // 800/276 ≈ 2.899  →  ~46.4 mm
-    doc.addImage(logoData, "PNG", 8, (42 - logoH) / 2, logoW, logoH);
+    doc.addImage(logoData, "PNG", 8, (42 - logoH) / 2, logoH * LOGO_RATIO, logoH);
   } else {
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(12);
-    doc.setTextColor(11, 98, 96);
+    doc.setFont("helvetica", "bold"); doc.setFontSize(12); doc.setTextColor(11, 98, 96);
     doc.text("Hettiarachchi Surgicals", 8, 18);
   }
 
-  // Doc type — right side of header, vertically centred
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(11);
-  doc.setTextColor(11, 98, 96);
-  doc.text(typeLabel, W - margin, 18, { align: "right" });
-  // Doc-type underline accent
-  doc.setDrawColor(11, 98, 96);
-  doc.setLineWidth(0.4);
-  const tlW = doc.getTextWidth(typeLabel);
-  doc.line(W - margin - tlW, 19.5, W - margin, 19.5);
+  doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(11, 98, 96);
+  doc.text(M.typeLabel, W - margin, 18, { align: "right" });
+  doc.setDrawColor(11, 98, 96); doc.setLineWidth(0.4);
+  doc.line(W - margin - doc.getTextWidth(M.typeLabel), 19.5, W - margin, 19.5);
 
-  // Ref / date right below doc type
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(8);
-  doc.setTextColor(100, 116, 139);
-  if (m.ref)  { doc.text(`Ref: ${m.ref}`,              W - margin, 25, { align: "right" }); }
-  if (m.date) { doc.text(`Date: ${formatDate(m.date)}`, W - margin, 30, { align: "right" }); }
-  if (docType === "quotation" && m.valid) {
-    doc.text(`Valid until: ${formatDate(m.valid)}`, W - margin, 35, { align: "right" });
-  }
+  doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(100, 116, 139);
+  let hy = 25;
+  M.metaLines.forEach(l => { doc.text(l, W - margin, hy, { align: "right" }); hy += 5; });
 
-  // Full-width teal rule under header
-  doc.setDrawColor(11, 98, 96);
-  doc.setLineWidth(0.5);
+  doc.setDrawColor(11, 98, 96); doc.setLineWidth(0.5);
   doc.line(0, 42, W, 42);
 
   let y = 52;
 
-  // ── Buyer address block ──
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(9);
-  doc.setTextColor(15, 23, 42);
-  if (m.date && !m.ref) {             // show date here only if not shown in header
-    doc.text(formatDate(m.date), margin, y); y += 6;
-  }
-  if (m.buyer) {
-    doc.text(m.buyer, margin, y); y += 5.5;
-  }
-  if (m.address) {
-    m.address.split("\n").forEach(line => { doc.text(line.trim(), margin, y); y += 5; });
-  }
+  // ── Buyer block ──
+  doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(15, 23, 42);
+  if (m.buyer)   { doc.text(m.buyer, margin, y); y += 5.5; }
+  if (m.address) { m.address.split("\n").forEach(line => { doc.text(line.trim(), margin, y); y += 5; }); }
   if (m.phone || m.email) {
     doc.setTextColor(100, 116, 139);
     if (m.phone) { doc.text(m.phone, margin, y); y += 4.5; }
@@ -1032,58 +1284,32 @@ async function exportPDF() {
   }
   y += 5;
 
-  // ── Salutation ──
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(9);
-  doc.setTextColor(15, 23, 42);
-  doc.text("Dear Sir/Madam,", margin, y);
-  y += 8;
+  doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(15, 23, 42);
+  doc.text("Dear Sir/Madam,", margin, y); y += 8;
 
-  // ── Subject line (bold + underline) ──
-  const subjectLabel = docType === "bill" ? "Invoice for Supplies" : "Quotation for Surgical Supplies";
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(10);
-  doc.setTextColor(15, 23, 42);
-  doc.text(subjectLabel, margin, y);
-  doc.setDrawColor(15, 23, 42);
-  doc.setLineWidth(0.25);
-  doc.line(margin, y + 0.9, margin + doc.getTextWidth(subjectLabel), y + 0.9);
+  doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(15, 23, 42);
+  doc.text(M.subjectLabel, margin, y);
+  doc.setDrawColor(15, 23, 42); doc.setLineWidth(0.25);
+  doc.line(margin, y + 0.9, margin + doc.getTextWidth(M.subjectLabel), y + 0.9);
   y += 10;
 
-  // ── Prepared by ──
   if (m.by) {
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
-    doc.setTextColor(100, 116, 139);
-    doc.text(`Prepared by: ${m.by}`, margin, y);
-    y += 6;
+    doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(100, 116, 139);
+    doc.text(`Prepared by: ${m.by}`, margin, y); y += 6;
   }
 
-  // ── Line items table ──
+  // ── Items table ──
   doc.autoTable({
     startY: y,
     margin: { left: margin, right: margin },
-    head: [["Name of the Item", "Qty", "Unit Price (Rs.)", "Total (Rs.)"]],
-    body: lineItems.map(item => [
-      item.description || "",
-      item.qty,
-      item.unitPrice ? fmt(item.unitPrice) : "—",
-      item.unitPrice ? fmt(lineTotal(item)) : "—"
-    ]),
+    head: [M.tableHead],
+    body: M.tableBody,
     headStyles: {
-      fillColor: [230, 244, 244],
-      textColor: [8, 74, 72],
-      fontSize: 8.5,
-      fontStyle: "bold",
-      halign: "center",
-      lineColor: [14, 124, 123],
-      lineWidth: { top: 0.5, bottom: 0.5, left: 0, right: 0 }
+      fillColor: [230, 244, 244], textColor: [8, 74, 72], fontSize: 8.5, fontStyle: "bold", halign: "center",
+      lineColor: [14, 124, 123], lineWidth: { top: 0.5, bottom: 0.5, left: 0, right: 0 }
     },
     bodyStyles: {
-      fontSize: 9,
-      textColor: [15, 23, 42],
-      lineColor: [226, 232, 240],
-      lineWidth: 0.1,
+      fontSize: 9, textColor: [15, 23, 42], lineColor: [226, 232, 240], lineWidth: 0.1,
       cellPadding: { top: 3, bottom: 3, left: 3, right: 3 }
     },
     columnStyles: {
@@ -1093,28 +1319,34 @@ async function exportPDF() {
       3: { cellWidth: 36, halign: "right", fontStyle: "bold" }
     },
     alternateRowStyles: { fillColor: [248, 250, 252] },
-    tableLineColor: [226, 232, 240],
-    tableLineWidth: 0.1,
+    tableLineColor: [226, 232, 240], tableLineWidth: 0.1,
   });
 
   y = doc.lastAutoTable.finalY;
 
+  // ── Summary rows (subtotal / discount / tax) ──
+  if (M.summaryRows.length) {
+    doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(51, 65, 85);
+    M.summaryRows.forEach(r => {
+      y += 6;
+      doc.text(r.label, W - margin - 40, y, { align: "right" });
+      doc.text(`Rs. ${fmt(r.value)}`, W - margin - 1, y, { align: "right" });
+    });
+    y += 3;
+  }
+
   // ── Total bar ──
+  y += 3;
   doc.setFillColor(11, 98, 96);
   doc.rect(margin, y, W - margin * 2, 11, "F");
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(9.5);
-  doc.setTextColor(255, 255, 255);
-  const totalLabel = docType === "bill" ? "Total Due" : "Total";
-  doc.text(totalLabel, W - margin - 38, y + 7.2, { align: "right" });
-  doc.text(`Rs. ${fmt(subtotal())}`, W - margin - 1, y + 7.2, { align: "right" });
+  doc.setFont("helvetica", "bold"); doc.setFontSize(9.5); doc.setTextColor(255, 255, 255);
+  doc.text(M.totalLabel, W - margin - 38, y + 7.2, { align: "right" });
+  doc.text(`Rs. ${fmt(M.grandTotal)}`, W - margin - 1, y + 7.2, { align: "right" });
   y += 17;
 
   // ── Payment details ──
-  if (m.bankDetails || m.paymentMethod || m.paymentDue) {
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(9);
-    doc.setTextColor(15, 23, 42);
+  if (m.bankDetails || m.paymentMethod || m.paymentDue || m.paymentNotes) {
+    doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(15, 23, 42);
     if (m.bankDetails) {
       doc.text("Account details as below,", margin, y); y += 5.5;
       m.bankDetails.split("\n").forEach(line => { doc.text(line.trim(), margin, y); y += 5; });
@@ -1146,13 +1378,10 @@ async function exportPDF() {
   }
 
   // ── Signatures ──
-  const sigAuth = window["sig-authorized_data"];
-  const sigRecv = window["sig-received_data"];
-  if ((sigAuth || sigRecv) && y < 244) {
+  if ((M.sigAuth || M.sigRecv) && y < 244) {
     y += 5;
     const sigBoxW = 55;
-    const positions = [[margin, sigAuth, "Authorized By"], [W / 2, sigRecv, "Received By"]];
-    for (const [x, data, lbl] of positions) {
+    for (const [x, data, lbl] of [[margin, M.sigAuth, "Authorized By"], [W / 2, M.sigRecv, "Received By"]]) {
       if (!data) continue;
       doc.addImage(data, "PNG", x, y, sigBoxW, sigBoxW * (1 / 3.5));
       doc.setDrawColor(203, 213, 225); doc.setLineWidth(0.3);
@@ -1166,21 +1395,17 @@ async function exportPDF() {
   // ── Footer ──
   doc.setFillColor(11, 98, 96);
   doc.rect(0, pageH - 18, W, 18, "F");
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(7.5);
-  doc.setTextColor(191, 225, 224);
+  doc.setFont("helvetica", "normal"); doc.setFontSize(7.5); doc.setTextColor(191, 225, 224);
   doc.text("No.130, 1/1 Maitipe 1st Lane, Galle, Sri Lanka", W / 2, pageH - 13, { align: "center" });
   doc.text("Tel: 077 706 8063 | 077 924 9267  |  WhatsApp: 071 820 8654  |  Colombo: 078 966 9666", W / 2, pageH - 8.5, { align: "center" });
   doc.text("www.surgicals.lk  |  BR: 9816", W / 2, pageH - 4, { align: "center" });
 
-  const typeSlug = docType === "bill" ? "Invoice" : "Quotation";
-  const refSlug  = m.ref ? `-${m.ref}` : "";
-  doc.save(`${typeSlug}${refSlug}.pdf`);
+  doc.save(`${M.isBill ? "Invoice" : "Quotation"}${m.ref ? "-" + m.ref : ""}.pdf`);
   showToast("PDF exported successfully.");
 }
 
 // ═══════════════════════════════════════════════════════════════
-// DOCX EXPORT (Enhanced design)
+// DOCX EXPORT — reads buildDocModel()
 // ═══════════════════════════════════════════════════════════════
 async function fetchLogoArrayBuffer() {
   try {
@@ -1191,21 +1416,19 @@ async function fetchLogoArrayBuffer() {
 }
 
 async function exportDOCX() {
-  const m = getDocMeta();
+  const M = buildDocModel();
+  const m = M.meta;
   const { Document, Packer, Paragraph, Table, TableRow, TableCell,
           TextRun, ImageRun, WidthType, AlignmentType, BorderStyle,
           ShadingType, UnderlineType } = docx;
 
-  const typeLabel = docType === "bill" ? "BILL / INVOICE" : "QUOTATION";
   const tealColor = "0B6260";
-  const tealLight = "E6F4F4";
 
   const bold = (text, color = "0F172A", size = 20) =>
     new TextRun({ text: String(text), bold: true, color, size, font: "Calibri" });
   const reg = (text, color = "334155", size = 19) =>
     new TextRun({ text: String(text), color, size, font: "Calibri" });
-  const spacer = (before = 120, after = 0) =>
-    new Paragraph({ spacing: { before, after } });
+  const spacer = (before = 120, after = 0) => new Paragraph({ spacing: { before, after } });
 
   const noBorder = { top: { style: BorderStyle.NONE, size: 0 }, bottom: { style: BorderStyle.NONE, size: 0 }, left: { style: BorderStyle.NONE, size: 0 }, right: { style: BorderStyle.NONE, size: 0 } };
   const thinBorder = {
@@ -1215,27 +1438,13 @@ async function exportDOCX() {
     right:  { style: BorderStyle.SINGLE, size: 4, color: "CBD5E1" },
   };
 
-  // ── Logo — true size: 800×276 px, ratio 2.899:1
-  // Target height 50pt → width = 50 × 2.899 ≈ 145pt
   const logoBuf = await fetchLogoArrayBuffer();
-  const logoChildren = logoBuf
-    ? [new Paragraph({
-        alignment: AlignmentType.CENTER,
-        spacing: { after: 100 },
-        children: [new ImageRun({ data: logoBuf, transformation: { width: 145, height: 50 }, type: "png" })]
-      })]
-    : [new Paragraph({
-        alignment: AlignmentType.CENTER,
-        spacing: { after: 100 },
-        children: [bold("Hettiarachchi Surgicals", tealColor, 26)]
-      })];
 
-  // ── Line items table ──
   const headBorder = {
     top:    { style: BorderStyle.SINGLE, size: 6, color: tealColor },
     bottom: { style: BorderStyle.SINGLE, size: 6, color: tealColor },
-    left:   { style: BorderStyle.NONE,   size: 0 },
-    right:  { style: BorderStyle.NONE,   size: 0 },
+    left:   { style: BorderStyle.NONE, size: 0 },
+    right:  { style: BorderStyle.NONE, size: 0 },
   };
   const thCell = (text, align = AlignmentType.LEFT) =>
     new TableCell({
@@ -1247,21 +1456,16 @@ async function exportDOCX() {
   const headerRow = new TableRow({
     tableHeader: true,
     children: [
-      thCell("Name of the Item"),
-      thCell("Qty", AlignmentType.CENTER),
-      thCell("Unit Price (Rs.)", AlignmentType.RIGHT),
-      thCell("Total (Rs.)", AlignmentType.RIGHT),
+      thCell(M.tableHead[0]),
+      thCell(M.tableHead[1], AlignmentType.CENTER),
+      thCell(M.tableHead[2], AlignmentType.RIGHT),
+      thCell(M.tableHead[3], AlignmentType.RIGHT),
     ]
   });
 
-  const dataRows = lineItems.map((item, idx) =>
+  const dataRows = M.tableBody.map((row, idx) =>
     new TableRow({
-      children: [
-        item.description || "",
-        String(item.qty),
-        item.unitPrice ? fmt(item.unitPrice) : "—",
-        item.unitPrice ? fmt(lineTotal(item)) : "—"
-      ].map((val, i) =>
+      children: row.map((val, i) =>
         new TableCell({
           borders: thinBorder,
           shading: { type: ShadingType.SOLID, color: idx % 2 === 0 ? "FFFFFF" : "F8FAFB" },
@@ -1274,39 +1478,30 @@ async function exportDOCX() {
     })
   );
 
-  // Total row — teal background matching PDF
+  // Summary rows (subtotal / discount / tax) — right-aligned, spanning last 2 columns
+  const summaryTableRows = M.summaryRows.map(r =>
+    new TableRow({
+      children: [
+        new TableCell({ borders: noBorder, columnSpan: 2, children: [new Paragraph({ children: [] })] }),
+        new TableCell({ borders: noBorder, children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [reg(r.label, "334155", 18)] })] }),
+        new TableCell({ borders: noBorder, children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [reg(`Rs. ${fmt(r.value)}`, "334155", 18)] })] }),
+      ]
+    })
+  );
+
   const totalRow = new TableRow({
     children: [
-      new TableCell({
-        borders: noBorder,
-        columnSpan: 2,
-        shading: { type: ShadingType.SOLID, color: tealColor },
-        children: [new Paragraph({ children: [] })]
-      }),
-      new TableCell({
-        borders: noBorder,
-        shading: { type: ShadingType.SOLID, color: tealColor },
-        children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [bold(docType === "bill" ? "Total Due" : "Total", "FFFFFF", 19)] })]
-      }),
-      new TableCell({
-        borders: noBorder,
-        shading: { type: ShadingType.SOLID, color: tealColor },
-        children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [bold(`Rs. ${fmt(subtotal())}`, "FFFFFF", 19)] })]
-      }),
+      new TableCell({ borders: noBorder, columnSpan: 2, shading: { type: ShadingType.SOLID, color: tealColor }, children: [new Paragraph({ children: [] })] }),
+      new TableCell({ borders: noBorder, shading: { type: ShadingType.SOLID, color: tealColor }, children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [bold(M.totalLabel, "FFFFFF", 19)] })] }),
+      new TableCell({ borders: noBorder, shading: { type: ShadingType.SOLID, color: tealColor }, children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [bold(`Rs. ${fmt(M.grandTotal)}`, "FFFFFF", 19)] })] }),
     ]
   });
 
-  // ── Signature rows ──
-  const sigAuth = window["sig-authorized_data"];
-  const sigRecv = window["sig-received_data"];
+  // ── Signatures ──
   let sigBlock = [];
-  if (sigAuth || sigRecv) {
-    const sigFetch = async (dataUrl) => {
-      if (!dataUrl) return null;
-      const res = await fetch(dataUrl);
-      return await res.arrayBuffer();
-    };
-    const [authBuf, recvBuf] = await Promise.all([sigFetch(sigAuth), sigFetch(sigRecv)]);
+  if (M.sigAuth || M.sigRecv) {
+    const sigFetch = async (dataUrl) => { if (!dataUrl) return null; const res = await fetch(dataUrl); return await res.arrayBuffer(); };
+    const [authBuf, recvBuf] = await Promise.all([sigFetch(M.sigAuth), sigFetch(M.sigRecv)]);
     const sigCells = [
       new TableCell({
         borders: noBorder,
@@ -1325,40 +1520,26 @@ async function exportDOCX() {
         ]
       }),
     ];
-    sigBlock = [
-      spacer(300),
-      new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [new TableRow({ children: sigCells })] })
-    ];
+    sigBlock = [ spacer(300), new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [new TableRow({ children: sigCells })] }) ];
   }
 
-  const subjectLabel = docType === "bill" ? "Invoice for Supplies" : "Quotation for Surgical Supplies";
-
-  // ── Header table: logo left | doc info right ──
-  const metaLines = [
-    ...(m.ref  ? [`Ref: ${m.ref}`]                           : []),
-    ...(m.date ? [`Date: ${formatDate(m.date)}`]             : []),
-    ...(docType === "quotation" && m.valid ? [`Valid until: ${formatDate(m.valid)}`] : []),
-  ];
+  // ── Header table: logo | doc info ──
   const headerTable = new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
     borders: { top: { style: BorderStyle.NONE }, bottom: { style: BorderStyle.SINGLE, size: 8, color: tealColor }, left: { style: BorderStyle.NONE }, right: { style: BorderStyle.NONE }, insideH: { style: BorderStyle.NONE }, insideV: { style: BorderStyle.NONE } },
     rows: [new TableRow({
       children: [
-        // Left cell: logo
         new TableCell({
-          borders: noBorder,
-          width: { size: 55, type: WidthType.PERCENTAGE },
+          borders: noBorder, width: { size: 55, type: WidthType.PERCENTAGE },
           children: logoBuf
             ? [new Paragraph({ children: [new ImageRun({ data: logoBuf, transformation: { width: 145, height: 50 }, type: "png" })] })]
             : [new Paragraph({ children: [bold("Hettiarachchi Surgicals", tealColor, 24)] })]
         }),
-        // Right cell: doc type + meta
         new TableCell({
-          borders: noBorder,
-          width: { size: 45, type: WidthType.PERCENTAGE },
+          borders: noBorder, width: { size: 45, type: WidthType.PERCENTAGE },
           children: [
-            new Paragraph({ alignment: AlignmentType.RIGHT, spacing: { after: 40 }, children: [bold(typeLabel, tealColor, 22)] }),
-            ...metaLines.map(l => new Paragraph({ alignment: AlignmentType.RIGHT, spacing: { after: 20 }, children: [reg(l, "64748B", 17)] })),
+            new Paragraph({ alignment: AlignmentType.RIGHT, spacing: { after: 40 }, children: [bold(M.typeLabel, tealColor, 22)] }),
+            ...M.metaLines.map(l => new Paragraph({ alignment: AlignmentType.RIGHT, spacing: { after: 20 }, children: [reg(l, "64748B", 17)] })),
           ]
         }),
       ]
@@ -1366,37 +1547,18 @@ async function exportDOCX() {
   });
 
   const children = [
-    // Header table with logo + doc type
     headerTable,
     spacer(160),
-
-    // Buyer address
-    ...(m.buyer  ? [new Paragraph({ spacing: { after: 40 }, children: [reg(m.buyer, "0F172A", 19)] })] : []),
+    ...(m.buyer   ? [new Paragraph({ spacing: { after: 40 }, children: [reg(m.buyer, "0F172A", 19)] })] : []),
     ...(m.address ? m.address.split("\n").map(l => new Paragraph({ spacing: { after: 20 }, children: [reg(l.trim(), "0F172A", 19)] })) : []),
-    ...(m.phone  ? [new Paragraph({ spacing: { after: 20 }, children: [reg(m.phone, "64748B", 18)] })] : []),
-    ...(m.email  ? [new Paragraph({ spacing: { after: 80 }, children: [reg(m.email, "64748B", 18)] })] : []),
+    ...(m.phone   ? [new Paragraph({ spacing: { after: 20 }, children: [reg(m.phone, "64748B", 18)] })] : []),
+    ...(m.email   ? [new Paragraph({ spacing: { after: 80 }, children: [reg(m.email, "64748B", 18)] })] : []),
     spacer(100),
-
-    // Salutation
     new Paragraph({ spacing: { after: 80 }, children: [reg("Dear Sir/Madam,", "0F172A", 19)] }),
-
-    // Subject bold+underline
-    new Paragraph({
-      spacing: { after: 120 },
-      children: [new TextRun({ text: subjectLabel, bold: true, underline: { type: UnderlineType.SINGLE }, color: "0F172A", size: 20, font: "Calibri" })]
-    }),
-
-    // Prepared by
+    new Paragraph({ spacing: { after: 120 }, children: [new TextRun({ text: M.subjectLabel, bold: true, underline: { type: UnderlineType.SINGLE }, color: "0F172A", size: 20, font: "Calibri" })] }),
     ...(m.by ? [new Paragraph({ spacing: { after: 120 }, children: [reg(`Prepared by: ${m.by}`, "64748B", 17)] })] : []),
-
-    // Line items table
-    new Table({
-      width: { size: 100, type: WidthType.PERCENTAGE },
-      rows: [headerRow, ...dataRows, totalRow]
-    }),
-
-    // Payment details
-    ...(m.bankDetails || m.paymentMethod || m.paymentDue ? [
+    new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [headerRow, ...dataRows, ...summaryTableRows, totalRow] }),
+    ...(m.bankDetails || m.paymentMethod || m.paymentDue || m.paymentNotes ? [
       spacer(200),
       new Paragraph({ spacing: { after: 60 }, children: [reg("Account details as below,", "0F172A", 19)] }),
       ...(m.bankDetails ? m.bankDetails.split("\n").map(l => new Paragraph({ spacing: { after: 30 }, children: [reg(l.trim(), "0F172A", 19)] })) : []),
@@ -1404,49 +1566,21 @@ async function exportDOCX() {
       ...(m.paymentDue    ? [new Paragraph({ spacing: { after: 30 }, children: [reg(`Payment Due: ${formatDate(m.paymentDue)}`, "0F172A", 19)] })] : []),
       ...(m.paymentNotes  ? [new Paragraph({ spacing: { after: 30 }, children: [reg(m.paymentNotes, "64748B", 18)] })] : []),
     ] : []),
-
-    // Notes
-    ...(m.notes ? [
-      spacer(120),
-      new Paragraph({ spacing: { after: 40 }, children: [bold("Notes", "64748B", 17)] }),
-      new Paragraph({ children: [reg(m.notes)] })
-    ] : []),
-
-    // Terms
-    ...(m.terms ? [
-      spacer(120),
-      new Paragraph({ spacing: { after: 40 }, children: [bold("Terms & Conditions", "64748B", 17)] }),
-      new Paragraph({ children: [reg(m.terms)] })
-    ] : []),
-
-    // Signoff
+    ...(m.notes ? [ spacer(120), new Paragraph({ spacing: { after: 40 }, children: [bold("Notes", "64748B", 17)] }), new Paragraph({ children: [reg(m.notes)] }) ] : []),
+    ...(m.terms ? [ spacer(120), new Paragraph({ spacing: { after: 40 }, children: [bold("Terms & Conditions", "64748B", 17)] }), new Paragraph({ children: [reg(m.terms)] }) ] : []),
     spacer(200),
     new Paragraph({ spacing: { after: 40 }, children: [reg("Thanking you,", "0F172A", 19)] }),
     new Paragraph({ children: [reg(m.by || "Hettiarachchi Surgicals", "0F172A", 19)] }),
-
-    // Signatures
     ...sigBlock,
   ];
 
-  const footerPara = new Paragraph({
-    alignment: AlignmentType.CENTER,
-    border: { top: { style: BorderStyle.SINGLE, size: 6, color: tealColor } },
-    spacing: { before: 80, after: 40 },
-    children: [reg("No.130, 1/1 Maitipe 1st Lane, Galle, Sri Lanka", "64748B", 15)]
-  });
-  const footerPara2 = new Paragraph({
-    alignment: AlignmentType.CENTER,
-    spacing: { after: 40 },
-    children: [reg("Tel: 077 706 8063 | 077 924 9267  |  WhatsApp: 071 820 8654  |  Colombo: 078 966 9666", "64748B", 15)]
-  });
-  const footerPara3 = new Paragraph({
-    alignment: AlignmentType.CENTER,
-    children: [reg("www.surgicals.lk  |  BR: 9816", "64748B", 15)]
-  });
+  const footerPara = new Paragraph({ alignment: AlignmentType.CENTER, border: { top: { style: BorderStyle.SINGLE, size: 6, color: tealColor } }, spacing: { before: 80, after: 40 }, children: [reg("No.130, 1/1 Maitipe 1st Lane, Galle, Sri Lanka", "64748B", 15)] });
+  const footerPara2 = new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 40 }, children: [reg("Tel: 077 706 8063 | 077 924 9267  |  WhatsApp: 071 820 8654  |  Colombo: 078 966 9666", "64748B", 15)] });
+  const footerPara3 = new Paragraph({ alignment: AlignmentType.CENTER, children: [reg("www.surgicals.lk  |  BR: 9816", "64748B", 15)] });
 
-  const document = new Document({
+  const wordDoc = new Document({
     creator: "Hettiarachchi Surgicals Admin",
-    title: `${typeLabel} ${m.ref || ""}`,
+    title: `${M.typeLabel} ${m.ref || ""}`,
     sections: [{
       properties: { page: { margin: { top: 720, bottom: 720, left: 900, right: 900 } } },
       children,
@@ -1454,13 +1588,133 @@ async function exportDOCX() {
     }]
   });
 
-  const blob = await Packer.toBlob(document);
+  const blob = await Packer.toBlob(wordDoc);
   const url  = URL.createObjectURL(blob);
-  const a    = Object.assign(document.createElement("a"), { href: url, download: `${docType === "bill" ? "Invoice" : "Quotation"}${m.ref ? "-" + m.ref : ""}.docx` });
+  const a    = Object.assign(document.createElement("a"), { href: url, download: `${M.isBill ? "Invoice" : "Quotation"}${m.ref ? "-" + m.ref : ""}.docx` });
   a.click();
   URL.revokeObjectURL(url);
   showToast("DOCX exported successfully.");
 }
+
+// ═══════════════════════════════════════════════════════════════
+// DRAFTS — save / load full document state to localStorage
+// ═══════════════════════════════════════════════════════════════
+function currentDocState() {
+  return {
+    savedAt: Date.now(),
+    docType, lineItems, discount, tax,
+    fields: getDocMeta(),
+  };
+}
+
+function loadDrafts() {
+  try { return JSON.parse(localStorage.getItem(DRAFTS_KEY) || "[]"); }
+  catch { return []; }
+}
+
+function saveDraft() {
+  const drafts = loadDrafts();
+  const state = currentDocState();
+  const m = state.fields;
+  state.name = (m.ref || m.buyer || "Untitled") + (m.buyer && m.ref ? ` · ${m.buyer}` : "");
+  state.id = "d" + Date.now();
+  drafts.unshift(state);
+  try {
+    localStorage.setItem(DRAFTS_KEY, JSON.stringify(drafts.slice(0, 50)));
+    showToast("Draft saved.");
+  } catch { showToast("Could not save draft (storage full?)."); }
+}
+
+function applyDocState(s) {
+  docType  = s.docType || "quotation";
+  lineItems = (s.lineItems || []).map(i => ({ ...i, id: newItemId() }));
+  discount = s.discount || null;
+  tax      = s.tax || null;
+  const f = s.fields || {};
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ""; };
+  set("doc-ref", f.ref); set("doc-date", f.date); set("doc-valid", f.valid); set("doc-by", f.by);
+  set("buyer-name", f.buyer); set("buyer-address", f.address); set("buyer-phone", f.phone); set("buyer-email", f.email);
+  set("payment-method", f.paymentMethod); set("payment-due", f.paymentDue);
+  set("bank-details", f.bankDetails); set("payment-notes", f.paymentNotes);
+  set("doc-notes", f.notes); set("doc-terms", f.terms);
+  // Doc type tabs
+  document.getElementById("doc-type-tabs").querySelectorAll(".doc-type-tab")
+    .forEach(t => t.classList.toggle("active", t.dataset.type === docType));
+  document.getElementById("valid-label").style.display = docType === "bill" ? "none" : "";
+  renderItems();
+  updateExportLabel();
+}
+
+function renderDraftsList() {
+  const wrap = document.getElementById("drafts-list");
+  const drafts = loadDrafts();
+  if (!drafts.length) { wrap.innerHTML = `<div class="empty-state">No saved drafts yet.</div>`; return; }
+  wrap.innerHTML = drafts.map(d => {
+    const dt = new Date(d.savedAt);
+    const when = `${dt.toLocaleDateString()} ${dt.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}`;
+    const items = (d.lineItems || []).length;
+    return `
+      <div class="list-row" data-id="${escHtml(d.id)}">
+        <div class="lr-main">
+          <div class="lr-title">${escHtml(d.name || "Untitled")}</div>
+          <div class="lr-sub">${(d.docType === "bill" ? "Bill" : "Quotation")} · ${items} item(s) · ${when}</div>
+        </div>
+        <button class="btn btn-teal btn-sm" data-load="${escHtml(d.id)}" type="button">Load</button>
+        <button class="btn btn-danger btn-sm" data-del="${escHtml(d.id)}" type="button">Delete</button>
+      </div>`;
+  }).join("");
+  wrap.querySelectorAll("[data-load]").forEach(b => b.addEventListener("click", () => {
+    const d = loadDrafts().find(x => x.id === b.dataset.load);
+    if (d) { applyDocState(d); closeModal("drafts-modal"); showToast("Draft loaded."); }
+  }));
+  wrap.querySelectorAll("[data-del]").forEach(b => b.addEventListener("click", () => {
+    const remaining = loadDrafts().filter(x => x.id !== b.dataset.del);
+    localStorage.setItem(DRAFTS_KEY, JSON.stringify(remaining));
+    renderDraftsList();
+  }));
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PRODUCT MANAGER (modal) — edit catalogue + prices
+// ═══════════════════════════════════════════════════════════════
+function catOptions(selected) {
+  return Object.keys(CATEGORY_LABELS).map(c =>
+    `<option value="${c}"${c === selected ? " selected" : ""}>${CATEGORY_LABELS[c]}</option>`
+  ).join("");
+}
+
+function renderProductManager() {
+  const wrap = document.getElementById("pm-list");
+  wrap.innerHTML = PRODUCTS.map((p, i) => `
+    <div class="pm-grid" data-i="${i}">
+      <input type="text" data-f="sku" value="${escHtml(p.sku)}" placeholder="SKU">
+      <input type="text" data-f="title" value="${escHtml(p.title)}" placeholder="Product name">
+      <select data-f="category">${catOptions(p.category)}</select>
+      <input type="number" data-f="price" value="${escHtml(p.price || "")}" min="0" step="0.01" placeholder="0.00">
+      <button class="del" data-del="${i}" title="Remove" type="button">✕</button>
+    </div>
+  `).join("");
+  // Live-bind edits into a working copy held in the DOM; committed on Save.
+  wrap.querySelectorAll(".pm-grid").forEach(row => {
+    row.querySelectorAll("[data-f]").forEach(inp => {
+      inp.addEventListener("input", () => {
+        const i = parseInt(row.dataset.i);
+        const f = inp.dataset.f;
+        PRODUCTS[i][f] = f === "price" ? (parseFloat(inp.value) || 0) : inp.value;
+      });
+    });
+    row.querySelector("[data-del]").addEventListener("click", () => {
+      PRODUCTS.splice(parseInt(row.dataset.del), 1);
+      renderProductManager();
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MODAL helpers
+// ═══════════════════════════════════════════════════════════════
+function openModal(id)  { document.getElementById(id).classList.add("open"); }
+function closeModal(id) { document.getElementById(id).classList.remove("open"); }
 
 // ═══════════════════════════════════════════════════════════════
 // NEW DOCUMENT
@@ -1468,68 +1722,139 @@ async function exportDOCX() {
 function resetDoc() {
   lineItems = [];
   itemIdSeq = 0;
+  discount = null;
+  tax = null;
   ["doc-ref","doc-date","doc-valid","doc-by","buyer-name","buyer-address","buyer-phone","buyer-email",
    "payment-method","payment-due","bank-details","payment-notes","doc-notes","doc-terms"]
     .forEach(id => { const el = document.getElementById(id); if (el) el.value = ""; });
   document.getElementById("doc-date").value = new Date().toISOString().slice(0,10);
-  // Clear signatures
   clearSig("sig-authorized");
   clearSig("sig-received");
   renderItems();
   updateExportLabel();
 }
 
+function defaultRef() {
+  const d = new Date();
+  return `QT-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,"0")}${String(d.getDate()).padStart(2,"0")}-001`;
+}
+
 // ═══════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════
 function initApp() {
+  loadProducts();
   initSignaturePads();
   buildCatFilter();
+  renderProductPicker();
   bindDocTypeTabs();
+  bindCollapsibles();
 
-  // Set defaults
   document.getElementById("doc-date").value = new Date().toISOString().slice(0,10);
-  const d  = new Date();
-  const yy = d.getFullYear();
-  const mm = String(d.getMonth()+1).padStart(2,"0");
-  const dd = String(d.getDate()).padStart(2,"0");
-  document.getElementById("doc-ref").value = `QT-${yy}${mm}${dd}-001`;
-  document.getElementById("doc-by").value  = "Hettiarachchi Surgicals";
+  document.getElementById("doc-ref").value  = defaultRef();
+  document.getElementById("doc-by").value   = "Hettiarachchi Surgicals";
 
   renderItems();
   updateExportLabel();
 
+  // Product search
+  document.getElementById("product-search").addEventListener("input", e => {
+    pickerQuery = e.target.value; renderProductPicker();
+  });
+
+  // Line item buttons
   document.getElementById("add-blank-btn").addEventListener("click", () => {
     lineItems.push({ id: newItemId(), sku: "", description: "", qty: 1, unitPrice: "" });
     renderItems();
   });
 
+  // Discount / tax toggles
+  document.getElementById("toggle-discount-btn").addEventListener("click", () => {
+    discount = { type: "pct", value: "" }; renderTotals(); updateExportLabel();
+  });
+  document.getElementById("toggle-tax-btn").addEventListener("click", () => {
+    tax = { type: "pct", value: "", label: "VAT" }; renderTotals(); updateExportLabel();
+  });
+
+  // Export
   document.getElementById("export-pdf-btn").addEventListener("click", () => {
     if (!lineItems.length) { showToast("Add at least one item first."); return; }
     exportPDF();
   });
-
   document.getElementById("export-docx-btn").addEventListener("click", () => {
     if (!lineItems.length) { showToast("Add at least one item first."); return; }
     exportDOCX();
   });
 
+  // New doc
   document.getElementById("new-doc-btn").addEventListener("click", () => {
     if (lineItems.length && !confirm("Start a new document? Current items will be cleared.")) return;
     resetDoc();
     docType = "quotation";
     document.getElementById("doc-type-tabs").querySelectorAll(".doc-type-tab")
       .forEach(t => t.classList.toggle("active", t.dataset.type === "quotation"));
-    const nd = new Date();
-    document.getElementById("doc-ref").value =
-      `QT-${nd.getFullYear()}${String(nd.getMonth()+1).padStart(2,"0")}${String(nd.getDate()).padStart(2,"0")}-001`;
+    document.getElementById("valid-label").style.display = "";
+    document.getElementById("doc-ref").value = defaultRef();
+    document.getElementById("doc-by").value  = "Hettiarachchi Surgicals";
     showToast("New document started.");
   });
 
+  // Drafts
+  document.getElementById("save-draft-btn").addEventListener("click", () => {
+    if (!lineItems.length) { showToast("Nothing to save yet."); return; }
+    saveDraft();
+  });
+  document.getElementById("open-draft-btn").addEventListener("click", () => {
+    renderDraftsList(); openModal("drafts-modal");
+  });
+
+  // Product manager
+  document.getElementById("manage-products-btn").addEventListener("click", () => {
+    renderProductManager(); openModal("products-modal");
+  });
+  document.getElementById("quick-add-product-btn").addEventListener("click", () => {
+    PRODUCTS.push({ sku: "", title: "", category: "other", price: 0 });
+    renderProductManager(); openModal("products-modal");
+    // scroll product manager to bottom so the new row is visible
+    setTimeout(() => { const l = document.getElementById("pm-list"); l.scrollTop = l.scrollHeight; }, 50);
+  });
+  document.getElementById("pm-add-btn").addEventListener("click", () => {
+    PRODUCTS.push({ sku: "", title: "", category: "other", price: 0 });
+    renderProductManager();
+    const l = document.getElementById("pm-list"); l.scrollTop = l.scrollHeight;
+  });
+  document.getElementById("pm-save-btn").addEventListener("click", () => {
+    // Drop fully-empty rows
+    PRODUCTS = PRODUCTS.filter(p => (p.sku && p.sku.trim()) || (p.title && p.title.trim()));
+    saveProducts();
+    renderProductPicker();
+    closeModal("products-modal");
+    showToast("Products saved.");
+  });
+  document.getElementById("pm-reset-btn").addEventListener("click", () => {
+    if (!confirm("Reset the whole catalogue to defaults? Your custom products and prices will be lost.")) return;
+    PRODUCTS = DEFAULT_PRODUCTS.map(p => ({ ...p }));
+    saveProducts();
+    renderProductManager();
+    renderProductPicker();
+    showToast("Catalogue reset to defaults.");
+  });
+
+  // Modal close buttons + overlay click
+  document.querySelectorAll("[data-close]").forEach(b =>
+    b.addEventListener("click", () => closeModal(b.dataset.close)));
+  document.querySelectorAll(".modal-overlay").forEach(ov =>
+    ov.addEventListener("click", e => { if (e.target === ov) closeModal(ov.id); }));
+
+  // Lock
   document.getElementById("lock-btn").addEventListener("click", () => {
     sessionStorage.removeItem(SESSION_KEY);
     location.reload();
   });
+
+  // Keep export label live as meta fields change
+  ["doc-ref","buyer-name"].forEach(id =>
+    document.getElementById(id).addEventListener("input", updateExportLabel));
 }
 
 if (sessionStorage.getItem(SESSION_KEY) === "1") {
