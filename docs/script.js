@@ -154,12 +154,12 @@ const FURNITURE_SPECS = {
   DM08: { material: "Durable Nylon Cuff", dimensions: "Limb circumference 13.8–21.5 cm", features: ["Child-size cuff with clear range markings", "Double-tube bladder fits patient monitors and sphygmomanometers", "Latex-free option for sensitive skin"] }
 };
 
-// Catalog is quote-only; no prices.
+// Catalog is quote-only by default; `price`/`wasPrice` (LKR) opt a product into a shown price.
 // `folder` selects the image directory; `bases` is one stem for single-image products, or
 // [primary, alt] for multi-angle products that should cross-fade on hover.
 const products = [
   // ---- Mobility Aids (docs/images/new-cat) ----
-  { sku: "WC01", title: "Adult Wheelchair", category: "mobility-aids", folder: "new-cat", bases: ["adult-wheel-chair"] },
+  { sku: "WC01", title: "Adult Wheelchair", category: "mobility-aids", folder: "new-cat", bases: ["adult-wheel-chair"], price: 22500, wasPrice: 24000 },
   { sku: "WC02", title: "Functional Wheelchair", category: "mobility-aids", folder: "new-cat", bases: ["functional-wheel-chair-1", "functional-wheel-chair-2"] },
   { sku: "WC03", title: "Fully Functional Wheelchair", category: "mobility-aids", folder: "new-cat", bases: ["fully-functional-wheel-chair-1", "fully-functional-wheel-chair-2"] },
   { sku: "WC04", title: "Commode Wheelchair", category: "mobility-aids", folder: "new-cat", bases: ["commode-wheelchair-angle-1", "commode-wheelchair-angle-2"] },
@@ -298,6 +298,8 @@ const products = [
     material: specs.material || null,
     dimensions: specs.dimensions || null,
     features: specs.features || null,
+    price: p.price || null,
+    wasPrice: p.wasPrice || null,
     _haystack: haystack
   };
 });
@@ -449,6 +451,12 @@ function renderCardInner(p) {
     <div class="product-card__body">
       <h3 class="product-card__title">${p.title}</h3>
       <span class="product-card__sku">Code ${p.sku}</span>
+      ${p.price ? `
+      <span class="product-card__price">
+        ${p.wasPrice ? `<span class="product-card__price-was">Rs. ${p.wasPrice.toLocaleString("en-LK")}</span>` : ""}
+        <span class="product-card__price-now">Rs. ${p.price.toLocaleString("en-LK")}</span>
+        ${p.wasPrice ? `<span class="product-card__price-badge">Save Rs. ${(p.wasPrice - p.price).toLocaleString("en-LK")}</span>` : ""}
+      </span>` : ""}
       ${p.material ? `<span class="product-card__material">${p.material}</span>` : ""}
       ${p.dimensions ? `<span class="product-card__dim">${p.dimensions}</span>` : ""}
       ${p.features?.length ? `<ul class="product-card__features">${p.features.slice(0, 3).map(f => `<li>${f}</li>`).join("")}</ul>` : ""}
@@ -949,6 +957,7 @@ function injectProductStructuredData() {
         "url": `${origin}/?product=${p.sku}`,
         "availability": "https://schema.org/InStock",
         "priceCurrency": "LKR",
+        ...(p.price ? { "price": String(p.price) } : {}),
         "seller": { "@id": `${origin}/#business` }
       }
     };
