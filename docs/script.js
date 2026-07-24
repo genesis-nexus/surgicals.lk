@@ -957,6 +957,7 @@ function injectProductStructuredData() {
         "url": `${origin}/?product=${p.sku}`,
         "availability": "https://schema.org/InStock",
         "priceCurrency": "LKR",
+        ...(p.price ? { "price": String(p.price) } : {}),
         "seller": { "@id": `${origin}/#business` }
       }
     };
