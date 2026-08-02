@@ -9,6 +9,7 @@
 <title>Hettiarachchi Surgicals — Admin</title>
 <meta name="robots" content="noindex, nofollow">
 <!-- jsPDF + autotable for PDF export -->
+<script src="vendor/fuse.min.js"></script>
 <script src="vendor/jspdf.umd.min.js"></script>
 <script src="vendor/jspdf.plugin.autotable.min.js"></script>
 <!-- docx.js for Word export -->
@@ -824,16 +825,34 @@ const DEFAULT_PRODUCTS = [
 ];
 
 let PRODUCTS = [];
+let productFuse = null;
 
 function loadProducts() {
   try {
     const raw = localStorage.getItem(PRODUCTS_KEY);
-    if (raw) { PRODUCTS = JSON.parse(raw); return; }
+    if (raw) { PRODUCTS = JSON.parse(raw); rebuildProductIndex(); return; }
   } catch (e) { /* fall through to defaults */ }
   PRODUCTS = DEFAULT_PRODUCTS.map(p => ({ ...p }));
+  rebuildProductIndex();
+}
+
+// Rebuild the fuzzy index whenever PRODUCTS changes (edits, resets, imports).
+function rebuildProductIndex() {
+  if (!window.Fuse) { productFuse = null; return; }
+  productFuse = new Fuse(PRODUCTS, {
+    includeScore: true,
+    ignoreLocation: true,
+    threshold: 0.34,
+    minMatchCharLength: 2,
+    keys: [
+      { name: "title", weight: 0.6 },
+      { name: "sku", weight: 0.4 }
+    ]
+  });
 }
 
 function saveProducts() {
+  rebuildProductIndex();
   try { localStorage.setItem(PRODUCTS_KEY, JSON.stringify(PRODUCTS)); }
   catch (e) { showToast("Could not save products (storage full?)."); }
 }
@@ -973,12 +992,21 @@ let pickerCat   = "all";
 
 function renderProductPicker() {
   const list = document.getElementById("product-list");
-  const q = pickerQuery.toLowerCase();
-  const filtered = PRODUCTS.filter(p => {
-    const matchCat = pickerCat === "all" || p.category === pickerCat;
-    const matchQ   = !q || (p.title||"").toLowerCase().includes(q) || (p.sku||"").toLowerCase().includes(q);
-    return matchCat && matchQ;
-  });
+  const q = pickerQuery.trim();
+  let base;
+  const qUpper = q.toUpperCase().replace(/\s+/g, "");
+  const skuMatches = q ? PRODUCTS.filter(p => (p.sku||"").startsWith(qUpper)) : [];
+  if (!q) {
+    base = PRODUCTS;
+  } else if (skuMatches.length) {
+    base = skuMatches;
+  } else if (productFuse) {
+    base = productFuse.search(q).map(r => r.item);
+  } else {
+    const ql = q.toLowerCase();
+    base = PRODUCTS.filter(p => (p.title||"").toLowerCase().includes(ql) || (p.sku||"").toLowerCase().includes(ql));
+  }
+  const filtered = base.filter(p => pickerCat === "all" || p.category === pickerCat);
   if (!filtered.length) {
     list.innerHTML = `<div class="empty-state">No products match.</div>`;
     return;
