@@ -287,6 +287,11 @@ const products = [
     ...prefixKws,
     ...(SKU_KEYWORDS[p.sku] || [])
   ].filter(Boolean).join(" ").toLowerCase();
+  const keywords = [
+    ...(CATEGORY_KEYWORDS[p.category] || []),
+    ...prefixKws,
+    ...(SKU_KEYWORDS[p.sku] || [])
+  ].join(" ");
   return {
     id: p.sku,
     sku: p.sku,
@@ -300,9 +305,44 @@ const products = [
     features: specs.features || null,
     price: p.price || null,
     wasPrice: p.wasPrice || null,
-    _haystack: haystack
+    _haystack: haystack,
+    _keywords: keywords
   };
 });
+
+// ---------- Fuzzy search ----------
+// Shared across the header search panel and any other page that loads this file.
+// Falls back to the old AND-of-substring match if Fuse.js failed to load (offline/CDN blocked).
+const ProductSearch = (() => {
+  let fuse = null;
+  if (window.Fuse) {
+    fuse = new Fuse(products, {
+      includeScore: true,
+      ignoreLocation: true,
+      threshold: 0.34,
+      minMatchCharLength: 2,
+      keys: [
+        { name: "title", weight: 0.4 },
+        { name: "sku", weight: 0.3 },
+        { name: "summary", weight: 0.15 },
+        { name: "_keywords", weight: 0.15 }
+      ]
+    });
+  }
+  function search(query) {
+    const q = String(query || "").trim();
+    if (!q) return products.slice();
+    // SKU prefix match short-circuits fuzzy scoring — "dm01" should mean the SKU, not a near-miss on BD01/DI01.
+    const qUpper = q.toUpperCase().replace(/\s+/g, "");
+    const skuMatches = products.filter(p => p.sku.startsWith(qUpper));
+    if (skuMatches.length) return skuMatches;
+    if (fuse) return fuse.search(q).map(r => r.item);
+    // Fallback: whitespace-tokenized AND-of-substring match.
+    const tokens = q.toLowerCase().split(/\s+/).filter(Boolean);
+    return products.filter(p => tokens.every(t => p._haystack.includes(t)));
+  }
+  return { search };
+})();
 
 const locationImages = [
   { base: "IMG_2799 2", alt: "Hettiarachchi Surgicals facility exterior in Galle" },
@@ -743,7 +783,7 @@ function initHeader() {
 
   searchInput?.addEventListener("input", (e) => {
     const raw = e.target.value;
-    const q = raw.toLowerCase().trim();
+    const q = raw.trim();
 
     // Empty query: restore whatever chip filter the user had active
     if (!q) {
@@ -752,9 +792,12 @@ function initHeader() {
       return;
     }
 
-    // Tokenize: every whitespace-separated word must appear in the product haystack.
-    const tokens = q.split(/\s+/).filter(Boolean);
-    const list = products.filter(p => tokens.every(t => p._haystack.includes(t)));
+    let list = ProductSearch.search(q);
+    const activeChip = document.querySelector(".toolbar__chips .chip--active");
+    const activeCategory = activeChip?.dataset.category;
+    if (activeCategory && activeCategory !== "all") {
+      list = list.filter(p => p.category === activeCategory);
+    }
 
     const grid = document.getElementById("products-gallery");
     const count = document.getElementById("results-count");
@@ -784,15 +827,26 @@ function initFilters() {
       chips.forEach(c => { c.classList.remove("chip--active"); c.setAttribute("aria-selected", "false"); });
       chip.classList.add("chip--active");
       chip.setAttribute("aria-selected", "true");
+
+      // If a search is active, re-trigger it so the new chip composes with the query
+      // instead of being overridden by the plain category render.
+      const searchInput = document.getElementById("product-search");
+      const apply = () => {
+        if (searchInput && searchInput.value.trim()) {
+          searchInput.dispatchEvent(new Event("input", { bubbles: true }));
+        } else {
+          renderProductGrid(chip.dataset.category);
+        }
+      };
       // Soft crossfade between filter states
       if (grid && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
         grid.classList.add("is-swapping");
         setTimeout(() => {
-          renderProductGrid(chip.dataset.category);
+          apply();
           grid.classList.remove("is-swapping");
         }, 180);
       } else {
-        renderProductGrid(chip.dataset.category);
+        apply();
       }
     });
   });
