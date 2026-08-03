@@ -781,15 +781,23 @@ function initHeader() {
     if (e.key === "Escape" && searchPanel && !searchPanel.hasAttribute("hidden")) closeSearch();
   });
 
+  let searchWasActive = false;
   searchInput?.addEventListener("input", (e) => {
     const raw = e.target.value;
     const q = raw.trim();
 
     // Empty query: restore whatever chip filter the user had active
     if (!q) {
+      searchWasActive = false;
       const activeChip = document.querySelector(".toolbar__chips .chip--active");
       renderProductGrid(activeChip?.dataset.category || "all");
       return;
+    }
+
+    // First keystroke of a new search: jump to the catalog so filtered results are visible.
+    if (!searchWasActive) {
+      searchWasActive = true;
+      document.getElementById("products")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     let list = ProductSearch.search(q);
