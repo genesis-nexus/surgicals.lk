@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - main
+  # Manual trigger — GitHub restricts workflow_dispatch to users with write/admin
+  # access to this repo, so only admins/collaborators can run it, not the public.
+  workflow_dispatch: {}
 
 permissions:
   contents: read
