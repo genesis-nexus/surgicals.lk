@@ -462,6 +462,14 @@
               <label>Prepared By</label>
               <input type="text" id="doc-by" placeholder="Staff name">
             </div>
+            <div class="form-group">
+              <label>Signed Off By <span style="opacity:0.5;font-weight:400">(defaults to Prepared By)</span></label>
+              <input type="text" id="doc-signoff" placeholder="Staff name">
+            </div>
+            <div class="form-group full">
+              <label>Subject</label>
+              <input type="text" id="doc-subject" placeholder="e.g. Quotation for Surgical Supplies">
+            </div>
           </div>
         </div>
       </div>
@@ -487,6 +495,10 @@
               <label>Email</label>
               <input type="text" id="buyer-email" placeholder="name@example.com">
             </div>
+            <div class="form-group full">
+              <label>Salutation</label>
+              <input type="text" id="doc-salutation" placeholder="Dear Sir/Madam,">
+            </div>
           </div>
         </div>
       </div>
@@ -505,6 +517,8 @@
                   <th>#</th>
                   <th style="min-width:200px">Description</th>
                   <th>SKU</th>
+                  <th style="min-width:120px">Manufacturer</th>
+                  <th style="min-width:100px">Warranty</th>
                   <th style="text-align:right">Qty</th>
                   <th style="text-align:right">Unit Price (LKR)</th>
                   <th style="text-align:right">Total</th>
@@ -904,6 +918,9 @@ function getDocMeta() {
     date:         document.getElementById("doc-date").value,
     valid:        document.getElementById("doc-valid").value,
     by:           document.getElementById("doc-by").value.trim(),
+    signoff:      document.getElementById("doc-signoff").value.trim(),
+    subject:      document.getElementById("doc-subject").value.trim(),
+    salutation:   document.getElementById("doc-salutation").value.trim(),
     buyer:        document.getElementById("buyer-name").value.trim(),
     address:      document.getElementById("buyer-address").value.trim(),
     phone:        document.getElementById("buyer-phone").value.trim(),
@@ -962,7 +979,9 @@ function buildDocModel() {
   return {
     isBill,
     typeLabel:    isBill ? "BILL / INVOICE" : "QUOTATION",
-    subjectLabel: isBill ? "Invoice for Supplies" : "Quotation for Surgical Supplies",
+    subjectLabel: m.subject || (isBill ? "Invoice for Supplies" : "Quotation for Surgical Supplies"),
+    salutation:   m.salutation || "Dear Sir/Madam,",
+    signoffName:  m.signoff || m.by || "Hettiarachchi Surgicals",
     totalLabel:   isBill ? "Total Due" : "Total",
     meta: m,
     metaLines: [
@@ -977,6 +996,12 @@ function buildDocModel() {
       item.unitPrice ? fmt(item.unitPrice) : "—",
       item.unitPrice ? fmt(lineTotal(item)) : "—",
     ]),
+    tableSubLines: lineItems.map(item => {
+      const bits = [];
+      if (item.manufacturer) bits.push(`Manufacturer: ${item.manufacturer}`);
+      if (item.warranty)     bits.push(`Warranty: ${item.warranty}`);
+      return bits.join("  •  ");
+    }),
     summaryRows,
     grandTotal: grandTotal(),
     sigAuth: window["sig-authorized_data"] || null,
@@ -1047,7 +1072,7 @@ function buildCatFilter() {
 function addProduct(sku) {
   const p = PRODUCTS.find(x => x.sku === sku);
   if (!p) return;
-  lineItems.push({ id: newItemId(), sku: p.sku, description: p.title, qty: 1, unitPrice: p.price ? String(p.price) : "" });
+  lineItems.push({ id: newItemId(), sku: p.sku, description: p.title, manufacturer: "", warranty: "", qty: 1, unitPrice: p.price ? String(p.price) : "" });
   renderItems();
   showToast(`"${p.title}" added`);
 }
@@ -1060,7 +1085,7 @@ function renderItems() {
   document.getElementById("item-count").textContent = `${lineItems.length} item${lineItems.length !== 1 ? "s" : ""}`;
 
   if (!lineItems.length) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:1.5rem;color:var(--ink-500);font-size:0.82rem">No items yet — add from the product list or click "+ Add blank line".</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:1.5rem;color:var(--ink-500);font-size:0.82rem">No items yet — add from the product list or click "+ Add blank line".</td></tr>`;
     renderTotals();
     updateExportLabel();
     return;
@@ -1074,6 +1099,12 @@ function renderItems() {
       </td>
       <td>
         <input type="text" class="sku-input" value="${escHtml(item.sku)}" placeholder="SKU" style="width:72px" data-field="sku">
+      </td>
+      <td>
+        <input type="text" class="manufacturer-input" value="${escHtml(item.manufacturer)}" placeholder="Manufacturer" style="width:100%;min-width:110px" data-field="manufacturer">
+      </td>
+      <td>
+        <input type="text" class="warranty-input" value="${escHtml(item.warranty)}" placeholder="e.g. 1 year" style="width:100%;min-width:90px" data-field="warranty">
       </td>
       <td style="text-align:right">
         <input type="number" class="qty-input" value="${escHtml(item.qty)}" min="0" step="1" data-field="qty">
@@ -1313,7 +1344,7 @@ async function exportPDF() {
   y += 5;
 
   doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(15, 23, 42);
-  doc.text("Dear Sir/Madam,", margin, y); y += 8;
+  doc.text(M.salutation, margin, y); y += 8;
 
   doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(15, 23, 42);
   doc.text(M.subjectLabel, margin, y);
@@ -1327,11 +1358,16 @@ async function exportPDF() {
   }
 
   // ── Items table ──
+  const pdfBody = M.tableBody.map((row, i) => {
+    const sub = M.tableSubLines[i];
+    return sub ? [`${row[0]}\n${sub}`, row[1], row[2], row[3]] : row;
+  });
+
   doc.autoTable({
     startY: y,
     margin: { left: margin, right: margin },
     head: [M.tableHead],
-    body: M.tableBody,
+    body: pdfBody,
     headStyles: {
       fillColor: [230, 244, 244], textColor: [8, 74, 72], fontSize: 8.5, fontStyle: "bold", halign: "center",
       lineColor: [14, 124, 123], lineWidth: { top: 0.5, bottom: 0.5, left: 0, right: 0 }
@@ -1402,7 +1438,7 @@ async function exportPDF() {
   if (y < 248) {
     doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(15, 23, 42);
     doc.text("Thanking you,", margin, y); y += 5.5;
-    doc.text(m.by || "Hettiarachchi Surgicals", margin, y); y += 5;
+    doc.text(M.signoffName, margin, y); y += 5;
   }
 
   // ── Signatures ──
@@ -1422,11 +1458,12 @@ async function exportPDF() {
 
   // ── Footer ──
   doc.setFillColor(11, 98, 96);
-  doc.rect(0, pageH - 18, W, 18, "F");
+  doc.rect(0, pageH - 22, W, 22, "F");
   doc.setFont("helvetica", "normal"); doc.setFontSize(7.5); doc.setTextColor(191, 225, 224);
-  doc.text("No.130, 1/1 Maitipe 1st Lane, Galle, Sri Lanka", W / 2, pageH - 13, { align: "center" });
-  doc.text("Tel: 077 706 8063 | 077 924 9267  |  WhatsApp: 071 820 8654  |  Colombo: 078 966 9666", W / 2, pageH - 8.5, { align: "center" });
-  doc.text("www.surgicals.lk  |  BR: 9816", W / 2, pageH - 4, { align: "center" });
+  doc.text("Colombo: 966/5, 35th Lane, Pothuarawa Road, Malabe, Sri Lanka", W / 2, pageH - 17, { align: "center" });
+  doc.text("Galle: No.130, 1/1 Maitipe 1st Lane, Galle, Sri Lanka", W / 2, pageH - 12.5, { align: "center" });
+  doc.text("Tel: 077 706 8063 | 077 924 9267  |  WhatsApp: 071 820 8654  |  Colombo: 078 966 9666", W / 2, pageH - 8, { align: "center" });
+  doc.text("www.surgicals.lk  |  BR: 9816", W / 2, pageH - 3.5, { align: "center" });
 
   doc.save(`${M.isBill ? "Invoice" : "Quotation"}${m.ref ? "-" + m.ref : ""}.pdf`);
   showToast("PDF exported successfully.");
@@ -1497,10 +1534,16 @@ async function exportDOCX() {
         new TableCell({
           borders: thinBorder,
           shading: { type: ShadingType.SOLID, color: idx % 2 === 0 ? "FFFFFF" : "F8FAFB" },
-          children: [new Paragraph({
-            alignment: i === 0 ? AlignmentType.LEFT : i === 1 ? AlignmentType.CENTER : AlignmentType.RIGHT,
-            children: [reg(val, i === 3 ? tealColor : "0F172A", 19)]
-          })]
+          children: [
+            new Paragraph({
+              alignment: i === 0 ? AlignmentType.LEFT : i === 1 ? AlignmentType.CENTER : AlignmentType.RIGHT,
+              spacing: { after: i === 0 && M.tableSubLines[idx] ? 20 : 0 },
+              children: [reg(val, i === 3 ? tealColor : "0F172A", 19)]
+            }),
+            ...(i === 0 && M.tableSubLines[idx]
+              ? [new Paragraph({ children: [reg(M.tableSubLines[idx], "64748B", 15)] })]
+              : []),
+          ]
         })
       )
     })
@@ -1582,7 +1625,7 @@ async function exportDOCX() {
     ...(m.phone   ? [new Paragraph({ spacing: { after: 20 }, children: [reg(m.phone, "64748B", 18)] })] : []),
     ...(m.email   ? [new Paragraph({ spacing: { after: 80 }, children: [reg(m.email, "64748B", 18)] })] : []),
     spacer(100),
-    new Paragraph({ spacing: { after: 80 }, children: [reg("Dear Sir/Madam,", "0F172A", 19)] }),
+    new Paragraph({ spacing: { after: 80 }, children: [reg(M.salutation, "0F172A", 19)] }),
     new Paragraph({ spacing: { after: 120 }, children: [new TextRun({ text: M.subjectLabel, bold: true, underline: { type: UnderlineType.SINGLE }, color: "0F172A", size: 20, font: "Calibri" })] }),
     ...(m.by ? [new Paragraph({ spacing: { after: 120 }, children: [reg(`Prepared by: ${m.by}`, "64748B", 17)] })] : []),
     new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [headerRow, ...dataRows, ...summaryTableRows, totalRow] }),
@@ -1598,11 +1641,12 @@ async function exportDOCX() {
     ...(m.terms ? [ spacer(120), new Paragraph({ spacing: { after: 40 }, children: [bold("Terms & Conditions", "64748B", 17)] }), new Paragraph({ children: [reg(m.terms)] }) ] : []),
     spacer(200),
     new Paragraph({ spacing: { after: 40 }, children: [reg("Thanking you,", "0F172A", 19)] }),
-    new Paragraph({ children: [reg(m.by || "Hettiarachchi Surgicals", "0F172A", 19)] }),
+    new Paragraph({ children: [reg(M.signoffName, "0F172A", 19)] }),
     ...sigBlock,
   ];
 
-  const footerPara = new Paragraph({ alignment: AlignmentType.CENTER, border: { top: { style: BorderStyle.SINGLE, size: 6, color: tealColor } }, spacing: { before: 80, after: 40 }, children: [reg("No.130, 1/1 Maitipe 1st Lane, Galle, Sri Lanka", "64748B", 15)] });
+  const footerPara0 = new Paragraph({ alignment: AlignmentType.CENTER, border: { top: { style: BorderStyle.SINGLE, size: 6, color: tealColor } }, spacing: { before: 80, after: 20 }, children: [reg("Colombo: 966/5, 35th Lane, Pothuarawa Road, Malabe, Sri Lanka", "64748B", 15)] });
+  const footerPara = new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 40 }, children: [reg("Galle: No.130, 1/1 Maitipe 1st Lane, Galle, Sri Lanka", "64748B", 15)] });
   const footerPara2 = new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 40 }, children: [reg("Tel: 077 706 8063 | 077 924 9267  |  WhatsApp: 071 820 8654  |  Colombo: 078 966 9666", "64748B", 15)] });
   const footerPara3 = new Paragraph({ alignment: AlignmentType.CENTER, children: [reg("www.surgicals.lk  |  BR: 9816", "64748B", 15)] });
 
@@ -1612,7 +1656,7 @@ async function exportDOCX() {
     sections: [{
       properties: { page: { margin: { top: 720, bottom: 720, left: 900, right: 900 } } },
       children,
-      footers: { default: { options: { children: [footerPara, footerPara2, footerPara3] } } }
+      footers: { default: { options: { children: [footerPara0, footerPara, footerPara2, footerPara3] } } }
     }]
   });
 
@@ -1661,6 +1705,7 @@ function applyDocState(s) {
   const f = s.fields || {};
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ""; };
   set("doc-ref", f.ref); set("doc-date", f.date); set("doc-valid", f.valid); set("doc-by", f.by);
+  set("doc-signoff", f.signoff); set("doc-subject", f.subject); set("doc-salutation", f.salutation);
   set("buyer-name", f.buyer); set("buyer-address", f.address); set("buyer-phone", f.phone); set("buyer-email", f.email);
   set("payment-method", f.paymentMethod); set("payment-due", f.paymentDue);
   set("bank-details", f.bankDetails); set("payment-notes", f.paymentNotes);
@@ -1752,7 +1797,8 @@ function resetDoc() {
   itemIdSeq = 0;
   discount = null;
   tax = null;
-  ["doc-ref","doc-date","doc-valid","doc-by","buyer-name","buyer-address","buyer-phone","buyer-email",
+  ["doc-ref","doc-date","doc-valid","doc-by","doc-signoff","doc-subject","doc-salutation",
+   "buyer-name","buyer-address","buyer-phone","buyer-email",
    "payment-method","payment-due","bank-details","payment-notes","doc-notes","doc-terms"]
     .forEach(id => { const el = document.getElementById(id); if (el) el.value = ""; });
   document.getElementById("doc-date").value = new Date().toISOString().slice(0,10);
@@ -1792,7 +1838,7 @@ function initApp() {
 
   // Line item buttons
   document.getElementById("add-blank-btn").addEventListener("click", () => {
-    lineItems.push({ id: newItemId(), sku: "", description: "", qty: 1, unitPrice: "" });
+    lineItems.push({ id: newItemId(), sku: "", description: "", manufacturer: "", warranty: "", qty: 1, unitPrice: "" });
     renderItems();
   });
 
