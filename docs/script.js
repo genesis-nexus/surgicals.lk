@@ -2,7 +2,7 @@
 // Implements the quote-cart spine and WhatsApp-first CTAs from the design spec.
 
 const WHATSAPP_NUMBER = "94718208654";  // Galle WhatsApp
-const WHATSAPP_COLOMBO = "94789669666"; // Colombo WhatsApp
+const WHATSAPP_COLOMBO = "94719249267"; // Colombo WhatsApp
 
 // Escape untrusted strings before inserting into HTML (XSS defense).
 function escapeHtml(value) {
