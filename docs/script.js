@@ -670,7 +670,7 @@ function buildAskWhatsAppMessage(product, qty = 1) {
   if (product.dimensions) lines.push(`Dimensions: ${product.dimensions}`);
   if (product.material) lines.push(`Material: ${product.material}`);
   lines.push(productDeepLink(product.sku));
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`;
+  return `https://wa.me/${WHATSAPP_COLOMBO}?text=${encodeURIComponent(lines.join("\n"))}`;
 }
 
 // ---------- Toast ----------
@@ -812,7 +812,7 @@ function initHeader() {
     if (!grid) return;
     grid.innerHTML = "";
     if (list.length === 0) {
-      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:48px 16px;color:var(--ink-500);"><p>No products match "${escapeHtml(raw)}". <a href="https://wa.me/${WHATSAPP_NUMBER}" target="_blank" rel="noopener">Ask us on WhatsApp →</a></p></div>`;
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:48px 16px;color:var(--ink-500);"><p>No products match "${escapeHtml(raw)}". <a href="https://wa.me/${WHATSAPP_COLOMBO}" target="_blank" rel="noopener">Ask us on WhatsApp →</a></p></div>`;
       if (count) count.textContent = "0 products";
       return;
     }
