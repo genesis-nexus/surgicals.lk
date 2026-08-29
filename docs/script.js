@@ -2,7 +2,7 @@
 // Implements the quote-cart spine and WhatsApp-first CTAs from the design spec.
 
 const WHATSAPP_NUMBER = "94718208654";  // Galle WhatsApp
-const WHATSAPP_COLOMBO = "94719249267"; // Colombo WhatsApp
+const WHATSAPP_COLOMBO = "94719669666"; // Colombo WhatsApp
 
 // Escape untrusted strings before inserting into HTML (XSS defense).
 function escapeHtml(value) {
@@ -718,17 +718,23 @@ function focusProductFromUrl() {
 
 // ---------- Announcement bar ----------
 
-function initAnnouncementBar() {
-  const bar = document.getElementById("announcement-bar");
-  const close = document.getElementById("announcement-close");
+function initDismissableBar(barId, closeId, storageKey) {
+  const bar = document.getElementById(barId);
+  const close = document.getElementById(closeId);
   if (!bar) return;
-  const KEY = "surgicals-announce-colombo-v1";
-  if (localStorage.getItem(KEY) === "dismissed") return;
+  let dismissed = false;
+  try { dismissed = localStorage.getItem(storageKey) === "dismissed"; } catch (_) { /* ignore */ }
+  if (dismissed) return;
   bar.hidden = false;
   close?.addEventListener("click", () => {
     bar.hidden = true;
-    try { localStorage.setItem(KEY, "dismissed"); } catch (_) { /* ignore */ }
+    try { localStorage.setItem(storageKey, "dismissed"); } catch (_) { /* ignore */ }
   });
+}
+
+function initAnnouncementBar() {
+  initDismissableBar("announcement-bar", "announcement-close", "surgicals-announce-colombo-v1");
+  initDismissableBar("number-notice-bar", "number-notice-close", "surgicals-number-notice-v1");
 }
 
 // ---------- Header / nav ----------

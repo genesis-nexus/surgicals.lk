@@ -242,6 +242,12 @@ p { color: var(--ink-700); }
   transition: color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
 }
 .announcement-bar__close:hover { color: var(--white); background: rgba(255, 255, 255, 0.12); }
+.announcement-bar--notice {
+  background: linear-gradient(90deg, var(--teal-600) 0%, var(--teal-500) 100%);
+}
+.announcement-bar--notice .announcement-bar__badge {
+  background: rgba(255, 255, 255, 0.22);
+}
 @media (max-width: 640px) {
   .announcement-bar { font-size: 0.9375rem; }
   .announcement-bar__inner { gap: 10px; padding: 12px 0; }
