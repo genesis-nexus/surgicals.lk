@@ -250,6 +250,7 @@
   }
   .items-table td { padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--ink-100); vertical-align: middle; }
   .items-table tr:last-child td { border-bottom: none; }
+  .items-table .total-toggle { width: 16px; height: 16px; cursor: pointer; accent-color: var(--teal-500); }
   .items-table input[type="number"], .items-table input[type="text"] {
     border: 1.5px solid var(--ink-300); border-radius: var(--radius-sm);
     padding: 0.35rem 0.45rem; font-size: 0.82rem; color: var(--ink-900);
@@ -266,6 +267,28 @@
     border-radius: var(--radius-sm); transition: all 0.12s;
   }
   .items-table .remove-btn:hover { color: var(--danger); background: var(--danger-bg); }
+  .item-img-cell { display: flex; align-items: center; gap: 0.3rem; }
+  .item-thumb {
+    width: 34px; height: 34px; object-fit: contain; border-radius: var(--radius-sm);
+    border: 1.5px solid var(--ink-200); cursor: pointer; display: block; background: var(--ink-50, #fff);
+  }
+  .item-img-size {
+    padding: 0.2rem 0.15rem; border: 1.5px solid var(--ink-300); border-radius: var(--radius-sm);
+    font-size: 0.7rem; font-family: inherit; outline: none; color: var(--ink-700); background: var(--white);
+  }
+  .item-img-size:focus { border-color: var(--teal-500); }
+  .item-img-add {
+    width: 34px; height: 34px; border-radius: var(--radius-sm);
+    border: 1.5px dashed var(--ink-300); background: var(--white);
+    color: var(--ink-500); cursor: pointer; font-size: 0.9rem;
+    display: flex; align-items: center; justify-content: center; transition: all 0.12s;
+  }
+  .item-img-add:hover { border-color: var(--teal-400); color: var(--teal-600); background: var(--teal-50); }
+  .item-img-remove {
+    background: none; border: none; color: var(--ink-300);
+    cursor: pointer; font-size: 0.85rem; padding: 0 0.15rem;
+  }
+  .item-img-remove:hover { color: var(--danger); }
 
   /* ── Totals ───────────────────────────────────── */
   .totals-block {
@@ -522,6 +545,8 @@
                   <th style="text-align:right">Qty</th>
                   <th style="text-align:right">Unit Price (LKR)</th>
                   <th style="text-align:right">Total</th>
+                  <th style="text-align:center" title="Include this line's total in the document's grand total">In Total?</th>
+                  <th>Image</th>
                   <th></th>
                 </tr>
               </thead>
@@ -884,6 +909,23 @@ let tax       = null;   // { type: "pct"|"amt", value: number, label: string }
 function newItemId() { return ++itemIdSeq; }
 
 // ═══════════════════════════════════════════════════════════════
+// ITEM IMAGE SIZE PRESETS — longest side, mm (used by PDF/DOCX)
+// ═══════════════════════════════════════════════════════════════
+const IMG_SIZE_PRESETS = {
+  small:  16,
+  medium: 24,
+  large:  34,
+};
+
+// Fit width/height (px, from natural image) into a box of `maxSide` mm,
+// preserving aspect ratio. Returns { w, h } in mm.
+function fitImageBox(natW, natH, maxSide) {
+  const w = natW || 1, h = natH || 1;
+  if (w >= h) return { w: maxSide, h: maxSide * (h / w) };
+  return { w: maxSide * (w / h), h: maxSide };
+}
+
+// ═══════════════════════════════════════════════════════════════
 // UTILITIES
 // ═══════════════════════════════════════════════════════════════
 function fmt(n) {
@@ -894,7 +936,7 @@ function lineTotal(item) {
   return (parseFloat(item.qty) || 0) * (parseFloat(item.unitPrice) || 0);
 }
 
-function subtotal() { return lineItems.reduce((s, i) => s + lineTotal(i), 0); }
+function subtotal() { return lineItems.reduce((s, i) => s + (i.excludeTotal ? 0 : lineTotal(i)), 0); }
 
 function discountAmount() {
   if (!discount) return 0;
@@ -911,6 +953,10 @@ function taxAmount() {
 }
 
 function grandTotal() { return taxableBase() + taxAmount(); }
+
+// True when at least one line item counts toward the total — false when
+// every item is marked "not in total" (e.g. all rows are alternative options).
+function hasTotaledItems() { return lineItems.some(i => !i.excludeTotal); }
 
 function getDocMeta() {
   return {
@@ -960,23 +1006,25 @@ function escHtml(str) {
 function buildDocModel() {
   const m = getDocMeta();
   const isBill = docType === "bill";
+  const showTotal = hasTotaledItems();
 
   // Summary rows shown under the items table (subtotal / discount / tax / total).
   const summaryRows = [];
   const hasAdjust = discount || tax;
-  if (hasAdjust) {
+  if (showTotal && hasAdjust) {
     summaryRows.push({ label: "Subtotal", value: subtotal(), strong: false });
   }
-  if (discount) {
+  if (showTotal && discount) {
     const lbl = discount.type === "pct" ? `Discount (${parseFloat(discount.value) || 0}%)` : "Discount";
     summaryRows.push({ label: lbl, value: -discountAmount(), strong: false });
   }
-  if (tax) {
+  if (showTotal && tax) {
     const base = tax.label || (tax.type === "pct" ? `Tax (${parseFloat(tax.value) || 0}%)` : "Tax");
     summaryRows.push({ label: base, value: taxAmount(), strong: false });
   }
 
   return {
+    showTotal,
     isBill,
     typeLabel:    isBill ? "BILL / INVOICE" : "QUOTATION",
     subjectLabel: m.subject || (isBill ? "Invoice for Supplies" : "Quotation for Surgical Supplies"),
@@ -1002,6 +1050,9 @@ function buildDocModel() {
       if (item.warranty)     bits.push(`Warranty: ${item.warranty}`);
       return bits.join("  •  ");
     }),
+    tableImages: lineItems.map(item => item.image
+      ? { data: item.image, w: item.imageW || 0, h: item.imageH || 0, size: item.imageSize || "medium" }
+      : null),
     summaryRows,
     grandTotal: grandTotal(),
     sigAuth: window["sig-authorized_data"] || null,
@@ -1072,7 +1123,7 @@ function buildCatFilter() {
 function addProduct(sku) {
   const p = PRODUCTS.find(x => x.sku === sku);
   if (!p) return;
-  lineItems.push({ id: newItemId(), sku: p.sku, description: p.title, manufacturer: "", warranty: "", qty: 1, unitPrice: p.price ? String(p.price) : "" });
+  lineItems.push({ id: newItemId(), sku: p.sku, description: p.title, manufacturer: "", warranty: "", qty: 1, unitPrice: p.price ? String(p.price) : "", image: null, imageW: 0, imageH: 0, imageSize: "medium", excludeTotal: false });
   renderItems();
   showToast(`"${p.title}" added`);
 }
@@ -1085,7 +1136,7 @@ function renderItems() {
   document.getElementById("item-count").textContent = `${lineItems.length} item${lineItems.length !== 1 ? "s" : ""}`;
 
   if (!lineItems.length) {
-    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:1.5rem;color:var(--ink-500);font-size:0.82rem">No items yet — add from the product list or click "+ Add blank line".</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;padding:1.5rem;color:var(--ink-500);font-size:0.82rem">No items yet — add from the product list or click "+ Add blank line".</td></tr>`;
     renderTotals();
     updateExportLabel();
     return;
@@ -1113,13 +1164,31 @@ function renderItems() {
         <input type="number" class="price-input" value="${escHtml(item.unitPrice)}" min="0" step="0.01" placeholder="0.00" data-field="unitPrice">
       </td>
       <td class="line-total">${item.unitPrice ? fmt(lineTotal(item)) : "—"}</td>
+      <td style="text-align:center">
+        <input type="checkbox" class="total-toggle" data-totaltoggle="${item.id}" ${item.excludeTotal ? "" : "checked"} title="Uncheck to leave this item out of the grand total (e.g. alternative options)">
+      </td>
+      <td>
+        <div class="item-img-cell">
+          ${item.image
+            ? `<img class="item-thumb" src="${item.image}" data-view="${item.id}" title="Click to preview" alt="Item image">
+               <select class="item-img-size" data-imgsize="${item.id}" title="Image size in export">
+                 <option value="small"${item.imageSize==="small"?" selected":""}>S</option>
+                 <option value="medium"${(item.imageSize||"medium")==="medium"?" selected":""}>M</option>
+                 <option value="large"${item.imageSize==="large"?" selected":""}>L</option>
+               </select>
+               <button class="item-img-remove" data-imgdel="${item.id}" title="Remove image" type="button">✕</button>`
+            : `<button class="item-img-add" data-imgadd="${item.id}" title="Add image" type="button">+</button>`
+          }
+          <input type="file" accept="image/*" class="item-img-input" data-imginput="${item.id}" style="display:none">
+        </div>
+      </td>
       <td>
         <button class="remove-btn" data-id="${item.id}" title="Remove" type="button">✕</button>
       </td>
     </tr>
   `).join("");
 
-  tbody.querySelectorAll("input").forEach(inp => {
+  tbody.querySelectorAll("input[data-field]").forEach(inp => {
     inp.addEventListener("input", e => {
       const row  = inp.closest("tr");
       const id   = parseInt(row.dataset.id);
@@ -1139,6 +1208,74 @@ function renderItems() {
     });
   });
 
+  tbody.querySelectorAll("[data-totaltoggle]").forEach(cb => {
+    cb.addEventListener("change", () => {
+      const item = lineItems.find(x => x.id === parseInt(cb.dataset.totaltoggle));
+      if (!item) return;
+      item.excludeTotal = !cb.checked;
+      renderTotals();
+      updateExportLabel();
+    });
+  });
+
+  tbody.querySelectorAll("[data-imgadd]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      tbody.querySelector(`input[data-imginput="${btn.dataset.imgadd}"]`).click();
+    });
+  });
+
+  tbody.querySelectorAll(".item-img-input").forEach(inp => {
+    inp.addEventListener("change", () => {
+      const file = inp.files[0];
+      if (!file) return;
+      if (!file.type.startsWith("image/")) { showToast("Please choose an image file."); return; }
+      const id = parseInt(inp.dataset.imginput);
+      const item = lineItems.find(x => x.id === id);
+      if (!item) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = reader.result;
+        const probe = new Image();
+        probe.onload = () => {
+          item.image = dataUrl;
+          item.imageW = probe.naturalWidth;
+          item.imageH = probe.naturalHeight;
+          if (!item.imageSize) item.imageSize = "medium";
+          renderItems();
+        };
+        probe.onerror = () => {
+          item.image = dataUrl;
+          item.imageW = 0; item.imageH = 0;
+          if (!item.imageSize) item.imageSize = "medium";
+          renderItems();
+        };
+        probe.src = dataUrl;
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+
+  tbody.querySelectorAll("[data-imgdel]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const item = lineItems.find(x => x.id === parseInt(btn.dataset.imgdel));
+      if (item) { item.image = null; item.imageW = 0; item.imageH = 0; renderItems(); }
+    });
+  });
+
+  tbody.querySelectorAll("[data-imgsize]").forEach(sel => {
+    sel.addEventListener("change", () => {
+      const item = lineItems.find(x => x.id === parseInt(sel.dataset.imgsize));
+      if (item) item.imageSize = sel.value;
+    });
+  });
+
+  tbody.querySelectorAll("[data-view]").forEach(img => {
+    img.addEventListener("click", () => {
+      const item = lineItems.find(x => x.id === parseInt(img.dataset.view));
+      if (item && item.image) window.open(item.image, "_blank");
+    });
+  });
+
   renderTotals();
   updateExportLabel();
 }
@@ -1146,6 +1283,12 @@ function renderItems() {
 function renderTotals() {
   const block = document.getElementById("totals-block");
   const rows = [];
+
+  if (lineItems.length && !hasTotaledItems()) {
+    block.innerHTML = "";
+    updateAdjustToolbar();
+    return;
+  }
 
   const showBreakdown = discount || tax;
   if (showBreakdown) {
@@ -1258,7 +1401,8 @@ function updateExportLabel() {
   const typeLabel = docType === "bill" ? "Bill / Invoice" : "Quotation";
   const ref = m.ref || "—";
   const buyer = m.buyer || "—";
-  label.innerHTML = `<strong>${escHtml(typeLabel)}</strong> · Ref: ${escHtml(ref)} · ${escHtml(buyer)} · ${lineItems.length} item(s) · LKR ${fmt(grandTotal())}`;
+  const totalPart = hasTotaledItems() ? ` · LKR ${fmt(grandTotal())}` : "";
+  label.innerHTML = `<strong>${escHtml(typeLabel)}</strong> · Ref: ${escHtml(ref)} · ${escHtml(buyer)} · ${lineItems.length} item(s)${totalPart}`;
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1358,6 +1502,10 @@ async function exportPDF() {
   }
 
   // ── Items table ──
+  // Per-row image box (mm), fit to preset max-side while preserving aspect ratio.
+  const pdfImgBoxes = M.tableImages.map(img => img
+    ? fitImageBox(img.w, img.h, IMG_SIZE_PRESETS[img.size] || IMG_SIZE_PRESETS.medium)
+    : null);
   const pdfBody = M.tableBody.map((row, i) => {
     const sub = M.tableSubLines[i];
     return sub ? [`${row[0]}\n${sub}`, row[1], row[2], row[3]] : row;
@@ -1384,6 +1532,28 @@ async function exportPDF() {
     },
     alternateRowStyles: { fillColor: [248, 250, 252] },
     tableLineColor: [226, 232, 240], tableLineWidth: 0.1,
+    didParseCell: (data) => {
+      if (data.section === "body" && data.column.index === 0) {
+        const box = pdfImgBoxes[data.row.index];
+        if (box) {
+          data.cell.styles.cellPadding = { top: 3, bottom: 3, left: box.w + 6, right: 3 };
+          data.cell.styles.minCellHeight = box.h + 6;
+        }
+      }
+    },
+    didDrawCell: (data) => {
+      if (data.section === "body" && data.column.index === 0) {
+        const img = M.tableImages[data.row.index];
+        const box = pdfImgBoxes[data.row.index];
+        if (img && box) {
+          const fmtMatch = /^data:image\/(\w+)/.exec(img.data);
+          let imgFmt = fmtMatch ? fmtMatch[1].toUpperCase() : "PNG";
+          if (imgFmt === "JPG") imgFmt = "JPEG";
+          const yOff = (data.cell.height - box.h) / 2;
+          try { doc.addImage(img.data, imgFmt, data.cell.x + 2, data.cell.y + Math.max(2, yOff), box.w, box.h); } catch (e) {}
+        }
+      }
+    },
   });
 
   y = doc.lastAutoTable.finalY;
@@ -1399,14 +1569,16 @@ async function exportPDF() {
     y += 3;
   }
 
-  // ── Total bar ──
-  y += 3;
-  doc.setFillColor(11, 98, 96);
-  doc.rect(margin, y, W - margin * 2, 11, "F");
-  doc.setFont("helvetica", "bold"); doc.setFontSize(9.5); doc.setTextColor(255, 255, 255);
-  doc.text(M.totalLabel, W - margin - 38, y + 7.2, { align: "right" });
-  doc.text(`Rs. ${fmt(M.grandTotal)}`, W - margin - 1, y + 7.2, { align: "right" });
-  y += 17;
+  // ── Total bar ── (skipped when no line item counts toward the total)
+  if (M.showTotal) {
+    y += 3;
+    doc.setFillColor(11, 98, 96);
+    doc.rect(margin, y, W - margin * 2, 11, "F");
+    doc.setFont("helvetica", "bold"); doc.setFontSize(9.5); doc.setTextColor(255, 255, 255);
+    doc.text(M.totalLabel, W - margin - 38, y + 7.2, { align: "right" });
+    doc.text(`Rs. ${fmt(M.grandTotal)}`, W - margin - 1, y + 7.2, { align: "right" });
+    y += 17;
+  }
 
   // ── Payment details ──
   if (m.bankDetails || m.paymentMethod || m.paymentDue || m.paymentNotes) {
@@ -1472,6 +1644,16 @@ async function exportPDF() {
 // ═══════════════════════════════════════════════════════════════
 // DOCX EXPORT — reads buildDocModel()
 // ═══════════════════════════════════════════════════════════════
+// Decode a data: URL to an ArrayBuffer without fetch() — fetch() on data:
+// URLs is blocked by this page's CSP (connect-src 'self') in some browsers.
+function dataUrlToArrayBuffer(dataUrl) {
+  const b64 = dataUrl.slice(dataUrl.indexOf(",") + 1);
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes.buffer;
+}
+
 async function fetchLogoArrayBuffer() {
   try {
     const resp = await fetch("../images/brand/logo-header-nobg.png");
@@ -1528,6 +1710,24 @@ async function exportDOCX() {
     ]
   });
 
+  const docxImgType = (dataUrl) => {
+    if (/^data:image\/jpe?g/.test(dataUrl)) return "jpg";
+    if (/^data:image\/gif/.test(dataUrl))   return "gif";
+    if (/^data:image\/bmp/.test(dataUrl))   return "bmp";
+    return "png";
+  };
+  const MM_TO_PX = 3.78; // 96dpi
+  const itemImgBufs = await Promise.all(M.tableImages.map(async (img) => {
+    if (!img) return null;
+    const box = fitImageBox(img.w, img.h, IMG_SIZE_PRESETS[img.size] || IMG_SIZE_PRESETS.medium);
+    return {
+      data: dataUrlToArrayBuffer(img.data),
+      type: docxImgType(img.data),
+      width: Math.round(box.w * MM_TO_PX),
+      height: Math.round(box.h * MM_TO_PX),
+    };
+  }));
+
   const dataRows = M.tableBody.map((row, idx) =>
     new TableRow({
       children: row.map((val, i) =>
@@ -1535,6 +1735,9 @@ async function exportDOCX() {
           borders: thinBorder,
           shading: { type: ShadingType.SOLID, color: idx % 2 === 0 ? "FFFFFF" : "F8FAFB" },
           children: [
+            ...(i === 0 && itemImgBufs[idx]
+              ? [new Paragraph({ spacing: { after: 40 }, children: [new ImageRun({ data: itemImgBufs[idx].data, transformation: { width: itemImgBufs[idx].width, height: itemImgBufs[idx].height }, type: itemImgBufs[idx].type })] })]
+              : []),
             new Paragraph({
               alignment: i === 0 ? AlignmentType.LEFT : i === 1 ? AlignmentType.CENTER : AlignmentType.RIGHT,
               spacing: { after: i === 0 && M.tableSubLines[idx] ? 20 : 0 },
@@ -1571,8 +1774,8 @@ async function exportDOCX() {
   // ── Signatures ──
   let sigBlock = [];
   if (M.sigAuth || M.sigRecv) {
-    const sigFetch = async (dataUrl) => { if (!dataUrl) return null; const res = await fetch(dataUrl); return await res.arrayBuffer(); };
-    const [authBuf, recvBuf] = await Promise.all([sigFetch(M.sigAuth), sigFetch(M.sigRecv)]);
+    const sigFetch = (dataUrl) => dataUrl ? dataUrlToArrayBuffer(dataUrl) : null;
+    const [authBuf, recvBuf] = [sigFetch(M.sigAuth), sigFetch(M.sigRecv)];
     const sigCells = [
       new TableCell({
         borders: noBorder,
@@ -1628,7 +1831,7 @@ async function exportDOCX() {
     new Paragraph({ spacing: { after: 80 }, children: [reg(M.salutation, "0F172A", 19)] }),
     new Paragraph({ spacing: { after: 120 }, children: [new TextRun({ text: M.subjectLabel, bold: true, underline: { type: UnderlineType.SINGLE }, color: "0F172A", size: 20, font: "Calibri" })] }),
     ...(m.by ? [new Paragraph({ spacing: { after: 120 }, children: [reg(`Prepared by: ${m.by}`, "64748B", 17)] })] : []),
-    new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [headerRow, ...dataRows, ...summaryTableRows, totalRow] }),
+    new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [headerRow, ...dataRows, ...summaryTableRows, ...(M.showTotal ? [totalRow] : [])] }),
     ...(m.bankDetails || m.paymentMethod || m.paymentDue || m.paymentNotes ? [
       spacer(200),
       new Paragraph({ spacing: { after: 60 }, children: [reg("Account details as below,", "0F172A", 19)] }),
@@ -1838,7 +2041,7 @@ function initApp() {
 
   // Line item buttons
   document.getElementById("add-blank-btn").addEventListener("click", () => {
-    lineItems.push({ id: newItemId(), sku: "", description: "", manufacturer: "", warranty: "", qty: 1, unitPrice: "" });
+    lineItems.push({ id: newItemId(), sku: "", description: "", manufacturer: "", warranty: "", qty: 1, unitPrice: "", image: null, imageW: 0, imageH: 0, imageSize: "medium", excludeTotal: false });
     renderItems();
   });
 

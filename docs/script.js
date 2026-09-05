@@ -2,7 +2,7 @@
 // Implements the quote-cart spine and WhatsApp-first CTAs from the design spec.
 
 const WHATSAPP_NUMBER = "94718208654";  // Galle WhatsApp
-const WHATSAPP_COLOMBO = "94719249267"; // Colombo WhatsApp
+const WHATSAPP_COLOMBO = "94719669666"; // Colombo WhatsApp
 
 // Escape untrusted strings before inserting into HTML (XSS defense).
 function escapeHtml(value) {
@@ -159,7 +159,7 @@ const FURNITURE_SPECS = {
 // [primary, alt] for multi-angle products that should cross-fade on hover.
 const products = [
   // ---- Mobility Aids (docs/images/new-cat) ----
-  { sku: "WC01", title: "Adult Wheelchair", category: "mobility-aids", folder: "new-cat", bases: ["adult-wheel-chair"], price: 22500, wasPrice: 24000 },
+  { sku: "WC01", title: "Adult Wheelchair", category: "mobility-aids", folder: "new-cat", bases: ["adult-wheel-chair"], price: 24500, isNew: true, features: ["Detachable footrest option available"] },
   { sku: "WC02", title: "Functional Wheelchair", category: "mobility-aids", folder: "new-cat", bases: ["functional-wheel-chair-1", "functional-wheel-chair-2"] },
   { sku: "WC03", title: "Fully Functional Wheelchair", category: "mobility-aids", folder: "new-cat", bases: ["fully-functional-wheel-chair-1", "fully-functional-wheel-chair-2"] },
   { sku: "WC04", title: "Commode Wheelchair", category: "mobility-aids", folder: "new-cat", bases: ["commode-wheelchair-angle-1", "commode-wheelchair-angle-2"] },
@@ -485,6 +485,7 @@ function renderCardInner(p) {
   return `
     <div class="product-card__media${multi ? " product-card__media--multi" : ""}">
       <span class="product-card__tag">${PRODUCT_CATEGORIES[p.category] || p.category}</span>
+      ${p.isNew ? `<span class="product-card__new-badge">New</span>` : ""}
       ${pictures}
       ${multi ? `<span class="product-card__views" aria-label="${imgs.length} views available">↻ ${imgs.length} views</span>` : ""}
     </div>
@@ -718,17 +719,23 @@ function focusProductFromUrl() {
 
 // ---------- Announcement bar ----------
 
-function initAnnouncementBar() {
-  const bar = document.getElementById("announcement-bar");
-  const close = document.getElementById("announcement-close");
+function initDismissableBar(barId, closeId, storageKey) {
+  const bar = document.getElementById(barId);
+  const close = document.getElementById(closeId);
   if (!bar) return;
-  const KEY = "surgicals-announce-colombo-v1";
-  if (localStorage.getItem(KEY) === "dismissed") return;
+  let dismissed = false;
+  try { dismissed = localStorage.getItem(storageKey) === "dismissed"; } catch (_) { /* ignore */ }
+  if (dismissed) return;
   bar.hidden = false;
   close?.addEventListener("click", () => {
     bar.hidden = true;
-    try { localStorage.setItem(KEY, "dismissed"); } catch (_) { /* ignore */ }
+    try { localStorage.setItem(storageKey, "dismissed"); } catch (_) { /* ignore */ }
   });
+}
+
+function initAnnouncementBar() {
+  initDismissableBar("announcement-bar", "announcement-close", "surgicals-announce-colombo-v1");
+  initDismissableBar("number-notice-bar", "number-notice-close", "surgicals-number-notice-v1");
 }
 
 // ---------- Header / nav ----------
