@@ -306,6 +306,14 @@ p { color: var(--ink-700); }
   transition: color var(--dur-fast) var(--ease);
 }
 .utility-bar__link:hover { color: var(--white); }
+.utility-bar__link--group { gap: 6px; }
+.utility-bar__icon-link {
+  display: inline-flex;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.85);
+  transition: color var(--dur-fast) var(--ease);
+}
+.utility-bar__icon-link:hover { color: var(--white); }
 @media (max-width: 768px) {
   .utility-bar__left { display: none; }
   .utility-bar__inner { justify-content: flex-end; }
