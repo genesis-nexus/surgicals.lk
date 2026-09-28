@@ -161,7 +161,7 @@ const products = [
   // ---- Mobility Aids (docs/images/new-cat) ----
   { sku: "WC01", title: "Adult Wheelchair", category: "mobility-aids", folder: "new-cat", bases: ["adult-wheel-chair"], price: 24500, isNew: true, features: ["Detachable footrest option available"] },
   { sku: "WC02", title: "Functional Wheelchair", category: "mobility-aids", folder: "new-cat", bases: ["functional-wheel-chair-1", "functional-wheel-chair-2"] },
-  { sku: "WC03", title: "Fully Functional Wheelchair", category: "mobility-aids", folder: "new-cat", bases: ["fully-functional-wheel-chair-1", "fully-functional-wheel-chair-2"] },
+  { sku: "WC03", title: "Fully Functional Wheelchair", category: "mobility-aids", folder: "new-cat", bases: ["fully-functional-wheel-chair-1", "fully-functional-wheel-chair-2"], price: 54500 },
   { sku: "WC04", title: "Commode Wheelchair", category: "mobility-aids", folder: "new-cat", bases: ["commode-wheelchair-angle-1", "commode-wheelchair-angle-2"] },
 
   { sku: "CO01", title: "Commode Chair", category: "mobility-aids", folder: "new-cat", bases: ["commode-chair"] },
