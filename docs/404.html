@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; media-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; media-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <script src="/early.js"></script>
   <meta name="robots" content="noindex, follow">
@@ -14,21 +14,25 @@
     .error-container {
       text-align: center;
       padding: 4rem 1.5rem;
-      min-height: 70vh;
+      min-height: 80vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
     }
     .error-code {
-      font-family: var(--font-mono);
-      font-size: clamp(5rem, 16vw, 8rem);
+      font-family: var(--font-display);
+      font-size: clamp(6rem, 22vw, 10rem);
       font-weight: 700;
-      color: var(--teal-500);
+      letter-spacing: -0.05em;
       line-height: 1;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
+      background: linear-gradient(92deg, var(--teal-500), #189A5C);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
-    .error-message { font-size: 1.5rem; margin-bottom: 0.75rem; }
+    .error-message { margin-bottom: 0.75rem; }
     .error-description {
       color: var(--ink-500);
       margin-bottom: 2rem;
@@ -38,29 +42,21 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
       margin-bottom: 2rem;
     }
     .error-links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      padding: 0 16px;
+      border-radius: var(--radius-pill);
+      background: var(--fill);
+      color: var(--ink-900);
       font-size: 0.875rem;
-      font-weight: 600;
-      padding: 9px 16px;
-      border-radius: var(--radius-pill);
-      border: 1px solid var(--teal-100);
-      background: var(--teal-50);
-      color: var(--teal-700);
+      font-weight: 500;
     }
-    .error-links a:hover { background: var(--teal-100); }
-    .back-home {
-      display: inline-block;
-      background: var(--teal-500);
-      color: var(--white);
-      padding: 0.8rem 2rem;
-      border-radius: var(--radius-pill);
-      font-weight: 600;
-      transition: background 0.2s ease, transform 0.2s ease;
-    }
-    .back-home:hover { background: var(--teal-600); color: var(--white); transform: translateY(-2px); }
+    .error-links a:hover { background: var(--fill-strong); text-decoration: none; }
   </style>
 </head>
 <body>
@@ -77,7 +73,7 @@
       <a href="/surgical-consumables-sri-lanka.html">Surgical consumables</a>
       <a href="/#products">Full catalog</a>
     </div>
-    <a href="/" class="back-home">Back to homepage</a>
+    <a href="/" class="btn btn--primary btn--lg back-home">Back to homepage</a>
   </div>
 </body>
 </html>

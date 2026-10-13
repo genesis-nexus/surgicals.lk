@@ -270,9 +270,10 @@ const products = [
   };
   const cfg = FOLDER_CONFIG[p.folder] || FOLDER_CONFIG.products;
   const categoryLabel = PRODUCT_CATEGORIES[p.category] || p.category;
+  // encodeURI: some filenames contain spaces, which srcset would otherwise read as a descriptor.
   const images = p.bases.map((base, i) => ({
-    src: `${cfg.dir}/${base}.${cfg.ext}`,
-    webp: `${cfg.dir}/${base}.webp`,
+    src: encodeURI(`${cfg.dir}/${base}.${cfg.ext}`),
+    webp: encodeURI(`${cfg.dir}/${base}.webp`),
     alt: `${p.title}${p.bases.length > 1 ? ` (view ${i + 1})` : ""} — ${categoryLabel} from Hettiarachchi Surgicals, Sri Lanka`
   }));
   const specs = FURNITURE_SPECS[p.sku] || {};
@@ -350,8 +351,8 @@ const locationImages = [
   { base: "IMG_2808 2", alt: "Hettiarachchi Surgicals location in Galle" },
   { base: "IMG_2810 2", alt: "Our surgical supplies facility" }
 ].map(({ base, alt }) => ({
-  src: `images/location/optimized/${base}.jpg`,
-  webp: `images/location/optimized/${base}.webp`,
+  src: encodeURI(`images/location/optimized/${base}.jpg`),
+  webp: encodeURI(`images/location/optimized/${base}.webp`),
   alt
 }));
 
@@ -487,7 +488,7 @@ function renderCardInner(p) {
       <span class="product-card__tag">${PRODUCT_CATEGORIES[p.category] || p.category}</span>
       ${p.isNew ? `<span class="product-card__new-badge">New</span>` : ""}
       ${pictures}
-      ${multi ? `<span class="product-card__views" aria-label="${imgs.length} views available">↻ ${imgs.length} views</span>` : ""}
+      ${multi ? `<span class="product-card__views" aria-label="${imgs.length} views available">${imgs.length} views</span>` : ""}
     </div>
     <div class="product-card__body">
       <h3 class="product-card__title">${p.title}</h3>
@@ -580,19 +581,10 @@ function renderQuoteDrawer(lines) {
 // ---------- Quote drawer behavior ----------
 
 const Drawer = {
-  el: null, backdrop: null, lastFocus: null,
+  el: null,
+  sheet() { return window.SurgicalsUI?.sheet("quote-drawer"); },
   init() {
     this.el = document.getElementById("quote-drawer");
-    this.backdrop = document.getElementById("quote-backdrop");
-    const toggle = document.getElementById("quote-toggle");
-    const close = document.getElementById("quote-drawer-close");
-
-    toggle?.addEventListener("click", () => this.open());
-    close?.addEventListener("click", () => this.close());
-    this.backdrop?.addEventListener("click", () => this.close());
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && this.isOpen()) this.close();
-    });
 
     // Delegate qty / remove inside drawer
     this.el?.addEventListener("click", (e) => {
@@ -613,35 +605,18 @@ const Drawer = {
     });
 
     // Checkout → auto-fill quote form
-    document.getElementById("quote-drawer-checkout")?.addEventListener("click", () => {
-      prefillQuoteForm();
+    document.getElementById("quote-drawer-checkout")?.addEventListener("click", (e) => {
+      e.preventDefault();
       this.close();
+      prefillQuoteForm();
+    });
+    document.getElementById("quote-drawer-whatsapp")?.addEventListener("click", () => {
+      openWhatsAppWithQuote("", WHATSAPP_COLOMBO);
     });
   },
-  isOpen() { return this.el?.classList.contains("is-open"); },
-  open() {
-    if (!this.el) return;
-    this.lastFocus = document.activeElement;
-    this.el.classList.add("is-open");
-    this.el.setAttribute("aria-hidden", "false");
-    if (this.backdrop) {
-      this.backdrop.hidden = false;
-      requestAnimationFrame(() => this.backdrop.classList.add("is-visible"));
-    }
-    document.body.style.overflow = "hidden";
-    document.getElementById("quote-drawer-close")?.focus();
-  },
-  close() {
-    if (!this.el) return;
-    this.el.classList.remove("is-open");
-    this.el.setAttribute("aria-hidden", "true");
-    if (this.backdrop) {
-      this.backdrop.classList.remove("is-visible");
-      setTimeout(() => { this.backdrop.hidden = true; }, 200);
-    }
-    document.body.style.overflow = "";
-    this.lastFocus?.focus?.();
-  }
+  isOpen() { return !!this.sheet()?.isOpen; },
+  open() { this.sheet()?.open(document.getElementById("quote-toggle")); },
+  close() { this.sheet()?.close({ restoreFocus: false }); }
 };
 
 // ---------- WhatsApp deep-link builder ----------
@@ -717,53 +692,9 @@ function focusProductFromUrl() {
   });
 }
 
-// ---------- Announcement bar ----------
-
-function initDismissableBar(barId, closeId, storageKey) {
-  const bar = document.getElementById(barId);
-  const close = document.getElementById(closeId);
-  if (!bar) return;
-  let dismissed = false;
-  try { dismissed = localStorage.getItem(storageKey) === "dismissed"; } catch (_) { /* ignore */ }
-  if (dismissed) return;
-  bar.hidden = false;
-  close?.addEventListener("click", () => {
-    bar.hidden = true;
-    try { localStorage.setItem(storageKey, "dismissed"); } catch (_) { /* ignore */ }
-  });
-}
-
-function initAnnouncementBar() {
-  initDismissableBar("announcement-bar", "announcement-close", "surgicals-announce-colombo-v1");
-  initDismissableBar("number-notice-bar", "number-notice-close", "surgicals-number-notice-v3");
-}
-
 // ---------- Header / nav ----------
 
 function initHeader() {
-  const header = document.getElementById("site-header");
-  const update = () => {
-    if (!header) return;
-    header.classList.toggle("is-scrolled", window.scrollY > 4);
-  };
-  window.addEventListener("scroll", update, { passive: true });
-  update();
-
-  // Mobile menu
-  const toggle = document.querySelector(".mobile-menu-toggle");
-  const mobileNav = document.getElementById("mobile-nav");
-  toggle?.addEventListener("click", () => {
-    const open = mobileNav.hasAttribute("hidden");
-    if (open) mobileNav.removeAttribute("hidden"); else mobileNav.setAttribute("hidden", "");
-    toggle.setAttribute("aria-expanded", String(open));
-  });
-  mobileNav?.addEventListener("click", (e) => {
-    if (e.target.tagName === "A") {
-      mobileNav.setAttribute("hidden", "");
-      toggle?.setAttribute("aria-expanded", "false");
-    }
-  });
-
   // Search panel
   const searchToggle = document.getElementById("search-toggle");
   const searchPanel = document.getElementById("search-panel");
@@ -772,13 +703,16 @@ function initHeader() {
   const openSearch = () => {
     searchPanel?.removeAttribute("hidden");
     searchToggle?.setAttribute("aria-expanded", "true");
-    searchInput?.focus();
+    searchInput?.focus({ preventScroll: true });
   };
   const closeSearch = () => {
     searchPanel?.setAttribute("hidden", "");
     searchToggle?.setAttribute("aria-expanded", "false");
+    searchToggle?.focus({ preventScroll: true });
   };
-  searchToggle?.addEventListener("click", openSearch);
+  searchToggle?.addEventListener("click", () => {
+    if (searchPanel?.hasAttribute("hidden")) openSearch(); else closeSearch();
+  });
   searchClose?.addEventListener("click", closeSearch);
   document.addEventListener("keydown", (e) => {
     if (e.key === "/" && document.activeElement?.tagName !== "INPUT" && document.activeElement?.tagName !== "TEXTAREA") {
@@ -974,7 +908,6 @@ document.addEventListener("DOMContentLoaded", () => {
   renderProductGrid("all");
   renderLocationGallery();
 
-  initAnnouncementBar();
   initHeader();
   initFilters();
   initProductGridInteractions();
@@ -1057,79 +990,176 @@ function applySearchFromUrl() {
 }
 
 // ---------- Hero slideshow ----------
+// A paging carousel that tracks the finger 1:1, projects flick momentum to choose the
+// next page, hands release velocity to a spring, and rubber-bands past the first/last slide.
 
 function initHeroSlideshow() {
-  const slidesEl = document.getElementById("hero-slides");
-  if (!slidesEl) return;
+  const visual = document.getElementById("hero-slideshow");
+  const track = document.getElementById("hero-slides");
+  if (!visual || !track) return;
 
-  const slides = Array.from(slidesEl.querySelectorAll(".hero__slide"));
-  if (slides.length <= 1) {
-    // Hide controls when there's nothing to slide through
-    document.getElementById("hero-prev")?.setAttribute("hidden", "");
-    document.getElementById("hero-next")?.setAttribute("hidden", "");
-    return;
-  }
-
+  const slides = Array.from(track.querySelectorAll(".hero__slide"));
   const dotsEl = document.getElementById("hero-dots");
   const prevBtn = document.getElementById("hero-prev");
   const nextBtn = document.getElementById("hero-next");
-  let current = 0;
-  let timer = null;
-  const INTERVAL = 5000;
+  if (slides.length <= 1) {
+    visual.querySelector(".hero__controls")?.setAttribute("hidden", "");
+    return;
+  }
 
-  // Build dot buttons
+  const UI = window.SurgicalsUI;
+  const reduced = () => !UI || UI.reducedMotion.matches;
+  const INTERVAL = 6000;
+  let current = 0;
+  let x = 0;              // presentation value: track offset in px
+  let anim = null;
+  let timer = null;
+  let drag = null;
+  let suppressClick = false;
+  const tracker = UI ? new UI.VelocityTracker() : null;
+
+  const width = () => visual.querySelector(".hero__viewport").clientWidth || 1;
+  const render = (value) => {
+    x = value;
+    track.style.transform = `translate3d(${value.toFixed(2)}px,0,0)`;
+  };
+
   slides.forEach((_, i) => {
     const dot = document.createElement("button");
     dot.type = "button";
     dot.className = "hero__slide-dot" + (i === 0 ? " hero__slide-dot--active" : "");
-    dot.setAttribute("role", "tab");
-    dot.setAttribute("aria-selected", i === 0 ? "true" : "false");
-    dot.setAttribute("aria-label", "Slide " + (i + 1));
-    dot.addEventListener("click", () => goTo(i));
-    dotsEl.appendChild(dot);
+    dot.setAttribute("aria-label", `Show slide ${i + 1}`);
+    if (i === 0) dot.setAttribute("aria-current", "true");
+    dot.addEventListener("click", () => { goTo(i); restartAuto(); });
+    dotsEl?.appendChild(dot);
   });
 
-  function goTo(index) {
-    slides[current].classList.remove("hero__slide--active");
-    slides[current].setAttribute("aria-hidden", "true");
-    dotsEl.children[current].classList.remove("hero__slide-dot--active");
-    dotsEl.children[current].setAttribute("aria-selected", "false");
-
-    current = (index + slides.length) % slides.length;
-
-    slides[current].classList.add("hero__slide--active");
-    slides[current].setAttribute("aria-hidden", "false");
-    dotsEl.children[current].classList.add("hero__slide-dot--active");
-    dotsEl.children[current].setAttribute("aria-selected", "true");
-    slidesEl.dataset.active = current;
+  function setActive(index) {
+    current = index;
+    slides.forEach((slide, i) => {
+      const on = i === index;
+      slide.classList.toggle("hero__slide--active", on);
+      slide.setAttribute("aria-hidden", on ? "false" : "true");
+      slide.querySelectorAll("a").forEach(a => a.setAttribute("tabindex", on ? "0" : "-1"));
+    });
+    Array.from(dotsEl?.children || []).forEach((dot, i) => {
+      dot.classList.toggle("hero__slide-dot--active", i === index);
+      if (i === index) dot.setAttribute("aria-current", "true"); else dot.removeAttribute("aria-current");
+    });
+    // Lazy slides next to the visible one should be ready before they're swiped in.
+    [index - 1, index + 1].forEach(i => {
+      const img = slides[i]?.querySelector("img[loading='lazy']");
+      if (img) img.loading = "eager";
+    });
+    track.dataset.active = String(index);
   }
 
-  function startAuto() {
+  function goTo(index, velocity = 0, momentum = false) {
+    const target = Math.max(0, Math.min(slides.length - 1, index));
+    setActive(target);
+    anim?.stop();
+    const to = -target * width();
+    if (reduced()) { anim = null; render(to); return; }
+    anim = UI.spring({
+      from: x, to, velocity,
+      damping: momentum ? 0.85 : 1,
+      response: 0.42,
+      precision: 0.25,
+      onUpdate: render,
+      onComplete: () => { anim = null; }
+    });
+  }
+
+  function restartAuto() {
     stopAuto();
-    timer = setInterval(() => goTo(current + 1), INTERVAL);
+    if (reduced()) return;
+    timer = setInterval(() => goTo(current + 1 >= slides.length ? 0 : current + 1), INTERVAL);
   }
-
   function stopAuto() {
     if (timer) { clearInterval(timer); timer = null; }
   }
 
-  prevBtn?.addEventListener("click", () => { goTo(current - 1); startAuto(); });
-  nextBtn?.addEventListener("click", () => { goTo(current + 1); startAuto(); });
+  prevBtn?.addEventListener("click", () => { goTo(current - 1); restartAuto(); });
+  nextBtn?.addEventListener("click", () => { goTo(current + 1); restartAuto(); });
 
-  // Pause on hover / focus inside the visual
-  const visual = document.getElementById("hero-slideshow");
-  visual?.addEventListener("mouseenter", stopAuto);
-  visual?.addEventListener("mouseleave", startAuto);
-  visual?.addEventListener("focusin", stopAuto);
-  visual?.addEventListener("focusout", startAuto);
-
-  // Keyboard: left/right arrows when focused inside visual
-  visual?.addEventListener("keydown", e => {
-    if (e.key === "ArrowLeft")  { goTo(current - 1); startAuto(); }
-    if (e.key === "ArrowRight") { goTo(current + 1); startAuto(); }
+  // --- Swipe ---
+  const viewport = visual.querySelector(".hero__viewport");
+  viewport.addEventListener("pointerdown", (e) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    const midFlight = !!anim;
+    anim?.stop();
+    anim = null;
+    stopAuto();
+    drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, start: x, active: midFlight, decided: midFlight };
+    tracker?.reset();
+    tracker?.push(e.clientX, e.timeStamp);
+    if (midFlight) viewport.setPointerCapture(e.pointerId);
   });
+  viewport.addEventListener("pointermove", (e) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const dx = e.clientX - drag.x0;
+    const dy = e.clientY - drag.y0;
+    if (!drag.decided) {
+      if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
+      drag.decided = true;
+      drag.active = Math.abs(dx) > Math.abs(dy);
+      if (!drag.active) { drag = null; restartAuto(); return; }
+      drag.x0 = e.clientX; // begin tracking at the threshold so nothing jumps
+      viewport.setPointerCapture(e.pointerId);
+      visual.classList.add("is-dragging");
+      return;
+    }
+    if (!drag.active) return;
+    const min = -(slides.length - 1) * width();
+    let next = drag.start + (e.clientX - drag.x0);
+    if (next > 0) next = UI.rubberband(next, width());
+    else if (next < min) next = min - UI.rubberband(min - next, width());
+    render(next);
+    tracker?.push(e.clientX, e.timeStamp);
+  });
+  const release = (e, cancelled) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const wasActive = drag.active;
+    drag = null;
+    visual.classList.remove("is-dragging");
+    if (!wasActive) { restartAuto(); return; }
+    suppressClick = !cancelled;
+    setTimeout(() => { suppressClick = false; }, 0);
+    const velocity = cancelled || !tracker ? 0 : tracker.velocity();
+    const w = width();
+    const projected = x + (UI ? UI.project(velocity) : 0);
+    // Page at most one slide per flick, chosen from where the gesture is heading.
+    let target = Math.round(-projected / w);
+    target = Math.max(current - 1, Math.min(current + 1, target));
+    goTo(target, velocity, Math.abs(velocity) > 300);
+    restartAuto();
+  };
+  viewport.addEventListener("pointerup", (e) => release(e, false));
+  viewport.addEventListener("pointercancel", (e) => release(e, true));
+  viewport.addEventListener("click", (e) => {
+    if (suppressClick) { e.preventDefault(); e.stopPropagation(); suppressClick = false; }
+  }, true);
+  // Links and images in slides must not start a native drag that would cancel the swipe.
+  viewport.querySelectorAll("a, img").forEach(el => el.setAttribute("draggable", "false"));
+  viewport.addEventListener("dragstart", (e) => e.preventDefault());
 
-  // Initialise data attribute for dot colour logic
-  slidesEl.dataset.active = "0";
-  startAuto();
+  // Pause while the visitor is engaged with it; only run while it's on screen.
+  visual.addEventListener("mouseenter", stopAuto);
+  visual.addEventListener("mouseleave", restartAuto);
+  visual.addEventListener("focusin", stopAuto);
+  visual.addEventListener("focusout", restartAuto);
+  visual.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") { goTo(current - 1); restartAuto(); }
+    if (e.key === "ArrowRight") { goTo(current + 1); restartAuto(); }
+  });
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(entries => {
+      entries.forEach(entry => { if (entry.isIntersecting) restartAuto(); else stopAuto(); });
+    }).observe(visual);
+  }
+  window.addEventListener("resize", () => { anim?.stop(); anim = null; render(-current * width()); }, { passive: true });
+
+  setActive(0);
+  render(0);
+  restartAuto();
 }

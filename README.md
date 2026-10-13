@@ -55,6 +55,7 @@ docs/
 ├── index.html          # Main HTML file
 ├── style.css           # Modern CSS styles
 ├── script.js           # JavaScript functionality
+├── ui.js               # Shared interaction layer (springs, draggable sheets)
 ├── sitemap.xml         # SEO sitemap
 ├── robots.txt          # Search engine directives
 ├── CNAME               # Custom domain configuration
