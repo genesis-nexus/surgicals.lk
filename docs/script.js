@@ -673,23 +673,31 @@ function focusProductFromUrl() {
   if (!sku && window.location.hash.startsWith("#product-")) {
     sku = window.location.hash.slice("#product-".length);
   }
-  if (!sku) return;
-  const product = products.find(p => p.sku.toLowerCase() === sku.toLowerCase());
-  if (!product) return;
+  if (sku) focusProduct(sku);
+}
 
-  // If the current filter hides this product, reset to "all" so it renders.
-  const card = document.getElementById(`product-${product.sku}`);
+// Scroll the catalog card for a SKU into view and highlight it.
+function focusProduct(sku) {
+  const product = products.find(p => p.sku.toLowerCase() === String(sku).toLowerCase());
+  if (!product) return false;
+
+  // If the current filter or search hides this product, reset to "all" so it renders.
+  const card = document.querySelector(`#products-gallery #product-${product.sku}`);
   if (!card) {
+    const headerSearch = document.getElementById("product-search");
+    if (headerSearch) headerSearch.value = "";
     const allChip = document.querySelector('.toolbar__chips .chip[data-category="all"]');
-    allChip?.click();
+    if (allChip?.classList.contains("chip--active")) renderProductGrid("all");
+    else allChip?.click();
   }
-  requestAnimationFrame(() => {
-    const el = document.getElementById(`product-${product.sku}`);
+  setTimeout(() => {
+    const el = document.querySelector(`#products-gallery #product-${product.sku}`);
     if (!el) return;
     el.scrollIntoView({ behavior: "smooth", block: "center" });
     el.classList.add("product-card--highlight");
     setTimeout(() => el.classList.remove("product-card--highlight"), 2600);
-  });
+  }, card ? 0 : 220);
+  return true;
 }
 
 // ---------- Header / nav ----------
@@ -764,6 +772,176 @@ function initHeader() {
 
 function renderCardHtml(p) {
   return `<article class="product-card" id="product-${p.sku}">${renderCardInner(p)}</article>`;
+}
+
+// ---------- Hero search ----------
+// The visitor's actual task — find a product, then quote it — works inside the hero.
+// Without JS the form submits /?q=…, which applySearchFromUrl() renders in the catalog.
+
+function initHeroSearch() {
+  const form = document.getElementById("hero-search");
+  const input = document.getElementById("hero-q");
+  const panel = document.getElementById("hero-results");
+  const list = document.getElementById("hero-results-list");
+  const allBtn = document.getElementById("hero-results-all");
+  const waLink = document.getElementById("hero-results-wa");
+  if (!form || !input || !panel || !list) return;
+
+  const MAX = 6;
+  let results = [];
+  let active = -1;
+
+  const waHref = (q) => `https://wa.me/${WHATSAPP_COLOMBO}?text=${encodeURIComponent(
+    q ? `Hi, do you have ${q}? I found surgicals.lk and would like a quote.` : "Hi, I'd like a quote from surgicals.lk."
+  )}`;
+
+  function open() {
+    if (!panel.hidden) return;
+    panel.hidden = false;
+    input.setAttribute("aria-expanded", "true");
+  }
+  function close() {
+    panel.hidden = true;
+    input.setAttribute("aria-expanded", "false");
+    input.removeAttribute("aria-activedescendant");
+    active = -1;
+  }
+  function setActive(i) {
+    const items = list.querySelectorAll(".hero-result");
+    items.forEach((el, n) => el.setAttribute("aria-selected", n === i ? "true" : "false"));
+    active = i;
+    if (i >= 0 && items[i]) {
+      input.setAttribute("aria-activedescendant", items[i].id);
+      items[i].scrollIntoView({ block: "nearest" });
+    } else {
+      input.removeAttribute("aria-activedescendant");
+    }
+  }
+
+  function render() {
+    const raw = input.value;
+    const q = raw.trim();
+    if (!q) { close(); return; }
+    const all = ProductSearch.search(q);
+    results = all.slice(0, MAX);
+    waLink.href = waHref(q);
+    allBtn.hidden = all.length <= MAX;
+    allBtn.textContent = `See all ${all.length} results in the catalog`;
+
+    if (!results.length) {
+      list.innerHTML = `<li class="hero-results__empty" role="presentation">No catalog match for “${escapeHtml(q)}”. We source many items on request — send it to us and we'll quote it.</li>`;
+    } else {
+      list.innerHTML = results.map((p, i) => `
+        <li class="hero-result" id="hero-result-${i}" role="option" aria-selected="false" data-sku="${p.sku}">
+          <a class="hero-result__link" href="/?product=${p.sku}#product-${p.sku}" tabindex="-1">
+            <span class="hero-result__thumb">
+              <picture>
+                ${p.image.webp ? `<source srcset="${p.image.webp}" type="image/webp">` : ""}
+                <img src="${p.image.src}" alt="" loading="lazy" width="48" height="48">
+              </picture>
+            </span>
+            <span class="hero-result__text">
+              <span class="hero-result__title">${escapeHtml(p.title)}</span>
+              <span class="hero-result__meta"><span class="hero-result__cat">${escapeHtml(p.summary)} · </span><span class="hero-result__sku">${p.sku}</span>${p.price ? ` · <strong>Rs.&nbsp;${p.price.toLocaleString("en-LK")}</strong>` : ""}</span>
+            </span>
+          </a>
+          <button type="button" class="hero-result__add" data-add-sku="${p.sku}" tabindex="-1" aria-label="Add ${escapeHtml(p.title)} to quote">Add</button>
+        </li>`).join("");
+    }
+    open();
+    setActive(-1);
+  }
+
+  // Hand the query to the full catalog grid (same path as the header search and /?q=).
+  function showInCatalog() {
+    const q = input.value.trim();
+    const headerSearch = document.getElementById("product-search");
+    close();
+    if (!headerSearch) return;
+    headerSearch.value = q;
+    headerSearch.dispatchEvent(new Event("input", { bubbles: true }));
+    document.getElementById("products")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function choose(i) {
+    const p = results[i];
+    if (!p) return;
+    close();
+    focusProduct(p.sku);
+  }
+
+  input.addEventListener("input", render);
+  input.addEventListener("focus", () => {
+    if (input.value.trim()) render();
+    // On phones the keyboard takes the lower half: lift the field so results stay visible.
+    if (window.matchMedia("(max-width: 760px)").matches) {
+      setTimeout(() => form.scrollIntoView({ behavior: "smooth", block: "start" }), 120);
+    }
+  });
+  input.addEventListener("keydown", (e) => {
+    const count = results.length;
+    if (e.key === "ArrowDown" && count) {
+      e.preventDefault();
+      if (panel.hidden) render();
+      setActive(active + 1 >= count ? 0 : active + 1);
+    } else if (e.key === "ArrowUp" && count) {
+      e.preventDefault();
+      setActive(active <= 0 ? count - 1 : active - 1);
+    } else if (e.key === "Escape" && !panel.hidden) {
+      // First Escape closes the results; a second one clears the field (native behaviour).
+      e.preventDefault();
+      e.stopPropagation();
+      close();
+    } else if (e.key === "Enter" && active >= 0) {
+      e.preventDefault();
+      choose(active);
+    }
+  });
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (!input.value.trim()) { input.focus(); return; }
+    showInCatalog();
+  });
+
+  list.addEventListener("click", (e) => {
+    if (e.target.closest("[data-add-sku]")) {
+      // The global add-to-quote handler takes it from here; keep the results open.
+      input.focus({ preventScroll: true });
+      return;
+    }
+    const row = e.target.closest(".hero-result");
+    if (!row) return;
+    e.preventDefault();
+    choose(Number(row.id.replace("hero-result-", "")));
+  });
+  list.addEventListener("mousemove", (e) => {
+    const row = e.target.closest(".hero-result");
+    if (row) setActive(Number(row.id.replace("hero-result-", "")));
+  });
+
+  document.addEventListener("pointerdown", (e) => {
+    if (!panel.hidden && !form.contains(e.target)) close();
+  });
+
+  // Shortcut chips run the search in place; their hrefs remain crawlable fallbacks.
+  document.querySelectorAll("[data-hero-query]").forEach(link => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      input.value = link.dataset.heroQuery;
+      input.focus({ preventScroll: true });
+      render();
+    });
+  });
+
+  // The price tag on the hero stage jumps to its real catalog card.
+  document.querySelectorAll("[data-focus-sku]").forEach(link => {
+    link.addEventListener("click", (e) => {
+      if (e.defaultPrevented) return;
+      e.preventDefault();
+      focusProduct(link.dataset.focusSku);
+    });
+  });
 }
 
 // ---------- Filters ----------
@@ -894,10 +1072,6 @@ function initQuoteForm() {
     showToast("Opening WhatsApp to send your quote…");
   });
 
-  // Hero "Request a quote" button — if the cart has items, prefill before scrolling
-  document.getElementById("hero-request-quote")?.addEventListener("click", () => {
-    if (QuoteStore.totalLines() > 0) prefillQuoteForm();
-  });
 }
 
 // ---------- Init ----------
@@ -914,6 +1088,7 @@ document.addEventListener("DOMContentLoaded", () => {
   Drawer.init();
   initQuoteForm();
   initHeroSlideshow();
+  initHeroSearch();
 
   QuoteStore.subscribe(renderQuoteDrawer);
 
@@ -984,8 +1159,9 @@ function applySearchFromUrl() {
   if (!input) return;
   input.value = q;
   input.dispatchEvent(new Event("input", { bubbles: true }));
-  // Also open the search panel and scroll to results
-  document.getElementById("search-panel")?.removeAttribute("hidden");
+  const heroInput = document.getElementById("hero-q");
+  if (heroInput) heroInput.value = q;
+  else document.getElementById("search-panel")?.removeAttribute("hidden");
   document.getElementById("products")?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
