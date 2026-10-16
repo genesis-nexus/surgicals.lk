@@ -3,14 +3,14 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; media-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; media-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <script src="early.js"></script>
   <meta name="description" content="Buy surgical consumables in Sri Lanka — surgical gloves, staplers, forceps, scalpel handles, orthopaedic implants and theatre instruments. NMRA-registered, island-wide delivery, WhatsApp quotations.">
   <meta name="author" content="Hettiarachchi Surgicals">
   <meta name="robots" content="index, follow, max-image-preview:large">
-  <meta name="theme-color" content="#0E7C7B">
+  <meta name="theme-color" content="#FFFFFF">
 
   <!-- Local SEO / Geo signals — Galle showroom -->
   <meta name="geo.region" content="LK-31">
@@ -33,12 +33,6 @@
   <meta name="twitter:title" content="Surgical Consumables &amp; Instruments in Sri Lanka | Hettiarachchi Surgicals">
   <meta name="twitter:description" content="Buy surgical consumables in Sri Lanka — surgical staplers, forceps, scalpel handles, orthopaedic implants and theatre instruments. NMRA-registered, island-wide delivery, WhatsApp quotations.">
   <meta name="twitter:image" content="https://surgicals.lk/images/og-image.jpg">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-    rel="stylesheet">
 
   <title>Surgical Consumables &amp; Instruments in Sri Lanka | Hettiarachchi Surgicals</title>
   <link rel="stylesheet" href="style.css">
@@ -323,57 +317,18 @@
 <body>
   <a href="#main-content" class="skip-link">Skip to content</a>
 
-  <div class="announcement-bar announcement-bar--notice" id="number-notice-bar" role="region" aria-label="Contact number update" hidden>
-    <div class="container announcement-bar__inner">
-      <span class="announcement-bar__badge" aria-hidden="true">Notice</span>
-      <p class="announcement-bar__text">
-        We're moving to a new number for better connectivity and to serve you better. Please use <strong>071 966 9666</strong> instead of <strong>078 966 9666</strong> for WhatsApp and calls.
-      </p>
-      <button type="button" class="announcement-bar__close" id="number-notice-close" aria-label="Dismiss notice">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-  </div>
-  <script>
-    (function () {
-      var KEY = "surgicals-number-notice-v2";
-      var bar = document.getElementById("number-notice-bar");
-      if (!bar) return;
-      try { if (localStorage.getItem(KEY) === "dismissed") return; } catch (_) {}
-      bar.hidden = false;
-      document.getElementById("number-notice-close")?.addEventListener("click", function () {
-        bar.hidden = true;
-        try { localStorage.setItem(KEY, "dismissed"); } catch (_) {}
-      });
-    })();
-  </script>
-
-  <div class="utility-bar">
+  <div class="utility-bar" role="region" aria-label="Contact numbers">
     <div class="container utility-bar__inner">
-      <div class="utility-bar__left">
-        <span class="utility-bar__location" aria-label="Our locations">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          Galle &amp; Colombo
-        </span>
-      </div>
-      <div class="utility-bar__right">
-        <span class="utility-bar__contacts">
-          <a href="tel:+94777068063" class="utility-bar__link">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            077 706 8063
-          </a>
-        </span>
-        <span class="utility-bar__sep utility-bar__sep--divider">|</span>
-        <span class="utility-bar__link utility-bar__link--group">
-          <a href="tel:+94719669666" aria-label="Call Colombo" class="utility-bar__icon-link">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          </a>
-          <a href="https://wa.me/94719669666" target="_blank" rel="noopener" aria-label="WhatsApp Colombo" class="utility-bar__icon-link">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374A9.86 9.86 0 0 1 2.166 11.89c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
-          </a>
-          071 966 9666 / 071 924 9267 — Colombo
-        </span>
-      </div>
+      <p class="utility-bar__item">
+        <span class="utility-bar__label">Galle</span>
+        <a href="tel:+94777068063" class="utility-bar__link">077 706 8063</a>
+        <span class="utility-bar__extra">· WhatsApp <a href="https://wa.me/94718208654" target="_blank" rel="noopener" class="utility-bar__link">071 820 8654</a></span>
+      </p>
+      <p class="utility-bar__item">
+        <span class="utility-bar__label">Colombo</span>
+        <a href="https://wa.me/94719669666" target="_blank" rel="noopener" class="utility-bar__link">071 966 9666</a>
+        <span class="utility-bar__extra">· <a href="tel:+94719249267" class="utility-bar__link">071 924 9267</a></span>
+      </p>
     </div>
   </div>
 
@@ -381,19 +336,26 @@
     <div class="container site-header__inner">
       <a href="/" class="site-logo" aria-label="Hettiarachchi Surgicals home">
         <picture>
-          <source srcset="images/brand/logo-header-nobg.webp" type="image/webp">
-          <img src="images/brand/logo-header-nobg.png" alt="Hettiarachchi Surgicals logo" height="90" loading="eager">
+          <source srcset="images/brand/logo-header-trim.webp" type="image/webp">
+          <img src="images/brand/logo-header-trim.png" alt="Hettiarachchi Surgicals logo" width="657" height="165" loading="eager">
         </picture>
       </a>
 
       <nav class="main-nav" aria-label="Primary">
         <ul class="main-nav__list">
-          <li><a href="/">Home</a></li>
-          <li><a href="/#products">All Products</a></li>
-          <li><a href="/#about">About</a></li>
+          <li><a href="/#products">Catalog</a></li>
+          <li><a href="/wheelchairs-sri-lanka.html">Wheelchairs</a></li>
+          <li><a href="/hospital-furniture-sri-lanka.html">Hospital furniture</a></li>
+          <li><a href="/surgical-consumables-sri-lanka.html" aria-current="page">Consumables</a></li>
           <li><a href="/#contact">Contact</a></li>
         </ul>
       </nav>
+
+      <div class="header-actions">
+        <button type="button" class="icon-btn menu-toggle" data-sheet-open="menu-sheet" aria-label="Open menu" aria-controls="menu-sheet" aria-expanded="false">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 9h16"/><path d="M4 15h16"/></svg>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -425,7 +387,7 @@
         </div>
         <div class="hero__visual">
           <picture>
-            <source srcset="images/products/optimized/IMG_2859 2.webp" type="image/webp">
+            <source srcset="images/products/optimized/IMG_2859%202.webp" type="image/webp">
             <img src="images/products/optimized/IMG_2859 2.jpg" alt="Panther linear cutter surgical stapler available from Hettiarachchi Surgicals in Sri Lanka" loading="eager" width="1000" height="774">
           </picture>
           <div class="hero__card hero__card--nmra">
@@ -452,7 +414,7 @@
             <div class="product-card__media">
               <span class="product-card__tag">Surgical</span>
               <picture class="product-card__img">
-                <source srcset="images/products/optimized/IMG_2818 2.webp" type="image/webp">
+                <source srcset="images/products/optimized/IMG_2818%202.webp" type="image/webp">
                 <img src="images/products/optimized/IMG_2818 2.jpg" alt="Orthopaedic implant kit with bone plates, screws and wires — surgical consumables from Hettiarachchi Surgicals, Sri Lanka" loading="lazy">
               </picture>
             </div>
@@ -476,7 +438,7 @@
             <div class="product-card__media">
               <span class="product-card__tag">Surgical</span>
               <picture class="product-card__img">
-                <source srcset="images/products/optimized/IMG_2857 2.webp" type="image/webp">
+                <source srcset="images/products/optimized/IMG_2857%202.webp" type="image/webp">
                 <img src="images/products/optimized/IMG_2857 2.jpg" alt="Panther hemorrhoidal surgical stapler FCSSME33 — surgical consumables from Hettiarachchi Surgicals, Sri Lanka" loading="lazy">
               </picture>
             </div>
@@ -500,7 +462,7 @@
             <div class="product-card__media">
               <span class="product-card__tag">Surgical</span>
               <picture class="product-card__img">
-                <source srcset="images/products/optimized/IMG_2859 2.webp" type="image/webp">
+                <source srcset="images/products/optimized/IMG_2859%202.webp" type="image/webp">
                 <img src="images/products/optimized/IMG_2859 2.jpg" alt="Panther linear cutter surgical stapler SSAB-80 — surgical consumables from Hettiarachchi Surgicals, Sri Lanka" loading="lazy">
               </picture>
             </div>
@@ -524,7 +486,7 @@
             <div class="product-card__media">
               <span class="product-card__tag">Surgical</span>
               <picture class="product-card__img">
-                <source srcset="images/products/optimized/IMG_2860 2.webp" type="image/webp">
+                <source srcset="images/products/optimized/IMG_2860%202.webp" type="image/webp">
                 <img src="images/products/optimized/IMG_2860 2.jpg" alt="Reloading unit SADB-80D for Panther linear cutter stapler — surgical consumables from Hettiarachchi Surgicals, Sri Lanka" loading="lazy">
               </picture>
             </div>
@@ -791,16 +753,74 @@
     </div>
   </footer>
 
-  <div class="whatsapp-fabs" role="group" aria-label="WhatsApp contacts">
-    <a href="https://wa.me/94718208654" target="_blank" rel="noopener" class="whatsapp-fab" aria-label="Chat on WhatsApp — Galle">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374A9.86 9.86 0 0 1 2.166 11.89c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
-      <span class="whatsapp-fab__label">Galle</span>
-    </a>
-    <a href="https://wa.me/94719669666" target="_blank" rel="noopener" class="whatsapp-fab" aria-label="Chat on WhatsApp — Colombo">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374A9.86 9.86 0 0 1 2.166 11.89c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
-      <span class="whatsapp-fab__label">Colombo</span>
-    </a>
-  </div>
+  <section class="sheet sheet--compact" id="wa-sheet" data-sheet data-sheet-desktop="popover" data-sheet-drag="all" role="dialog" aria-modal="true" aria-labelledby="wa-sheet-title">
+    <div class="sheet__grabber" aria-hidden="true"></div>
+    <header class="sheet__header">
+      <div>
+        <h2 class="sheet__title" id="wa-sheet-title">Chat on WhatsApp</h2>
+        <p class="sheet__subtitle">Typical reply in under an hour, Mon–Sat.</p>
+      </div>
+      <button type="button" class="sheet__close" data-sheet-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+    </header>
+    <div class="sheet__body">
+      <ul class="sheet-list sheet-list--inset">
+        <li>
+          <a href="https://wa.me/94718208654" target="_blank" rel="noopener">
+            <span class="sheet-list__icon sheet-list__icon--wa"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374A9.86 9.86 0 0 1 2.166 11.89c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg></span>
+            <span class="sheet-list__text">Galle showroom<small>071 820 8654 · Southern Province</small></span>
+            <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+        </li>
+        <li>
+          <a href="https://wa.me/94719669666" target="_blank" rel="noopener">
+            <span class="sheet-list__icon sheet-list__icon--wa"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374A9.86 9.86 0 0 1 2.166 11.89c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg></span>
+            <span class="sheet-list__text">Colombo<small>071 966 9666 · Island-wide delivery</small></span>
+            <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <button type="button" class="whatsapp-fab" data-sheet-open="wa-sheet" aria-controls="wa-sheet" aria-expanded="false" aria-label="Chat with us on WhatsApp">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374A9.86 9.86 0 0 1 2.166 11.89c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+  </button>
+
+  <section class="sheet" id="menu-sheet" data-sheet role="dialog" aria-modal="true" aria-labelledby="menu-sheet-title">
+    <div class="sheet__grabber" aria-hidden="true"></div>
+    <header class="sheet__header">
+      <h2 class="sheet__title" id="menu-sheet-title">Menu</h2>
+      <button type="button" class="sheet__close" data-sheet-close aria-label="Close menu"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+    </header>
+    <div class="sheet__body">
+      <nav aria-label="Site">
+        <p class="sheet-group__label">Shop</p>
+        <ul class="sheet-list">
+          <li><a href="/#popular"><span>Popular products</span><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+          <li><a href="/#products"><span>Full catalog</span><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+          <li><a href="/wheelchairs-sri-lanka.html"><span>Wheelchairs</span><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+          <li><a href="/hospital-furniture-sri-lanka.html"><span>Hospital furniture &amp; beds</span><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+          <li><a href="/surgical-consumables-sri-lanka.html" aria-current="page"><span>Surgical consumables</span><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+        </ul>
+        <p class="sheet-group__label">Company</p>
+        <ul class="sheet-list">
+          <li><a href="/#about"><span>About us</span><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+          <li><a href="/#location"><span>Visit our Galle showroom</span><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+          <li><a href="/#faq"><span>FAQ</span><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+          <li><a href="/#contact"><span>Request a quote</span><svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+        </ul>
+      </nav>
+      <p class="sheet-group__label">Talk to us</p>
+      <div class="contact-tiles">
+        <a class="contact-tile" href="tel:+94777068063"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span>Call Galle</span><small>077 706 8063</small></a>
+        <a class="contact-tile contact-tile--wa" href="https://wa.me/94718208654" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374A9.86 9.86 0 0 1 2.166 11.89c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg><span>WhatsApp Galle</span><small>071 820 8654</small></a>
+        <a class="contact-tile contact-tile--wa" href="https://wa.me/94719669666" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374A9.86 9.86 0 0 1 2.166 11.89c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg><span>WhatsApp Colombo</span><small>071 966 9666</small></a>
+        <a class="contact-tile" href="tel:+94719249267"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span>Call Colombo</span><small>071 924 9267</small></a>
+      </div>
+    </div>
+  </section>
+
+  <script src="ui.js"></script>
 
   <script src="motion.js"></script>
 </body>

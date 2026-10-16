@@ -61,6 +61,61 @@
     if (e.key === 'ArrowRight') { goTo(active + 1, 1); startAuto(); }
   });
 
+  // Swipe the stage: the chair follows the finger 1:1, a flick (projected momentum) changes
+  // exhibit, anything shorter springs home carrying the release velocity.
+  var stage = root.querySelector('.showroom__stage');
+  var UI = window.SurgicalsUI;
+  if (stage && UI) {
+    var drag = null;
+    var tracker = new UI.VelocityTracker();
+    var setX = function (el, x) { el.style.transform = Math.abs(x) < 0.5 ? '' : 'translate3d(' + x.toFixed(1) + 'px,0,0)'; };
+    var settle = function (el, from, velocity, damping) {
+      if (reduced) { setX(el, 0); return; }
+      UI.spring({ from: from, to: 0, velocity: velocity, damping: damping, response: 0.35, precision: 0.5, onUpdate: function (x) { setX(el, x); } });
+    };
+    var endDrag = function (e, cancelled) {
+      if (!drag || e.pointerId !== drag.id) return;
+      var d = drag;
+      drag = null;
+      if (!d.active) return;
+      var velocity = cancelled ? 0 : tracker.velocity();
+      var projected = d.x + UI.project(velocity);
+      if (Math.abs(projected) > stage.clientWidth * 0.25) {
+        var dir = projected < 0 ? 1 : -1;
+        goTo(active + dir, dir);
+        settle(d.el, d.x, velocity, 1);
+      } else {
+        settle(d.el, d.x, velocity, 0.8);
+      }
+      startAuto();
+    };
+    stage.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, x: 0, active: false, el: exhibits[active].querySelector('.showroom__media-box') };
+      tracker.reset();
+      tracker.push(e.clientX, e.timeStamp);
+    });
+    stage.addEventListener('pointermove', function (e) {
+      if (!drag || e.pointerId !== drag.id || !drag.el) return;
+      var dx = e.clientX - drag.x0;
+      if (!drag.active) {
+        if (Math.abs(dx) < 10 && Math.abs(e.clientY - drag.y0) < 10) return;
+        if (Math.abs(dx) <= Math.abs(e.clientY - drag.y0)) { drag = null; return; }
+        drag.active = true;
+        drag.x0 = e.clientX;
+        dx = 0;
+        stopAuto();
+        try { stage.setPointerCapture(e.pointerId); } catch (_) { /* ignore */ }
+      }
+      drag.x = dx;
+      setX(drag.el, dx);
+      tracker.push(e.clientX, e.timeStamp);
+    });
+    stage.addEventListener('pointerup', function (e) { endDrag(e, false); });
+    stage.addEventListener('pointercancel', function (e) { endDrag(e, true); });
+    stage.addEventListener('dragstart', function (e) { e.preventDefault(); });
+  }
+
   // Only auto-advance while the showroom is on screen.
   if ('IntersectionObserver' in window) {
     var observer = new IntersectionObserver(function (entries) {
