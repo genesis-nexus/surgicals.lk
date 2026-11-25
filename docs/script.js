@@ -22,7 +22,7 @@ const PRODUCT_CATEGORIES = {
 };
 
 // Products surfaced first on the page — the most-requested items.
-const FEATURED_SKUS = ["WC03", "CO03", "CN01", "DM01", "DM07", "DI02", "BD02", "DM02"];
+const FEATURED_SKUS = ["WC01", "WC03", "SG02", "SG03", "MG1016", "CO03", "CN01", "DM01", "DM07", "DI02", "BD02", "DM02"];
 
 // Search synonym tables. Tokens added to each product's haystack so visitors can find products
 // by category, alternate names, brand names, or related terms — not just the literal title.
@@ -159,7 +159,7 @@ const FURNITURE_SPECS = {
 // [primary, alt] for multi-angle products that should cross-fade on hover.
 const products = [
   // ---- Mobility Aids (docs/images/new-cat) ----
-  { sku: "WC01", title: "Adult Wheelchair", category: "mobility-aids", folder: "new-cat", bases: ["adult-wheel-chair"], price: 24500, isNew: true, features: ["Detachable footrest option available"] },
+  { sku: "WC01", title: "Adult Wheelchair", category: "mobility-aids", folder: "new-cat", bases: ["adult-wheel-chair"], price: 25500, isNew: true, features: ["Detachable footrest option available"] },
   { sku: "WC02", title: "Functional Wheelchair", category: "mobility-aids", folder: "new-cat", bases: ["functional-wheel-chair-1", "functional-wheel-chair-2"] },
   { sku: "WC03", title: "Fully Functional Wheelchair", category: "mobility-aids", folder: "new-cat", bases: ["fully-functional-wheel-chair-1", "fully-functional-wheel-chair-2"], price: 54500 },
   { sku: "WC04", title: "Commode Wheelchair", category: "mobility-aids", folder: "new-cat", bases: ["commode-wheelchair-angle-1", "commode-wheelchair-angle-2"] },
@@ -235,7 +235,7 @@ const products = [
   { sku: "MG1013", title: "Two Function Bed — Home Use", category: "furniture", folder: "furniture", bases: ["mg-1013"] },
   { sku: "MG1014", title: "Head Adjustable Bed (Stainless Steel)", category: "furniture", folder: "furniture", bases: ["mg-1014"] },
   { sku: "MG1015", title: "Patient Bed — Basic", category: "furniture", folder: "furniture", bases: ["mg-1015"] },
-  { sku: "MG1016", title: "Three Function Bed — Manual", category: "furniture", folder: "furniture", bases: ["mg-1016"] },
+  { sku: "MG1016", title: "Three Function Bed — Manual", category: "furniture", folder: "furniture", bases: ["mg-1016"], price: 182000 },
   { sku: "MG1017", title: "Five Function Bed — Hydraulic", category: "furniture", folder: "furniture", bases: ["mg-1017"] },
   { sku: "MG1018", title: "Two Function Bed — Classic", category: "furniture", folder: "furniture", bases: ["mg-1018"] },
   { sku: "MG1019", title: "Head Adjustable Bed — Classic", category: "furniture", folder: "furniture", bases: ["mg-1019"] },
